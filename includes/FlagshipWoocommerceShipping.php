@@ -17,7 +17,7 @@ class FlagshipWoocommerceShipping {
 	}
 	
 	public function add_flagship_shipping_method($methods) {
-		$methods[] = 'WC_Flagship_Shipping_Method';
+		$methods[WC_FLAGSHIP_ID] = 'WC_Flagship_Shipping_Method';
 
 		return $methods;
 	}
