@@ -42,22 +42,18 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         return $request;
     }
 
-    protected function makePackages($package)
+    protected function extractOrderItems($items)
     {
-        $items = array();
-        $unit = get_option('woocommerce_weight_unit');
+        $orderItems = array();
 
-        foreach ( $package['contents'] as $item_id => $values ) { 
-            $_product = $values['data'];
-            $newItems = $this->makeItemsPerProduct($unit, $values['quantity'], $_product);
-            $items = array_merge($items, $newItems);
+        foreach ( $items['contents'] as $item_id => $values ) {
+            $item = array();
+            $item['product'] = $values['data'];
+            $item['quantity'] = $values['quantity'];
+            $orderItems[] = $item;
         }
 
-        return array(
-            'items' => $items,
-            'units' => 'imperial',
-            'type' => 'package',
-        );
+        return $orderItems;
     }
 
     protected function debug($message, $type = 'notice')

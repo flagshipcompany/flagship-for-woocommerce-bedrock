@@ -24,9 +24,24 @@ class FlagshipWoocommerceShipping {
 	public function __construct() {
 	    add_action( 'woocommerce_shipping_init', array($this, 'include_method_classes'));	 
 	    add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
-	    add_filter( 'woocommerce_order_actions',  array($this, 'add_order_meta_box_action'));
-	    add_action( 'woocommerce_order_action_'.self::$exportAction,  array($this, 'process_order_meta_box_action'));
-	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box')); 					
+	    add_filter( 'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ) );
+	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
+	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box')); 					
+	}
+
+	public function plugin_action_links($links) {
+		$settingsUrl = 'admin.php?page=wc-settings&tab=shipping&section='.WC_FLAGSHIP_ID;
+		$plugin_links = array(
+			'<a href="' . admin_url($settingsUrl) . '">' . __( 'Settings', 'flagship' ) . '</a>',
+		);
+
+		return array_merge($plugin_links, $links);
+	}
+
+	public function save_meta_box($orderId) {
+		$orderActionProcessor = $this->init_order_action_processor(wc_get_order($orderId));
+        
+        return $orderActionProcessor->processOrderActions($_POST);
 	}
 	
 	public function add_flagship_shipping_method($methods) {
@@ -35,23 +50,11 @@ class FlagshipWoocommerceShipping {
 		return $methods;
 	}
 
-	public function add_order_meta_box_action($actions) {
-        $orderActionProcessor = $this->init_order_action_processor();
-        
-        return $orderActionProcessor->addExportAction($actions);
-    }
-
-    public function process_order_meta_box_action($order) {
-        $orderActionProcessor = $this->init_order_action_processor($order);
-        
-        return $orderActionProcessor->exportOrder();
-    }
-
     public function add_custom_meta_box() {
     	global $post;
 
     	$orderActionProcessor = $this->init_order_action_processor(wc_get_order($post->ID));
-    	$orderActionProcessor->addMetaBoxes();
+    	$orderActionProcessor->addMetaBox();
     }
 
 	public function include_method_classes()

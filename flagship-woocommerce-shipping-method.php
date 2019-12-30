@@ -22,6 +22,10 @@ if (!defined('FLAGSHIP_DEBUG_MODE')){
 	define("FLAGSHIP_DEBUG_MODE", true);
 }
 
+if (!defined('FLAGSHIP_PLUGIN_NAME')){
+	define("FLAGSHIP_PLUGIN_NAME", plugin_basename( __FILE__ ));
+}
+
 if (!class_exists( 'FlagshipWoocommerceShipping', false)) {
 	include_once dirname( __FILE__ ) . '/includes/FlagshipWoocommerceShipping.php';
 	include_once dirname( __FILE__ ) . '/includes/UserFunctions.php';

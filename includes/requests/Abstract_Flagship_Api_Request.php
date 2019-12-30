@@ -87,32 +87,39 @@ abstract class Abstract_Flagship_Api_Request {
         return $destinationAddress;
     }
 
-    protected function makeItemsPerProduct($unit, $numItems, $product)
+    protected function makePackages($orderItems)
     {
-        $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), $unit, 'lbs')) : 1;
-        $description = $product->get_short_description();
-        $withDimensions = $product->get_length() && $product->get_width() && $product->get_height();
+        $orderItems = $this->extractOrderItems($orderItems);
 
-        if (!$withDimensions) {
-            $item = array(
-                'length' => 1,
-                'width' => 1,
-                'height' => 1,
-                'weight' => $weight,
-                'description' => $description,
-            );
+        $unit = get_option('woocommerce_weight_unit');
+        $totalWeight = 0;
+        $productDescriptions = array();
 
-            return array_fill(0, $numItems, $item);
+        foreach ( $orderItems as $item_id => $productItem ) { 
+            $product = $productItem['product'];
+            $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), $unit, 'lbs')) : 1;
+            $totalWeight += $weight*$productItem['quantity'];
+            $productDescriptions[] = $product->get_short_description();
+        }
+
+        $description = implode(';', $productDescriptions);
+
+        if (strlen($description) > 35) {
+            $description = $productDescriptions[0];
         }
 
         $item = array(
-            'length' => max(1, round(wc_get_dimension($product->get_length(), $unit, 'in'))),
-            'width' => max(1, round(wc_get_dimension($product->get_width(), $unit, 'in'))),
-            'height' => max(1, round(wc_get_dimension($product->get_height(), $unit, 'in'))),
-            'weight' => $weight,
+            'length' => 1,
+            'width' => 1,
+            'height' => 1,
+            'weight' => $totalWeight,
             'description' => $description,
         );
 
-        return array_fill(0, $numItems, $item);
+        return array(
+            'items' => array($item),
+            'units' => 'imperial',
+            'type' => 'package',
+        );
     }
 }

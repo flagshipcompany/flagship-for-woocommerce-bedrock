@@ -55,21 +55,18 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         return $request;
     }
 
-    protected function makePackages($orderItems)
+    protected function extractOrderItems($items)
     {
-        $items = array();
-        $unit = get_option('woocommerce_weight_unit');
+        $orderItems = array();
 
-        foreach ( $orderItems as $items_key => $item_data ) { 
-            $newItems = $this->makeItemsPerProduct($unit, $item_data->get_quantity(), $item_data->get_product());
-            $items = array_merge($items, $newItems);
+        foreach ( $items as $items_key => $item_data ) {
+            $item = array();
+            $item['product'] = $item_data->get_product();
+            $item['quantity'] = $item_data->get_quantity();
+            $orderItems[] = $item;
         }
 
-        return array(
-            'items' => $items,
-            'units' => 'imperial',
-            'type' => 'package',
-        );
+        return $orderItems;
     }
 
     protected function getFullDestinationAddress($order)
