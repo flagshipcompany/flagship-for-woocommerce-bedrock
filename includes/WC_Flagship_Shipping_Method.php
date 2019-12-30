@@ -1,5 +1,6 @@
 <?php
 class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
+    
 	private $token;
 
     /**
@@ -33,7 +34,7 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
         $this->init_form_fields(); 
         $this->init_settings();
 
-        add_action( 'woocommerce_update_options_shipping_' . $this->id, array( $this, 'process_admin_options' ) );
+        add_action( 'woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
     }
 
     /**
@@ -55,9 +56,8 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
     		return;
     	}
 
-    	$apiRequest = new Flagship_Api_Request($this->token);
+    	$apiRequest = new Rates_Request($this->token);
     	$rates = $apiRequest->getRates($package);
-        // console($rates);
         $ratesProcessor = new Cart_Rates_Processor($this->id, $this->instance_settings);
         $cartRates = $ratesProcessor->processRates($rates->all());
 
