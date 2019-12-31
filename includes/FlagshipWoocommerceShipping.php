@@ -1,8 +1,6 @@
 <?php
 class FlagshipWoocommerceShipping {
 	
-	public static $exportAction = 'wc_flagship_export_action';
-	
 	protected static $_instance = null;
 
 	public static function instance() {
@@ -22,11 +20,29 @@ class FlagshipWoocommerceShipping {
 	}
 	
 	public function __construct() {
+		if (!class_exists('Flagship\Shipping\Flagship')) {
+			$this->showSdkNotice();
+
+		    return;
+		}
+
 	    add_action( 'woocommerce_shipping_init', array($this, 'include_method_classes'));	 
 	    add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
 	    add_filter( 'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ) );
 	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
 	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box')); 					
+	}
+
+	public function showSdkNotice() {
+		add_action( 'admin_notices', array($this, 'add_flagship_sdk_missing_notice'));
+	}
+
+	public function add_flagship_sdk_missing_notice() {
+		?>
+		  	<div class="update-nag notice">
+		      <p><?php _e( 'To ensure the FlagShip WooCommerce Shipping plugin function properly, please run "composer require flagshipcompany/flagship-api-sdk" to install the required classes', 'flagship'); ?></p>
+		  	</div>
+		 <?php
 	}
 
 	public function plugin_action_links($links) {

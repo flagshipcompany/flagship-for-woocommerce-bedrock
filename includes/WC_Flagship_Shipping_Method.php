@@ -90,11 +90,29 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
 
     protected function makeInstanceFields() {
         return array(
-            'exclude_express_rates' => array(
-                'title' => __('Exclude express rates', 'flagship'),
+            'offer_standard_rates' => array(
+                'title' => __('Offer standard rates', 'flagship'),
                 'type' => 'checkbox',
-                'description' => __( 'Exclude the rates of expressive shipping', 'flagship'),
+                'description' => __( 'Offer standard rates', 'flagship'),
+                'default' => 'yes'
+            ),
+            'offer_express_rates' => array(
+                'title' => __('Offer express rates', 'flagship'),
+                'type' => 'checkbox',
+                'description' => __( 'Offer express rates', 'flagship'),
+                'default' => 'yes'
+            ),
+            'only_show_cheapest' => array(
+                'title' => __('Only show the cheapest rate', 'flagship'),
+                'type' => 'checkbox',
+                'description' => __( 'Only show the cheapest rate', 'flagship'),
                 'default' => 'no'
+            ),
+            'shipping_cost_markup' => array(
+                'title' => __('Shipping cost markup', 'flagship'),
+                'type' => 'decimal',
+                'description' => __( 'Shipping cost markup in percentage', 'flagship'),
+                'default' => 0
             ),
         );
     }
