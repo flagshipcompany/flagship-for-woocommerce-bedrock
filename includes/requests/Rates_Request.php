@@ -1,6 +1,7 @@
 <?php
 
 use Flagship\Shipping\Flagship;
+use Flagship\Shipping\Collections\RatesCollection;
 
 class Rates_Request extends Abstract_Flagship_Api_Request {
 
@@ -22,7 +23,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 		}
 		catch(Exception $e){
 			$this->debug($e->getMessage(), 'error');
-			$rates = array();
+			$rates = new RatesCollection();
 		}
 
 		return $rates;

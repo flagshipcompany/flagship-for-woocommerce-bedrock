@@ -1,0 +1,58 @@
+"Project-Id-Version: FlagShip WooCommerce Extension 1.0.0\n"
+"POT-Creation-Date: 2020-01-01 00:00-0500\n"
+"PO-Revision-Date: 2020-01-01 00:00-0500\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "FlagShip Shipping"
+msgstr "Expédition FlagShip"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Enable"
+msgstr "Activer"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Enable this shipping method"
+msgstr "Activer cette méthode d'expédition"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "FlagShip access token"
+msgstr "Clé FlagShip"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>."
+msgstr "Après vous être <a href="%s">incrit </a>, <a target="_blank" href="%s">générez une clé FlagShip ici </a>."
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Offer standard rates"
+msgstr "Offrir des tarifs standard"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Offer express rates"
+msgstr "Offrir des tarifs express"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Only show the cheapest rate"
+msgstr "Afficher uniquement le tarif le moins cher"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Shipping cost markup"
+msgstr "Marge sur le cout d'expédition"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Shipping cost markup"
+msgstr "Marge sur le cout d'expédition"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Shipping cost markup in percentage"
+msgstr "Marge sur le cout d'expédition en pourcentage"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Obtains real time shipping rates from FlagShip"
+msgstr "Obtient les tarifs d'expédition en temps réel de FlagShip"

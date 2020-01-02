@@ -1,15 +1,18 @@
 <?php
 /**
- * Plugin Name: Flagship
- * Plugin URI: https://www.flagshipcompany.com
- * Description: Woocommerce plugin for flagship.
+ * Plugin Name: FlagShip WooCommerce Extension
+ * Plugin URI: https://source.smartship.io/flagshipcompany/flagship-for-woocommerce-2
+ * Description: Obtain real time shipping rates via FlagShip Shipping API.
  * Version: 1.0.0
- * Author: Flagship
+ * Author: FlagShip Courier Solutions
  * Author URI: https://www.flagshipcompany.com
- * Text Domain: Flagship
- * Domain Path: /i18n/languages/
- *
- * @package WooCommerce
+ * Text Domain: flagship-woocommerce-extension
+ * Domain Path: /languages/
+ * Requires PHP: 7.1
+ * Requires at least: 4.6
+ * Tested up to: 5.3
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.8.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -19,7 +22,7 @@ if (!defined('WC_FLAGSHIP_ID')){
 }
 
 if (!defined('FLAGSHIP_DEBUG_MODE')){
-	define("FLAGSHIP_DEBUG_MODE", true);
+	define("FLAGSHIP_DEBUG_MODE", false);
 }
 
 if (!defined('FLAGSHIP_PLUGIN_NAME')){
@@ -38,4 +41,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 	}
 
 	$GLOBALS['flagship-woocommerce-shipping'] = flagshipWoocommerceShipping();
+
+	load_plugin_textdomain( 'flagship-woocommerce-extension', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }

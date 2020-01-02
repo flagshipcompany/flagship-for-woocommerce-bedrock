@@ -21,7 +21,7 @@ class Order_Action_Processor {
             return;
         }
 
-        add_meta_box( 'flagship_shipping', __('FlagShip Shipping','flagship'), array($this, 'addFlagshipMetaBox'), 'shop_order', 'side', 'core' );
+        add_meta_box( 'flagship_shipping', __('FlagShip Shipping','flagship-woocommerce-extension'), array($this, 'addFlagshipMetaBox'), 'shop_order', 'side', 'core' );
     }
 
     public function addFlagshipMetaBox($post)
