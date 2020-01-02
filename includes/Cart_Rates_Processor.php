@@ -2,11 +2,25 @@
 class Cart_Rates_Processor {
     private $methodId;
 
+    private $token;
+
     private $instanceSettings;
 
-    public function __construct($methodId, $instanceSettings) {
+    public function __construct($methodId, $token, $instanceSettings) {
         $this->methodId = $methodId;
+        $this->token = $token;
         $this->instanceSettings = $instanceSettings;
+    }
+
+    public function fetchRates($package)
+    {
+        $ratesRequest = new Rates_Request($this->token);
+        $rates = $ratesRequest->getRates($package);
+
+        $eCommerceRequest = new ECommerce_Request($this->token);
+        $eCommerceRates = $eCommerceRequest->getRates($package);
+
+        return array_merge($eCommerceRates->all(), $rates->all());
     }
 
     public function processRates($rates)
@@ -16,8 +30,10 @@ class Cart_Rates_Processor {
         }
 
         $filteredRates = $this->filterRates($rates);
+        $cartRates = array_map(array($this, 'makeCartRate'), $filteredRates);
+        usort($cartRates, array($this, 'sortRates'));
 
-        return array_map(array($this, 'makeCartRate'), $filteredRates);
+        return $cartRates;
     }
 
     protected function filterRates($rates)
@@ -71,6 +87,15 @@ class Cart_Rates_Processor {
         }
 
         return $included;       
+    }
+
+    protected function sortRates($a, $b)
+    {
+        if ($a['cost'] == $b['cost']) {
+            return 0;
+        }
+
+        return ($a['cost'] < $b['cost']) ? -1 : 1;
     }
 
     protected function findCheapest($rates)

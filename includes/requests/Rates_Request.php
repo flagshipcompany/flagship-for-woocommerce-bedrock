@@ -13,9 +13,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     public function getRates($package)
     {
-    	$storeAddress = $this->getStoreAddress();
-
-        $apiRequest = $this->makeApiRequest($storeAddress, $package);
+        $apiRequest = $this->makeApiRequest($package);
     	$apiClient = new Flagship($this->token, $this->apiUrl);
 
     	try{
@@ -29,8 +27,9 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 		return $rates;
     }
 
-    protected function makeApiRequest($storeAddress, $package)
+    protected function makeApiRequest($package)
     {
+        $storeAddress = $this->getStoreAddress();
         $destinationAddress = $this->getDestinationAddress($package['destination'], $this->requiredAddressFields);
         $packages = $this->makePackages($package);
 

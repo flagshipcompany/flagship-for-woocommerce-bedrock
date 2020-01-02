@@ -56,3 +56,27 @@ msgstr "Marge sur le cout d'expédition en pourcentage"
 #: includes/WC_Flagship_Shipping_Method.php
 msgid "Obtains real time shipping rates from FlagShip"
 msgstr "Obtient les tarifs d'expédition en temps réel de FlagShip"
+
+#: includes/Order_Action_Processor.php
+msgid "FlagShip eCommerce Shipping"
+msgstr "Expédition FlagShip pour eCommerce"
+
+#: includes/Order_Action_Processor.php
+msgid "This order has already been exported to FlagShip"
+msgstr "Cette commande a déjà été exportée vers FlagShip"
+
+#: includes/Order_Action_Processor.php
+msgid "Export to FlagShip"
+msgstr "Exporter vers FlagShip"
+
+#: includes/Order_Action_Processor.php
+msgid "This order was fulfilled with our DHL Ecommerce service. This order will need to be bundled together in a bundled shipment in order to be fulfilled by the courier"
+msgstr "Cette commande a été exécutée avec notre service de DHL Ecommerce. Cette commande devra être regroupée dans un envoi groupé afin d'être exécutée par le service de messagerie"
+
+#: includes/Order_Action_Processor.php
+msgid "For more information about our DHL Ecommerce service"
+msgstr "Pour plus d'informations sur notre service de commerce DHL Ecommerce"
+
+#: includes/Order_Action_Processor.php
+msgid "Click here"
+msgstr "Cliquez ici"

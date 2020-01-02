@@ -56,10 +56,11 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
     		return;
     	}
 
-    	$apiRequest = new Rates_Request($this->token);
-    	$rates = $apiRequest->getRates($package);
-        $ratesProcessor = new Cart_Rates_Processor($this->id, $this->instance_settings);
-        $cartRates = $ratesProcessor->processRates($rates->all());
+    	// $apiRequest = new Rates_Request($this->token);
+    	// $rates = $apiRequest->getRates($package);
+        $ratesProcessor = new Cart_Rates_Processor($this->id, $this->token, $this->instance_settings);
+        $rates = $ratesProcessor->fetchRates($package);
+        $cartRates = $ratesProcessor->processRates($rates);
 
         foreach ($cartRates as $key => $rate) {
             $this->add_rate($rate);

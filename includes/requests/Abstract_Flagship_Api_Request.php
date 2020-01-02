@@ -97,7 +97,7 @@ abstract class Abstract_Flagship_Api_Request {
 
         foreach ( $orderItems as $item_id => $productItem ) { 
             $product = $productItem['product'];
-            $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), $unit, 'lbs')) : 1;
+            $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), 'lbs', $unit)) : 1;
             $totalWeight += $weight*$productItem['quantity'];
             $productDescriptions[] = $product->get_short_description();
         }

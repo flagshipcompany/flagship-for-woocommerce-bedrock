@@ -69,8 +69,14 @@ class FlagshipWoocommerceShipping {
     public function add_custom_meta_box() {
     	global $post;
 
-    	$orderActionProcessor = $this->init_order_action_processor(wc_get_order($post->ID));
-    	$orderActionProcessor->addMetaBox();
+    	$order = wc_get_order($post->ID);
+
+    	if (!$order) {
+    		return;
+    	}
+
+    	$orderActionProcessor = $this->init_order_action_processor($order);
+    	$orderActionProcessor->addMetaBoxes($order);
     }
 
 	public function include_method_classes()
@@ -78,6 +84,7 @@ class FlagshipWoocommerceShipping {
 		include_once('WC_Flagship_Shipping_Method.php');
 		include_once('requests/Abstract_Flagship_Api_Request.php');
 		include_once('requests/Rates_Request.php');
+		include_once('requests/ECommerce_Request.php');
 		include_once('Cart_Rates_Processor.php');
 	}
 
@@ -88,15 +95,9 @@ class FlagshipWoocommerceShipping {
 		include_once('Order_Action_Processor.php');
 	}
 
-	protected function init_order_action_processor($order = null)
+	protected function init_order_action_processor($order)
 	{
-		$this->include_admin_classes();
-
-		if (!$order) {
-			global $theorder;
-			$order = $theorder;		
-		}
-        
+		$this->include_admin_classes();        
         $settings = get_option(self::getSettingsOptionKey());
 
         return new Order_Action_Processor($order, $settings);
