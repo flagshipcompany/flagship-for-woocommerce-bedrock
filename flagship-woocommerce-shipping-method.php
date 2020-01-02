@@ -22,7 +22,7 @@ if (!defined('WC_FLAGSHIP_ID')){
 }
 
 if (!defined('FLAGSHIP_DEBUG_MODE')){
-	define("FLAGSHIP_DEBUG_MODE", true);
+	define("FLAGSHIP_DEBUG_MODE", false);
 }
 
 if (!defined('FLAGSHIP_PLUGIN_NAME')){

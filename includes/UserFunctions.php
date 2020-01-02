@@ -1,7 +1,7 @@
 <?php
 //Edit this constant to set log path
 if (!defined('FLAGSHIP_LOG_PATH')){
-    define("FLAGSHIP_LOG_PATH", '/home/lu/Desktop');
+    define("FLAGSHIP_LOG_PATH", '/home/goku/Desktop');
 }
 
 if (!function_exists('console')) {
