@@ -38,6 +38,10 @@ msgid "Offer express rates"
 msgstr "Offrir des tarifs express"
 
 #: includes/WC_Flagship_Shipping_Method.php
+msgid "Offer DHL ecommerce rates"
+msgstr "Offrir des tarifs de DHL ecommerce"
+
+#: includes/WC_Flagship_Shipping_Method.php
 msgid "Only show the cheapest rate"
 msgstr "Afficher uniquement le tarif le moins cher"
 
@@ -75,7 +79,7 @@ msgstr "Cette commande a été exécutée avec notre service de DHL Ecommerce. C
 
 #: includes/Order_Action_Processor.php
 msgid "For more information about our DHL Ecommerce service"
-msgstr "Pour plus d'informations sur notre service de commerce DHL Ecommerce"
+msgstr "Pour plus d'informations sur notre service de DHL Ecommerce"
 
 #: includes/Order_Action_Processor.php
 msgid "Click here"

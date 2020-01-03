@@ -5,7 +5,7 @@ use Flagship\Shipping\Collections\RatesCollection;
 
 class ECommerce_Request extends Rates_Request {
     public static $maxWeight = 2000; // in gram
-    
+
     public function getRates($package)
     {
         $apiRequest = $this->makeApiRequest($package);

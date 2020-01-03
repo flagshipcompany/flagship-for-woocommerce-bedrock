@@ -90,23 +90,27 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
     }
 
     protected function makeInstanceFields() {
-        return array(
+        $ecommerceApplicable = $this->isInstanceForEcommerce(WC_Shipping_Zones::get_zone_by( 'instance_id', $this->instance_id)->get_zone_locations());
+
+        $fields = array(
             'offer_standard_rates' => array(
                 'title' => __('Offer standard rates', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
-                'description' => __( 'Offer standard rates', 'flagship-woocommerce-extension'),
                 'default' => 'yes'
             ),
             'offer_express_rates' => array(
                 'title' => __('Offer express rates', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
-                'description' => __( 'Offer express rates', 'flagship-woocommerce-extension'),
                 'default' => 'yes'
+            ),
+            'offer_dhl_ecommerce_rates' => array(
+                'title' => __('Offer DHL ecommerce rates', 'flagship-woocommerce-extension'),
+                'type' => 'checkbox',
+                'default' => 'no'
             ),
             'only_show_cheapest' => array(
                 'title' => __('Only show the cheapest rate', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
-                'description' => __( 'Only show the cheapest rate', 'flagship-woocommerce-extension'),
                 'default' => 'no'
             ),
             'shipping_cost_markup' => array(
@@ -116,5 +120,35 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
                 'default' => 0
             ),
         );
+
+        if (!$ecommerceApplicable) {
+            unset($fields['offer_dhl_ecommerce_rates']);
+        }
+
+        return $fields;
+    }
+
+    protected function isInstanceForEcommerce($locations)
+    {
+        if (empty($locations)) {
+            return true;
+        }
+
+        $location = reset($locations);
+        $locationType = $location->type;
+
+        switch ($locationType) {
+            case 'country':
+                $country = $location->code;
+                break;
+            case 'state':
+                $country = explode(':', $location->code)[0];
+                break;            
+            default:
+                $country = null;
+                break;
+        }
+
+        return $country != 'CA';
     }
 }
