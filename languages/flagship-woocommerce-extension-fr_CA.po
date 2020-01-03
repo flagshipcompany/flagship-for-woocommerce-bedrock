@@ -42,6 +42,10 @@ msgid "Offer DHL ecommerce rates"
 msgstr "Offrir des tarifs de DHL ecommerce"
 
 #: includes/WC_Flagship_Shipping_Method.php
+msgid "Available for international destinations when package is less than 2kg"
+msgstr "Disponible pour les destinations internationales lorsque le poids du colis est inférieur à 2 kg"
+
+#: includes/WC_Flagship_Shipping_Method.php
 msgid "Only show the cheapest rate"
 msgstr "Afficher uniquement le tarif le moins cher"
 
@@ -50,8 +54,8 @@ msgid "Shipping cost markup"
 msgstr "Marge sur le cout d'expédition"
 
 #: includes/WC_Flagship_Shipping_Method.php
-msgid "Shipping cost markup"
-msgstr "Marge sur le cout d'expédition"
+msgid "Shipping cost markup (%)"
+msgstr "Marge sur le cout d'expédition (%)"
 
 #: includes/WC_Flagship_Shipping_Method.php
 msgid "Shipping cost markup in percentage"

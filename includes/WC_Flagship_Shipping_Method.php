@@ -106,6 +106,7 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
             'offer_dhl_ecommerce_rates' => array(
                 'title' => __('Offer DHL ecommerce rates', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
+                'description' => __( 'Available for international destinations when package is less than 2kg', 'flagship-woocommerce-extension'),
                 'default' => 'no'
             ),
             'only_show_cheapest' => array(
@@ -114,7 +115,7 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
                 'default' => 'no'
             ),
             'shipping_cost_markup' => array(
-                'title' => __('Shipping cost markup', 'flagship-woocommerce-extension'),
+                'title' => __('Shipping cost markup (%)', 'flagship-woocommerce-extension'),
                 'type' => 'decimal',
                 'description' => __( 'Shipping cost markup in percentage', 'flagship-woocommerce-extension'),
                 'default' => 0
