@@ -13,6 +13,8 @@ class Order_Action_Processor {
 
     private $pluginSettings;
 
+    private $errorMessages = array();
+
     public function __construct($order, $pluginSettings) 
     {
         $this->order = $order;
@@ -59,7 +61,32 @@ class Order_Action_Processor {
             return;
         }
 
-        $this->exportOrder();
+        try{
+            $this->exportOrder();
+        }
+        catch(\Exception $e){
+            $this->setErrorMessages(__('Order not exported to FlagShip').': '.$e->getMessage());
+            add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));          
+        }
+
+        return $result;
+    }
+
+    public function order_custom_warning_filter($location)
+    {
+        $warning = array_pop($this->errorMessages);
+        $location = add_query_arg(array('flagship_warning' => $warning), $location);
+
+        return $location;
+    }
+
+    protected function setErrorMessages($message, $clearOldMessages = true)
+    {
+        if ($clearOldMessages) {
+            $this->errorMessages = array();            
+        }
+
+        $this->errorMessages[] = $message;
     }
 
     protected function getShipmentIdFromOrder($orderId)

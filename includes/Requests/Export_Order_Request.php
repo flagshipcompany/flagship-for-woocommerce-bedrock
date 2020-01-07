@@ -20,14 +20,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $apiRequest = $this->makeApiRequest($storeAddress, $order);
         $apiClient = new Flagship($this->token, $this->apiUrl);
 
-        try{
-            $result = $apiClient->prepareShipmentRequest($apiRequest)->execute();
-        }
-        catch(\Exception $e){
-            $result = false;          
-        }
-
-        return $result;
+        return $apiClient->prepareShipmentRequest($apiRequest)->execute();
     }
 
     public function isOrderShippingAddressValid($order)

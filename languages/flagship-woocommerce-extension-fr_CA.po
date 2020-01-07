@@ -88,3 +88,7 @@ msgstr "Pour plus d'informations sur notre service de DHL Ecommerce"
 #: includes/Order_Action_Processor.php
 msgid "Click here"
 msgstr "Cliquez ici"
+
+#: includes/Order_Action_Processor.php
+msgid "Order not exported to FlagShip"
+msgstr "Commande non exportée vers FlagShip"
