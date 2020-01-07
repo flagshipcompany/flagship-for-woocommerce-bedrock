@@ -1,0 +1,10 @@
+{
+	"name": "flagshipcompany/flagship-for-woocommerce-2",
+	"description": "Obtain real time shipping rates via FlagShip Shipping API",
+	"type": "wordpress-plugin",
+	"license": "Apache License 2.0",
+	"require": {
+		"php": ">=7.1",
+		"flagshipcompany/flagship-api-sdk": "^1.1"
+	}
+}
