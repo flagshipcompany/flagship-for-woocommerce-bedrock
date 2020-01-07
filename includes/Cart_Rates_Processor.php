@@ -112,7 +112,7 @@ class Cart_Rates_Processor {
 
         while ($nextRate = array_shift($rates)) {
             if ($nextRate->getTotal() < $cheapest->getTotal()) {
-                $cheapest = $cheapest;
+                $cheapest = $nextRate;
             }
         }
 

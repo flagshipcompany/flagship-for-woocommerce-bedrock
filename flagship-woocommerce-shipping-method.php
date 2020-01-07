@@ -18,7 +18,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if (!defined('WC_FLAGSHIP_ID')){
-	define("WC_FLAGSHIP_ID", "wc_flagship_shipping");
+	define("WC_FLAGSHIP_ID", "flagship");
 }
 
 if (!defined('FLAGSHIP_DEBUG_MODE')){
