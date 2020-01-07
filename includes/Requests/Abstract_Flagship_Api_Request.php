@@ -1,4 +1,5 @@
 <?php
+namespace FlagshipWoocommerce\Requests;
 
 abstract class Abstract_Flagship_Api_Request {
 

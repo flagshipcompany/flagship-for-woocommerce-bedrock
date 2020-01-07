@@ -1,4 +1,8 @@
 <?php
+namespace FlagshipWoocommerce;
+
+use FlagshipWoocommerce\Requests\Export_Order_Request;
+
 class Order_Action_Processor {
 
     public static $shipmentIdField = 'wc_flagship_shipment_id';

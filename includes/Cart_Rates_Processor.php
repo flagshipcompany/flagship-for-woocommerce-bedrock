@@ -1,4 +1,9 @@
 <?php
+namespace FlagshipWoocommerce;
+
+use FlagshipWoocommerce\Requests\Rates_Request;
+use FlagshipWoocommerce\Requests\ECommerce_Request;
+
 class Cart_Rates_Processor {
     private $methodId;
 

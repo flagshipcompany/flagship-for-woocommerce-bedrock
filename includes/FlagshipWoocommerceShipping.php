@@ -1,4 +1,6 @@
 <?php
+namespace FlagshipWoocommerce;
+
 class FlagshipWoocommerceShipping {
 	
 	protected static $_instance = null;
@@ -25,8 +27,7 @@ class FlagshipWoocommerceShipping {
 
 		    return;
 		}
-
-	    add_action( 'woocommerce_shipping_init', array($this, 'include_method_classes'));	 
+	 
 	    add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
 	    add_filter( 'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ) );
 	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
@@ -61,7 +62,7 @@ class FlagshipWoocommerceShipping {
 	}
 	
 	public function add_flagship_shipping_method($methods) {
-		$methods[WC_FLAGSHIP_ID] = 'WC_Flagship_Shipping_Method';
+		$methods[WC_FLAGSHIP_ID] = new WC_Flagship_Shipping_Method();
 
 		return $methods;
 	}
@@ -79,25 +80,8 @@ class FlagshipWoocommerceShipping {
     	$orderActionProcessor->addMetaBoxes($order);
     }
 
-	public function include_method_classes()
-	{
-		include_once('WC_Flagship_Shipping_Method.php');
-		include_once('requests/Abstract_Flagship_Api_Request.php');
-		include_once('requests/Rates_Request.php');
-		include_once('requests/ECommerce_Request.php');
-		include_once('Cart_Rates_Processor.php');
-	}
-
-	public function include_admin_classes()
-	{
-		include_once('requests/Abstract_Flagship_Api_Request.php');
-		include_once('requests/Export_Order_Request.php');
-		include_once('Order_Action_Processor.php');
-	}
-
 	protected function init_order_action_processor($order)
-	{
-		$this->include_admin_classes();        
+	{      
         $settings = get_option(self::getSettingsOptionKey());
 
         return new Order_Action_Processor($order, $settings);

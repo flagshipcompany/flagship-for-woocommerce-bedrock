@@ -29,18 +29,21 @@ if (!defined('FLAGSHIP_PLUGIN_NAME')){
 	define("FLAGSHIP_PLUGIN_NAME", plugin_basename( __FILE__ ));
 }
 
-if (!class_exists( 'FlagshipWoocommerceShipping', false)) {
-	include_once dirname( __FILE__ ) . '/includes/FlagshipWoocommerceShipping.php';
-	include_once dirname( __FILE__ ) . '/includes/UserFunctions.php';
-}
-
 if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option('active_plugins')))) {
-	
-	function flagshipWoocommerceShipping() {
-		return FlagshipWoocommerceShipping::instance();
-	}
 
-	$GLOBALS['flagship-woocommerce-shipping'] = flagshipWoocommerceShipping();
+	include_once dirname( __FILE__ ) . '/includes/UserFunctions.php';
+
+	spl_autoload_register(function ($class) {
+		$nameSpace = 'FlagshipWoocommerce\\';
+
+		if (strncmp($nameSpace, $class, strlen($nameSpace)) === 0) {
+			$relativeClass = substr($class, strlen($nameSpace));
+			$filePath = str_replace('\\', '/', $relativeClass);
+			include_once('includes/' . $filePath . '.php');
+		}
+	});
+
+	$GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerce\FlagshipWoocommerceShipping::instance();
 
 	load_plugin_textdomain( 'flagship-woocommerce-extension', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }

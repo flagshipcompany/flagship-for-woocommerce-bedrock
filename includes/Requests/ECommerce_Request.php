@@ -1,4 +1,5 @@
 <?php
+namespace FlagshipWoocommerce\Requests;
 
 use Flagship\Shipping\Flagship;
 use Flagship\Shipping\Collections\RatesCollection;

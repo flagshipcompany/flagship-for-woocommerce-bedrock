@@ -1,4 +1,5 @@
 <?php
+namespace FlagshipWoocommerce\Requests;
 
 use Flagship\Shipping\Flagship;
 use Flagship\Shipping\Collections\RatesCollection;
@@ -19,7 +20,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
     	try{
 		    $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
 		}
-		catch(Exception $e){
+		catch(\Exception $e){
 			$this->debug($e->getMessage(), 'error');
 			$rates = new RatesCollection();
 		}

@@ -1,5 +1,7 @@
 <?php
-class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
+namespace FlagshipWoocommerce;
+
+class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     
 	private $token;
 
@@ -90,7 +92,7 @@ class WC_Flagship_Shipping_Method extends WC_Shipping_Method {
     }
 
     protected function makeInstanceFields() {
-        $ecommerceApplicable = $this->isInstanceForEcommerce(WC_Shipping_Zones::get_zone_by( 'instance_id', $this->instance_id)->get_zone_locations());
+        $ecommerceApplicable = $this->isInstanceForEcommerce(\WC_Shipping_Zones::get_zone_by( 'instance_id', $this->instance_id)->get_zone_locations());
 
         $fields = array(
             'offer_standard_rates' => array(

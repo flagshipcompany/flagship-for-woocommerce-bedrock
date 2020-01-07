@@ -1,4 +1,5 @@
 <?php
+namespace FlagshipWoocommerce\Requests;
 
 use Flagship\Shipping\Flagship;
 
@@ -22,12 +23,8 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         try{
             $result = $apiClient->prepareShipmentRequest($apiRequest)->execute();
         }
-        catch(Exception $e){
-            $result = false;
-
-            if (FLAGSHIP_DEBUG_MODE == true) {
-                $order->add_order_note($e->getMessage());
-            }            
+        catch(\Exception $e){
+            $result = false;          
         }
 
         return $result;
