@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: FlagShip WooCommerce Extension
- * Plugin URI: https://source.smartship.io/flagshipcompany/flagship-for-woocommerce-2
+ * Plugin URI: https://github.com/flagshipcompany/flagship-for-woocommerce-bedrock.git
  * Description: Obtain real time shipping rates via FlagShip Shipping API.
  * Version: 1.0.0
  * Author: FlagShip Courier Solutions
