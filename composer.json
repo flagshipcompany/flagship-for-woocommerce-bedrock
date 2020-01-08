@@ -1,6 +1,6 @@
 {
 	"name": "flagshipcompany/flagship-for-woocommerce-bedrock",
-	"description": "Obtain real time shipping rates via FlagShip Shipping API",
+	"description": "A WordPress plugin that obtains real time FlagShip shipping rates for WooCommerce",
 	"type": "wordpress-plugin",
 	"license": "MIT",
 	"keywords": ["flagship","wordpress", "woocommerce", "shipping"],
