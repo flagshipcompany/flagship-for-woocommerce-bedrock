@@ -79,7 +79,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'enabled' => array(
                 'title' => __('Enable', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
-                'description' => __( 'Enable this shipping method.', 'flagship-woocommerce-extension'),
+                'description' => __( 'Enable this shipping method', 'flagship-woocommerce-extension'),
                 'default' => 'no'
             ),
             'token' => array(
@@ -89,7 +89,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             ),
             'debug_mode' => array(
                 'title' => __('Debug mode', 'flagship-woocommerce-extension'),
-                'label' => __( 'Enable debug mode', 'flexible-shipping-ups' ),
+                'label' => __( 'Enable debug mode', 'flagship-woocommerce-extension' ),
                 'type' => 'checkbox',
                 'default' => 'no'
             ),

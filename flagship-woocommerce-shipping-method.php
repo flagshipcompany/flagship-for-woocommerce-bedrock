@@ -45,5 +45,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 
 	$GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerce\FlagshipWoocommerceShipping::instance();
 
-	load_plugin_textdomain( 'flagship-woocommerce-extension', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	if (dirname(dirname( __FILE__ )) == WPMU_PLUGIN_DIR) {
+		load_muplugin_textdomain( 'flagship-woocommerce-extension', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}  else {
+		load_plugin_textdomain( 'flagship-woocommerce-extension', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
 }
