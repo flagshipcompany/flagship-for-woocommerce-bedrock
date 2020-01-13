@@ -19,11 +19,12 @@ class Cart_Rates_Processor {
 
     public function fetchRates($package)
     {
-        $ratesRequest = new Rates_Request($this->token);
+        $debugMode = get_array_value($this->instanceSettings, 'debug_mode', 'no') == 'yes';
+        $ratesRequest = new Rates_Request($this->token, $debugMode);
         $rates = $ratesRequest->getRates($package)->all();
 
         if (get_array_value($this->instanceSettings, 'offer_dhl_ecommerce_rates', null) == 'yes') {
-            $eCommerceRequest = new ECommerce_Request($this->token);
+            $eCommerceRequest = new ECommerce_Request($this->token, $debugMode);
             $eCommerceRates = $eCommerceRequest->getRates($package)->all();
             $rates = array_merge($eCommerceRates, $rates);
         }

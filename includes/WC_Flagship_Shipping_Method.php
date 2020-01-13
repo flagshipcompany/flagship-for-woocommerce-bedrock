@@ -58,9 +58,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     		return;
     	}
 
-    	// $apiRequest = new Rates_Request($this->token);
-    	// $rates = $apiRequest->getRates($package);
-        $ratesProcessor = new Cart_Rates_Processor($this->id, $this->token, $this->instance_settings);
+        $ratesProcessor = new Cart_Rates_Processor($this->id, $this->token, array_merge($this->instance_settings, array('debug_mode' => $this->debugMode)));
         $rates = $ratesProcessor->fetchRates($package);
         $cartRates = $ratesProcessor->processRates($rates);
 
@@ -73,6 +71,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     	$this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->get_option('title', __('FlagShip Shipping', 'flagship-woocommerce-extension'));
         $this->token = $this->get_option('token', '');
+        $this->debugMode = $this->get_option('debug_mode', 'no');
     }
 
     protected function makeGeneralFields() {
@@ -87,6 +86,12 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'title' => __('FlagShip access token', 'flagship-woocommerce-extension'),
                 'type' => 'text',
                 'description' => sprintf(__('After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-woocommerce-extension'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
+            ),
+            'debug_mode' => array(
+                'title' => __('Debug mode', 'flagship-woocommerce-extension'),
+                'label' => __( 'Enable debug mode', 'flexible-shipping-ups' ),
+                'type' => 'checkbox',
+                'default' => 'no'
             ),
         );
     }

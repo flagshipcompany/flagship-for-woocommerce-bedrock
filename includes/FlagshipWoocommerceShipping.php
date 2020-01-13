@@ -27,13 +27,17 @@ class FlagshipWoocommerceShipping {
 
 		    return;
 		}
-	 
-	    add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
+
+		$this->hooks();			
+	}
+
+	public function hooks() {
+		add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
 	    add_filter( 'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ) );
 	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
 	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box'));
-	    add_action('admin_notices', array($this, 'flagship_warning_in_notice'));			
-	}       
+	    add_action('admin_notices', array($this, 'flagship_warning_in_notice'));
+	}   
 
 	public function showSdkNotice() {
 		add_action( 'admin_notices', array($this, 'add_flagship_sdk_missing_notice'));

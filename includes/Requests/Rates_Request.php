@@ -6,10 +6,13 @@ use Flagship\Shipping\Collections\RatesCollection;
 
 class Rates_Request extends Abstract_Flagship_Api_Request {
 
-    public function __construct($token)
+    protected $debugMode = false;
+    
+    public function __construct($token, $debugMode = false)
     {
     	$this->token = $token;
     	$this->apiUrl = $this->getApiUrl();
+        $this->debugMode = $debugMode;
     }
 
     public function getRates($package)
@@ -59,7 +62,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     protected function debug($message, $type = 'notice')
     {
-        if (FLAGSHIP_DEBUG_MODE == true) {
+        if (FLAGSHIP_DEBUG_MODE == true || $this->debugMode) {
             wc_add_notice($message, $type);
         }
     }
