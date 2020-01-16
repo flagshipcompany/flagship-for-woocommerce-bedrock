@@ -3,6 +3,16 @@ namespace FlagshipWoocommerce;
 
 class FlagshipWoocommerceShipping {
 	
+	public static $methodId = 'flagship_shipping_method';
+
+	public static $couriers = array(
+		'UPS' => 'ups',
+        'DHL' => 'dhl',
+        'FedEx' => 'fedex',
+        'Purolator' => 'purolator',
+        'Canpar' => 'canpar',
+	);
+
 	protected static $_instance = null;
 
 	public static function instance() {
@@ -13,22 +23,35 @@ class FlagshipWoocommerceShipping {
 		return self::$_instance;
 	}
 
+	public static function isDebugMode() {
+		return getenv('FLAGSHIP_DEBUG_MODE') === 'yes';
+	}
+
 	public static function getSettingsOptionKey() {
-		return 'woocommerce_'.WC_FLAGSHIP_ID.'_settings';
+		return 'woocommerce_'.self::$methodId.'_settings';
 	}
 
 	public static function getFlagshipUrl() {
-		return FLAGSHIP_DEBUG_MODE == true ? 'http://127.0.0.1:3001' : 'https://smartship-ng.flagshipcompany.com';
+		return self::isDebugMode() ? getenv('FLAGSHIP_URL') : 'https://smartship-ng.flagshipcompany.com';
 	}
 	
 	public function __construct() {
+		$this->handleThirdPartyLibraries();
+
+		$this->hooks();			
+	}
+
+	//Handle the scenario that the plugin is installed without composer require
+	public function handleThirdPartyLibraries() {
+		if (!class_exists('Flagship\Shipping\Flagship')) {
+			include_once realpath(dirname(__FILE__) . '/..'). '/vendor/autoload.php';
+		}
+
 		if (!class_exists('Flagship\Shipping\Flagship')) {
 			$this->showSdkNotice();
 
 		    return;
 		}
-
-		$this->hooks();			
 	}
 
 	public function hooks() {
@@ -65,7 +88,7 @@ class FlagshipWoocommerceShipping {
 	}
 
 	public function plugin_action_links($links) {
-		$settingsUrl = 'admin.php?page=wc-settings&tab=shipping&section='.WC_FLAGSHIP_ID;
+		$settingsUrl = 'admin.php?page=wc-settings&tab=shipping&section='.self::$methodId;
 		$plugin_links = array(
 			'<a href="' . admin_url($settingsUrl) . '">' . __( 'Settings', 'flagship-woocommerce-extension' ) . '</a>',
 		);
@@ -80,7 +103,7 @@ class FlagshipWoocommerceShipping {
 	}
 	
 	public function add_flagship_shipping_method($methods) {
-		$methods[WC_FLAGSHIP_ID] = new WC_Flagship_Shipping_Method();
+		$methods[self::$methodId] = new WC_Flagship_Shipping_Method();
 
 		return $methods;
 	}

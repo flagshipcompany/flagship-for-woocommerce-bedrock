@@ -42,6 +42,10 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
             'packages' => $packages
         );
 
+        if ($this->getOrderShippingMeta($order, 'signature_required') == 'yes') {
+            $request['options'] = ['signature_required' => true];
+        }
+
         return $request;
     }
 
@@ -68,6 +72,15 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         unset($fullAddress['last_name']);
         $fullAddress['phone'] = trim($order->get_address('billing')['phone']);
 
+        if ($this->getOrderShippingMeta($order, 'residential_receiver_address') == 'yes') {
+            $fullAddress['is_commercial'] = false;
+        }
+
         return $fullAddress;
+    }
+
+    protected function getOrderShippingMeta($order, $key)
+    {
+        return reset($order->get_items('shipping'))->get_meta($key);
     }
 }

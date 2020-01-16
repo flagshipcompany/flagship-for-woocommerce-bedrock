@@ -17,21 +17,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if (!defined('WC_FLAGSHIP_ID')){
-	define("WC_FLAGSHIP_ID", "flagship");
+if (file_exists(dirname( __FILE__ ) . '/env.php')) {
+ 	include_once dirname( __FILE__ ) . '/env.php';
 }
 
-if (!defined('FLAGSHIP_DEBUG_MODE')){
-	define("FLAGSHIP_DEBUG_MODE", false);
-}
+include_once dirname( __FILE__ ) . '/includes/UserFunctions.php';
 
 if (!defined('FLAGSHIP_PLUGIN_NAME')){
 	define("FLAGSHIP_PLUGIN_NAME", plugin_basename( __FILE__ ));
 }
 
 if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option('active_plugins')))) {
-
-	include_once dirname( __FILE__ ) . '/includes/UserFunctions.php';
 
 	spl_autoload_register(function ($class) {
 		$nameSpace = 'FlagshipWoocommerce\\';

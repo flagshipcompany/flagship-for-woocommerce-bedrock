@@ -5,7 +5,7 @@ use FlagshipWoocommerce\Requests\Export_Order_Request;
 
 class Order_Action_Processor {
 
-    public static $shipmentIdField = 'wc_flagship_shipment_id';
+    public static $shipmentIdField = 'flagship_shipping_shipment_id';
 
     public static $exportOrderActionName = 'export_to_flagship';
 

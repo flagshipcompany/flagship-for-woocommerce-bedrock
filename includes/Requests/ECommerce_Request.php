@@ -7,9 +7,9 @@ use Flagship\Shipping\Collections\RatesCollection;
 class ECommerce_Request extends Rates_Request {
     public static $maxWeight = 2000; // in gram
 
-    public function getRates($package)
+    public function getRates($package, $options = array())
     {
-        $apiRequest = $this->makeApiRequest($package);
+        $apiRequest = $this->makeApiRequest($package, $options);
 
         if (!$this->isRateAvailable($apiRequest)) {
             return new RatesCollection();
@@ -28,9 +28,9 @@ class ECommerce_Request extends Rates_Request {
 		return $rates;
     }
 
-    protected function makeApiRequest($package)
+    protected function makeApiRequest($package, $options = array())
     {
-        $request = parent::makeApiRequest($package);
+        $request = parent::makeApiRequest($package, $options);
         $request['packages']['items'][0]['weight'] = wc_get_weight($request['packages']['items'][0]['weight'], 'g', 'lbs');
         $request['packages']['units'] = 'metric';
 

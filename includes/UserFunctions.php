@@ -1,13 +1,11 @@
 <?php
-//Edit this constant to set log path
-if (!defined('FLAGSHIP_LOG_PATH')){
-    define("FLAGSHIP_LOG_PATH", '/home/gohan/Desktop');
-}
 
 if (!function_exists('console')) {
     function console($var)
     {
-        if (!FLAGSHIP_LOG_PATH) {
+        $logPath = getenv('FLAGSHIP_LOG_PATH');
+
+        if (!$logPath) {
             return;
         }
 
@@ -22,7 +20,7 @@ if (!function_exists('console')) {
         if (is_array($var)) {
             $text = json_encode($var, JSON_PRETTY_PRINT);
         }
-        file_put_contents(FLAGSHIP_LOG_PATH.'/data', date('Y-m-d H:i:s')."\t".print_r($t['file'].':'.$t['line']."\n".$text, 1)."\n", FILE_APPEND | LOCK_EX);
+        file_put_contents($logPath.'/data', date('Y-m-d H:i:s')."\t".print_r($t['file'].':'.$t['line']."\n".$text, 1)."\n", FILE_APPEND | LOCK_EX);
     }
 }
 

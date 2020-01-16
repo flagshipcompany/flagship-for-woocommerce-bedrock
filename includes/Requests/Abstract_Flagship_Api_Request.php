@@ -1,6 +1,8 @@
 <?php
 namespace FlagshipWoocommerce\Requests;
 
+use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+
 abstract class Abstract_Flagship_Api_Request {
 
 	private $token;
@@ -23,7 +25,7 @@ abstract class Abstract_Flagship_Api_Request {
 
     protected function getApiUrl()
     {
-    	return FLAGSHIP_DEBUG_MODE == true ? 'http://127.0.0.1:3002' : 'https://api.smartship.io';
+    	return FlagshipWoocommerceShipping::isDebugMode() ? getenv('FLAGSHIP_API_URL') : 'https://api.smartship.io';
     }
 
     protected function getStoreAddress($fullAddress = false)
@@ -77,12 +79,16 @@ abstract class Abstract_Flagship_Api_Request {
         return isset($destination[$alternativeName]) ? trim($destination[$alternativeName]) : '';
     }
 
-    protected function getDestinationAddress($destination, $addressFields)
+    protected function getDestinationAddress($destination, $addressFields, $options = array())
     {
         $destinationAddress = array();
 
         foreach ($addressFields as $key => $fieldName) {
             $destinationAddress[$fieldName] = $this->fillAddressField($destination, $fieldName);
+        }
+
+        if (isset($options['residential_receiver_address'])) {
+            $destinationAddress['is_commercial'] = false;
         }
 
         return $destinationAddress;
@@ -122,5 +128,16 @@ abstract class Abstract_Flagship_Api_Request {
             'units' => 'imperial',
             'type' => 'package',
         );
+    }
+
+    protected function makeShippingOptions($options)
+    {
+        $shippingOptions = array();
+
+        if (get_array_value($options, 'rsignature_required', false)) {
+            $shippingOptions['signature_required'] = true;
+        }
+
+        return $shippingOptions;
     }
 }

@@ -13,7 +13,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     public function __construct($instance_id = 0) {
         parent::__construct($instance_id);
 
-        $this->id = WC_FLAGSHIP_ID; 
+        $this->id = FlagshipWoocommerceShipping::$methodId; 
         $this->method_title = __('FlagShip Shipping', 'flagship-woocommerce-extension');  
         $this->method_description = __('Obtains real time shipping rates from FlagShip', 'flagship-woocommerce-extension');
         $this->supports = array(
@@ -100,12 +100,16 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         $ecommerceApplicable = $this->isInstanceForEcommerce(\WC_Shipping_Zones::get_zone_by( 'instance_id', $this->instance_id)->get_zone_locations());
 
         $fields = array(
-            'offer_standard_rates' => array(
+            'shipping_rates_configs' => array(
+                'title' => __('Rates', 'flagship-woocommerce-extension'),
+                'type' => 'title',
+            ),
+            'allow_standard_rates' => array(
                 'title' => __('Offer standard rates', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
                 'default' => 'yes'
             ),
-            'offer_express_rates' => array(
+            'allow_express_rates' => array(
                 'title' => __('Offer express rates', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
                 'default' => 'yes'
@@ -121,13 +125,51 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'type' => 'checkbox',
                 'default' => 'no'
             ),
-            'shipping_cost_markup' => array(
+            'shipping_markup' => array(
+                'title' => __('Markup', 'flagship-woocommerce-extension'),
+                'type' => 'title',
+                'description' => __('Store owner may apply additional fee for shipping.', 'flagship-woocommerce-extension'),
+            ),
+            'shipping_cost_markup_percentage' => array(
                 'title' => __('Shipping cost markup (%)', 'flagship-woocommerce-extension'),
                 'type' => 'decimal',
                 'description' => __( 'Shipping cost markup in percentage', 'flagship-woocommerce-extension'),
                 'default' => 0
             ),
+            'shipping_cost_markup_flat' => array(
+                'title' => __('Shipping cost markup in flat fee ($)', 'flagship-woocommerce-extension'),
+                'type' => 'decimal',
+                'description' => __( 'Shipping cost markup in flat fee (this will be applied after the percentage markup)', 'flagship-woocommerce-extension'),
+                'default' => 0
+            ),
+            'shipping_options' => array(
+                'title' => __('Shipping Options', 'flagship-woocommerce-extension'),
+                'type' => 'title',
+            ),
+            'show_transit_time' => array(
+                'title' => __('Show transit time in shopping cart', 'flagship-woocommerce-extension'),
+                'description' => __('If checked, the transit times of couriers will be shown', 'flagship-woocommerce-extension'),
+                'type' => 'checkbox',
+                'default' => 'no',
+            ),
+            'signature_required' => array(
+                'title' => __('Signature required on delivery', 'flagship-woocommerce-extension'),
+                'description' => __('If checked, all the shipments to this shipping zone will be signature required on delivery', 'flagship-woocommerce-extension'),
+                'type' => 'checkbox',
+                'default' => 'no',
+            ),
+            'residential_receiver_address' => array(
+                'title' => __('Residential receiver address', 'flagship-woocommerce-extension'),
+                'description' => __('If checked, all the receiver addresses in this shipping zone will be considered residential', 'flagship-woocommerce-extension'),
+                'type' => 'checkbox',
+                'default' => 'no',
+            ),
         );
+
+        $disableCourierOptions = $this->makeDisableCourierOptions(FlagshipWoocommerceShipping::$couriers, $ecommerceApplicable);
+        $fields = array_slice($fields, 0, 5, true) +
+           $disableCourierOptions +
+            array_slice($fields, 5, NULL, true);
 
         if (!$ecommerceApplicable) {
             unset($fields['offer_dhl_ecommerce_rates']);
@@ -158,5 +200,26 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         }
 
         return $country != 'CA';
+    }
+
+    protected function makeDisableCourierOptions($couriers, $isInternationalZone = false)
+    {
+        $disableCourierOptions = array();
+
+        if (!$isInternationalZone) {
+            unset($couriers['DHL']);
+        }
+
+        foreach ($couriers as $key => $value) {
+            $settingName = 'disable_courier_'.$value;
+            $settingLabel = sprintf(__('Disable %s rates', 'flagship-woocommerce-extension'), $key);
+            $disableCourierOptions[$settingName] = array(
+                'title' => __($settingLabel, 'flagship-woocommerce-extension'),
+                'type' => 'checkbox',
+                'default' => 'no',
+            );
+        }
+
+        return $disableCourierOptions;
     }
 }

@@ -3,6 +3,7 @@ namespace FlagshipWoocommerce\Requests;
 
 use Flagship\Shipping\Flagship;
 use Flagship\Shipping\Collections\RatesCollection;
+use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
 class Rates_Request extends Abstract_Flagship_Api_Request {
 
@@ -15,9 +16,9 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         $this->debugMode = $debugMode;
     }
 
-    public function getRates($package)
+    public function getRates($package, $options = array())
     {
-        $apiRequest = $this->makeApiRequest($package);
+        $apiRequest = $this->makeApiRequest($package, $options);
     	$apiClient = new Flagship($this->token, $this->apiUrl);
 
     	try{
@@ -31,17 +32,22 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 		return $rates;
     }
 
-    protected function makeApiRequest($package)
+    protected function makeApiRequest($package, $options = array())
     {
         $storeAddress = $this->getStoreAddress();
-        $destinationAddress = $this->getDestinationAddress($package['destination'], $this->requiredAddressFields);
+        $destinationAddress = $this->getDestinationAddress($package['destination'], $this->requiredAddressFields, $options);
         $packages = $this->makePackages($package);
+        $shippingOptions = $this->makeShippingOptions($options);
 
         $request = array(
             'from' => $storeAddress,
             'to' => $destinationAddress,
             'packages' => $packages
         );
+
+        if ($shippingOptions) {
+            $request['options'] = $shippingOptions;
+        }
 
         return $request;
     }
@@ -62,7 +68,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     protected function debug($message, $type = 'notice')
     {
-        if (FLAGSHIP_DEBUG_MODE == true || $this->debugMode) {
+        if (FlagshipWoocommerceShipping::isDebugMode() || $this->debugMode) {
             wc_add_notice($message, $type);
         }
     }

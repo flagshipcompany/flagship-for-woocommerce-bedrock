@@ -11,17 +11,20 @@ class Cart_Rates_Processor {
 
     private $instanceSettings;
 
+    private $rateOptions;
+
     public function __construct($methodId, $token, $instanceSettings) {
         $this->methodId = $methodId;
         $this->token = $token;
         $this->instanceSettings = $instanceSettings;
+        $this->rateOptions = $this->getRateOptions($this->instanceSettings);
     }
 
     public function fetchRates($package)
     {
         $debugMode = get_array_value($this->instanceSettings, 'debug_mode', 'no') == 'yes';
         $ratesRequest = new Rates_Request($this->token, $debugMode);
-        $rates = $ratesRequest->getRates($package)->all();
+        $rates = $ratesRequest->getRates($package, $this->rateOptions)->all();
 
         if (get_array_value($this->instanceSettings, 'offer_dhl_ecommerce_rates', null) == 'yes') {
             $eCommerceRequest = new ECommerce_Request($this->token, $debugMode);
@@ -45,9 +48,27 @@ class Cart_Rates_Processor {
         return $cartRates;
     }
 
+    protected function getRateOptions($instanceSettings)
+    {
+        $allowedFields = array('signature_required', 'residential_receiver_address');
+
+        $optionValues = array_map(function($val) use ($instanceSettings) {
+            if (get_array_value($instanceSettings, $val, 'no') == 'yes') {
+                return true;
+            }
+
+            return false;
+        }, $allowedFields);
+
+        $options = array_combine($allowedFields, $optionValues);
+
+        return  array_filter($options);
+    }
+
     protected function filterRates($rates)
     {        
-        $filteredRates = array_filter($rates, array($this, 'filterRate'));
+        $filteredRates = array_filter($rates, array($this, 'filterRateByServiceType'));
+        $filteredRates = array_filter($filteredRates, array($this, 'filterRateByCourier'));
 
         if ($this->isSettingChecked('only_show_cheapest', 'yes')) {
             $filteredRates = array($this->findCheapest($filteredRates));
@@ -58,10 +79,17 @@ class Cart_Rates_Processor {
 
     protected function makeCartRate($rate)
     {
+        $label =  $rate->getCourierName().' - '.$rate->getCourierDescription();
+
+        if (get_array_value($this->instanceSettings, 'show_transit_time', 'no') == 'yes') {
+            $label .= $this->makeTransitTimeText($rate->getDeliveryDate());
+        }
+
         $cartRate = array(
             'id' => $this->methodId.'|'.$rate->getCourierName().'|'.$rate->getServiceCode(),
-            'label' => $rate->getCourierName().' - '.$rate->getCourierDescription(),
+            'label' => $label,
             'cost' => $this->markupCost($rate->getSubtotal()),
+            'meta_data' => $this->convertOptionsToMeta($this->rateOptions),
         );
 
         return $cartRate;
@@ -69,16 +97,18 @@ class Cart_Rates_Processor {
 
     protected function markupCost($cost)
     {
-        if (!isset($this->instanceSettings['shipping_cost_markup']) || !$this->instanceSettings['shipping_cost_markup']) {
-            return $cost;
+        if (get_array_value($this->instanceSettings, 'shipping_cost_markup_percentage', 0)) {
+            $cost = round($cost * (1 + $this->instanceSettings['shipping_cost_markup_percentage']/100), 2);
         }
 
-        $markedUpCost = round($cost * (1 + $this->instanceSettings['shipping_cost_markup']/100), 2);
+        if (get_array_value($this->instanceSettings, 'shipping_cost_markup_flat', 0)) {
+            $cost = round($cost + $this->instanceSettings['shipping_cost_markup_flat'], 2);
+        }
 
-        return $markedUpCost;
+        return $cost;
     }
 
-    protected function filterRate($rate)
+    protected function filterRateByServiceType($rate)
     {        
         $included = true;
 
@@ -93,7 +123,23 @@ class Cart_Rates_Processor {
             if ($matches[1] && $this->isSettingChecked($setting, 'no')) {
                 $included = !($this->removeRateByCodeType($rate->getFlagshipCode(), $matches[1]));
             }
-        }
+        }        
+
+        return $included;       
+    }
+
+    protected function filterRateByCourier($rate)
+    {        
+        $included = true;
+        $couriers = FlagshipWoocommerceShipping::$couriers;
+
+        while ($included && $courier = array_shift($couriers)) {
+            $setting = 'disable_courier_'.$courier;
+
+            if ($this->isSettingChecked($setting, 'yes')) {
+                $included = $rate->getCourierName() != array_flip(FlagshipWoocommerceShipping::$couriers)[$courier];
+            }
+        }        
 
         return $included;       
     }
@@ -139,5 +185,27 @@ class Cart_Rates_Processor {
     protected function isSettingChecked($settingName, $checkedValue)
     {
         return isset($this->instanceSettings[$settingName]) && $this->instanceSettings[$settingName] == $checkedValue;
+    }
+
+    protected function convertOptionsToMeta($options)
+    {
+        return array_map(function($val) {
+            if (is_bool($val)) {
+                return $val ? 'yes' : 'no';
+            }
+
+            return $val;
+        }, $options);
+    }
+
+    protected function makeTransitTimeText($deliveryDate)
+    {
+        if (!$deliveryDate) {
+            return '';
+        }
+
+        $transitTime = ceil((strtotime($deliveryDate) - strtotime(date('Y-m-d')))/(24*60*60));
+        
+        return sprintf(' - (%s: %s %s)', __('Time in transit', 'flagship-woocommerce-extension'), $transitTime, _n("day", __("days", 'flagship-woocommerce-extension'), $transitTime, 'flagship-woocommerce-extension'));
     }
 }
