@@ -35,14 +35,19 @@ class Cart_Rates_Processor {
         return $rates;
     }
 
-    public function processRates($rates)
+    public function processRates($package, $rates)
     {
         if (count($rates) == 0) {
             return array();
         }
 
         $filteredRates = $this->filterRates($rates);
-        $cartRates = array_map(array($this, 'makeCartRate'), $filteredRates);
+        $cartRates = array();
+
+        foreach ($filteredRates as $key => $rate) {
+            $cartRates[$key] = $this->makeCartRate($rate, $package);
+        }
+
         usort($cartRates, array($this, 'sortRates'));
 
         return $cartRates;
@@ -77,7 +82,7 @@ class Cart_Rates_Processor {
         return $filteredRates;
     }
 
-    protected function makeCartRate($rate)
+    protected function makeCartRate($rate, $package)
     {
         $label =  $rate->getCourierName().' - '.$rate->getCourierDescription();
 
@@ -88,24 +93,68 @@ class Cart_Rates_Processor {
         $cartRate = array(
             'id' => $this->methodId.'|'.$rate->getCourierName().'|'.$rate->getServiceCode(),
             'label' => $label,
-            'cost' => $this->markupCost($rate->getSubtotal()),
+            'cost' => $this->markupCost($rate->getSubtotal(), $package),
             'meta_data' => $this->convertOptionsToMeta($this->rateOptions),
         );
 
         return $cartRate;
     }
 
-    protected function markupCost($cost)
+    protected function markupCost($cost, $package)
     {
         if (get_array_value($this->instanceSettings, 'shipping_cost_markup_percentage', 0)) {
-            $cost = round($cost * (1 + $this->instanceSettings['shipping_cost_markup_percentage']/100), 2);
+            $cost = $cost * (1 + $this->instanceSettings['shipping_cost_markup_percentage']/100);
         }
 
         if (get_array_value($this->instanceSettings, 'shipping_cost_markup_flat', 0)) {
-            $cost = round($cost + $this->instanceSettings['shipping_cost_markup_flat'], 2);
+            $cost = $cost + $this->instanceSettings['shipping_cost_markup_flat'];
+        }
+
+        $cost = $this->markupCostByShippingClass($cost, $package);
+
+        return wc_format_decimal($cost);
+    }
+
+    protected function markupCostByShippingClass($cost, $package)
+    {
+        $shipping_classes = WC()->shipping()->get_shipping_classes();
+
+        if (empty($shipping_classes)) {
+            return $cost;
+        }
+
+        $found_shipping_classes = $this->findShippingClasses($package);
+
+        foreach($found_shipping_classes as $shipping_class => $products) {
+            $shipping_class_term = get_term_by('slug', $shipping_class, 'product_shipping_class');
+            $class_cost_string = get_array_value($this->instanceSettings, 'class_cost_' . $shipping_class_term->term_id, '');
+
+            if ('' === $class_cost_string) {
+                continue;
+            }
+
+            $cost += floatval($class_cost_string);
         }
 
         return $cost;
+    }
+
+    protected function findShippingClasses($package) {
+        $found_shipping_classes = array();
+
+        foreach ($package['contents'] as $item_id => $values) {
+            if ($values['data']->needs_shipping()) {
+                $found_class = $values['data']->get_shipping_class();
+
+                if ( !isset( $found_shipping_classes[ $found_class ] ) ) {
+                    $found_shipping_classes[ $found_class ] = array();
+                }
+
+                $found_shipping_classes[ $found_class ][ $item_id ] = $values;
+            }
+        }
+
+        return $found_shipping_classes;
     }
 
     protected function filterRateByServiceType($rate)

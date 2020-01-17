@@ -60,7 +60,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
 
         $ratesProcessor = new Cart_Rates_Processor($this->id, $this->token, array_merge($this->instance_settings, array('debug_mode' => $this->debugMode)));
         $rates = $ratesProcessor->fetchRates($package);
-        $cartRates = $ratesProcessor->processRates($rates);
+        $cartRates = $ratesProcessor->processRates($package, $rates);
 
         foreach ($cartRates as $key => $rate) {
             $this->add_rate($rate);
@@ -175,7 +175,44 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             unset($fields['offer_dhl_ecommerce_rates']);
         }
 
+        $fields = array_merge($fields, $this->makeShippingClassSettings());
+
         return $fields;
+    }
+
+    protected function makeShippingClassSettings()
+    {
+        $settings = array();
+        $shipping_classes = WC()->shipping()->get_shipping_classes();
+
+        if (empty($shipping_classes)) {
+            return $settings;
+        }
+
+        $settings['class_costs'] = array(
+            'title'       => __( 'Shipping class costs', 'woocommerce' ),
+            'type'        => 'title',
+            'default'     => '',
+            'description' => sprintf( __( 'These costs can optionally be added based on the <a href="%s">product shipping class</a>.', 'woocommerce' ) . ' ' . __('It will charge shipping for each shipping class individually.', 'flagship-woocommerce-extension'),  admin_url( 'admin.php?page=wc-settings&tab=shipping&section=classes' ) ),
+        );
+
+        foreach ( $shipping_classes as $shipping_class ) {
+            if (!isset( $shipping_class->term_id)) {
+                continue;
+            }
+
+            $settings[ 'class_cost_' . $shipping_class->term_id ] = array(
+                'title'             => sprintf( __( '"%s" shipping class cost', 'woocommerce' ), esc_html( $shipping_class->name ) ),
+                'type'              => 'decimal',
+                'placeholder'       => __( 'N/A', 'woocommerce' ),
+                'description'       => 'shipping class cost',
+                'default'           => $this->get_option( 'class_cost_' . $shipping_class->slug ),
+                'desc_tip'          => true,
+                'sanitize_callback' => array( $this, 'sanitize_cost' ),
+            );
+        }
+
+        return $settings;
     }
 
     protected function isInstanceForEcommerce($locations)
