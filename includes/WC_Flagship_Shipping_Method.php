@@ -15,7 +15,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
 
         $this->id = FlagshipWoocommerceShipping::$methodId; 
         $this->method_title = __('FlagShip Shipping', 'flagship-woocommerce-extension');  
-        $this->method_description = __('Obtains real time shipping rates from FlagShip', 'flagship-woocommerce-extension');
+        $this->method_description = __('Obtain FlagShip shipping rates for orders and export order to FlagShip to dispatch shipment', 'flagship-woocommerce-extension');
         $this->supports = array(
             'shipping-zones',
             'instance-settings',
@@ -91,6 +91,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'title' => __('Debug mode', 'flagship-woocommerce-extension'),
                 'label' => __( 'Enable debug mode', 'flagship-woocommerce-extension' ),
                 'type' => 'checkbox',
+                'description' => __('If enabled, errors will be displayed in the pages showing shipping rates', 'flagship-woocommerce-extension'),
                 'default' => 'no'
             ),
         );
