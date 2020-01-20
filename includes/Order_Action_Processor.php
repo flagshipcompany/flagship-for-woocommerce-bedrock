@@ -2,6 +2,7 @@
 namespace FlagshipWoocommerce;
 
 use FlagshipWoocommerce\Requests\Export_Order_Request;
+use FlagshipWoocommerce\Requests\Get_Shipment_Request;
 
 class Order_Action_Processor {
 
@@ -45,8 +46,10 @@ class Order_Action_Processor {
         $shipmentId = $box['args'][0];
 
         if ($shipmentId) {
-            $shipmentUrl = sprintf('%s/shipping/%d/convert', FlagshipWoocommerceShipping::getFlagshipUrl(), $shipmentId);
+            $shipmentUrl = $this->makeShipmentUrl($shipmentId);
+        }
 
+        if (!empty($shipmentUrl)) {
             echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a></p>', __('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $shipmentUrl, $shipmentId);
 
             return;
@@ -102,16 +105,12 @@ class Order_Action_Processor {
 
     protected function exportOrder()
     {
-        $shipmentId = $this->getShipmentIdFromOrder($this->order->get_id());
-
-        if ($shipmentId) {
-            return;
+        if (!$this->getShipmentIdFromOrder($this->order->get_id())) {
+            throw new \Exception(__('Cannot find the FlagShip shipment id of this order', 'flagship-woocommerce-extension'));
         }
 
-        $token = isset($this->pluginSettings['token']) ? $this->pluginSettings['token'] : null;
-
-        if (!$token) {
-            return;
+        if (!get_array_value($this->pluginSettings, 'token')) {
+            throw new \Exception(__('FlagShip API token is missing', 'flagship-woocommerce-extension'));
         }
 
         $apiRequest = new Export_Order_Request($token);
@@ -131,5 +130,32 @@ class Order_Action_Processor {
         });
 
         return count($eCommerceRates) > 0;
+    }
+
+    protected function makeShipmentUrl($shipmentId)
+    {
+        $token = get_array_value($this->pluginSettings, 'token');
+
+        if (!$token) {
+            return;
+        }
+
+        $apiRequest = new Get_Shipment_Request($token);
+
+        try{
+            $shipment = $apiRequest->getShipmentById($shipmentId);
+        }
+        catch(\Exception $e){
+            return;         
+        }
+
+        $status = $shipment->getStatus();
+
+        if (in_array($status, array('dispatched', 
+            'manifested', 'cancelled'))) {
+            return sprintf('%s/shipping/%d/overview', FlagshipWoocommerceShipping::getFlagshipUrl(), $shipmentId);
+        }
+
+        return sprintf('%s/shipping/%d/convert', FlagshipWoocommerceShipping::getFlagshipUrl(), $shipmentId);
     }
 }
