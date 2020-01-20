@@ -34,6 +34,10 @@ msgid "Enable debug mode"
 msgstr "Activer le mode de débogage"
 
 #: includes/WC_Flagship_Shipping_Method.php
+msgid "If enabled, errors will be displayed in the pages showing shipping rates"
+msgstr "Si cette option est activée, des erreurs seront affichées dans les pages indiquant les tarifs d'expédition"
+
+#: includes/WC_Flagship_Shipping_Method.php
 msgid "After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>."
 msgstr "Après vous être <a href="%s">incrit </a>, <a target="_blank" href="%s">générez une clé FlagShip ici </a>."
 
@@ -70,8 +74,8 @@ msgid "Shipping cost markup in percentage"
 msgstr "Marge sur le cout d'expédition en pourcentage"
 
 #: includes/WC_Flagship_Shipping_Method.php
-msgid "Obtains real time shipping rates from FlagShip"
-msgstr "Obtient les tarifs d'expédition en temps réel de FlagShip"
+msgid "Obtain FlagShip shipping rates for orders and export order to FlagShip to dispatch shipment"
+msgstr "Obtenir les tarifs d'expédition FlagShip pour les commandes et exporter la commande vers FlagShip pour expédier l'expédition"
 
 #: includes/WC_Flagship_Shipping_Method.php
 msgid "Rates"
