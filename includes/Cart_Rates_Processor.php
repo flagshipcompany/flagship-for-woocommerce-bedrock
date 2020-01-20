@@ -50,7 +50,7 @@ class Cart_Rates_Processor {
 
         usort($cartRates, array($this, 'sortRates'));
 
-        return $cartRates;
+        return apply_filters('flagship_shipping_rates', $cartRates);
     }
 
     protected function getRateOptions($instanceSettings)
