@@ -55,6 +55,12 @@ class Order_Action_Processor {
             return;
         }
 
+        if ($shipmentId && empty($shipmentUrl)) {
+            echo '<p>Please check the FlagShip token.</p>';
+
+            return;
+        }
+
         echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="1">%s </button>', self::$exportOrderActionName, __('Export to FlagShip', 'flagship-woocommerce-extension'));
     }
 
@@ -105,11 +111,13 @@ class Order_Action_Processor {
 
     protected function exportOrder()
     {
-        if (!$this->getShipmentIdFromOrder($this->order->get_id())) {
-            throw new \Exception(__('Cannot find the FlagShip shipment id of this order', 'flagship-woocommerce-extension'));
+        if ($this->getShipmentIdFromOrder($this->order->get_id())) {
+            throw new \Exception(__('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'));
         }
 
-        if (!get_array_value($this->pluginSettings, 'token')) {
+        $token = get_array_value($this->pluginSettings, 'token');
+
+        if (!$token) {
             throw new \Exception(__('FlagShip API token is missing', 'flagship-woocommerce-extension'));
         }
 
