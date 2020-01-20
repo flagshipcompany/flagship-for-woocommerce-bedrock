@@ -10,7 +10,7 @@ Requires PHP: 7.1
 License: Apache License 2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
-FlagShip WooCommerce Extension obtains real time shipping rates via FlagShip Shipping API.
+FlagShip WooCommerce Extension obtains FlagShip shipping rates for orders and exports order to FlagShip to dispatch shipment.
 
 == Description ==
 
