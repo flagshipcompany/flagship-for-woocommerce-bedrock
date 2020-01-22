@@ -56,7 +56,7 @@ class Order_Action_Processor {
         }
 
         if ($shipmentId && empty($shipmentUrl)) {
-            echo '<p>Please check the FlagShip token.</p>';
+            echo sprintf('<p>%s.</p>', __('Please check the FlagShip token', 'flagship-woocommerce-extension'));
 
             return;
         }
@@ -122,7 +122,7 @@ class Order_Action_Processor {
         }
 
         $apiRequest = new Export_Order_Request($token);
-        $exportedShipment = $apiRequest->exportOrder($this->order);
+        $exportedShipment = $apiRequest->exportOrder($this->order, $this->pluginSettings);
 
         if ($exportedShipment) {
             update_post_meta($this->order->get_id(), self::$shipmentIdField, $exportedShipment->getId());

@@ -37,6 +37,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         $this->init_settings();
 
         add_action( 'woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+        add_filter('woocommerce_settings_api_sanitized_fields_' . $this->id,  array($this, 'validate_admin_options'));
     }
 
     /**
@@ -67,6 +68,25 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         }
     }
 
+    public function get_option($key, $empty_value = null) {
+        if ($key === 'tracking_emails' && !array_key_exists('tracking_emails', $this->settings)) {
+            return trim(WC()->mailer()->get_emails()['WC_Email_New_Order']->recipient);
+        }
+
+        return parent::get_option($key, $empty_value);
+    }
+
+    public function validate_admin_options($settings) {
+        if (isset($settings['tracking_emails']) && !Validation_Helper::validateMultiEmails($settings['tracking_emails'])) {
+            $settings = get_option($this->get_option_key(), null);
+            $settings['tracking_emails'] = get_array_value($settings,'tracking_emails', '');
+
+            add_action( 'admin_notices', array((new Notification_Helper()), 'add_tracking_email_invalid_notice'));
+        }
+
+        return $settings;
+    }
+
     protected function init_method_settings() {
     	$this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->get_option('title', __('FlagShip Shipping', 'flagship-woocommerce-extension'));
@@ -84,6 +104,11 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             ),
             'token' => array(
                 'title' => __('FlagShip access token', 'flagship-woocommerce-extension'),
+                'type' => 'text',
+                'description' => sprintf(__('After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-woocommerce-extension'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
+            ),
+            'tracking_emails' => array(
+                'title' => __('Tracking emails', 'flagship-woocommerce-extension'),
                 'type' => 'text',
                 'description' => sprintf(__('After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-woocommerce-extension'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
             ),
@@ -161,6 +186,12 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'residential_receiver_address' => array(
                 'title' => __('Residential receiver address', 'flagship-woocommerce-extension'),
                 'description' => __('If checked, all the receiver addresses in this shipping zone will be considered residential', 'flagship-woocommerce-extension'),
+                'type' => 'checkbox',
+                'default' => 'no',
+            ),
+            'send_tracking_emails' => array(
+                'title' => __('Send tracking emails', 'flagship-woocommerce-extension'),
+                'description' => __('If checked, customers will receive the tracking emails of a shipment.', 'flagship-woocommerce-extension'),
                 'type' => 'checkbox',
                 'default' => 'no',
             ),

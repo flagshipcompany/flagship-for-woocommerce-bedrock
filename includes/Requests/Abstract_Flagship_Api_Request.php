@@ -28,7 +28,7 @@ abstract class Abstract_Flagship_Api_Request {
     	return FlagshipWoocommerceShipping::isDebugMode() ? getenv('FLAGSHIP_API_URL') : 'https://api.smartship.io';
     }
 
-    protected function getStoreAddress($fullAddress = false)
+    protected function getStoreAddress($fullAddress = false, $getEmail = false)
     {
         $storeAddress = array();
 
@@ -41,6 +41,10 @@ abstract class Abstract_Flagship_Api_Request {
         if ($fullAddress) {
             $storeAddress['address'] = trim(get_option('woocommerce_store_address', ''));
             $storeAddress['suite'] = trim(get_option('woocommerce_store_address_2', ''));
+        }
+
+        if ($getEmail) {
+            $storeAddress['email'] = trim(WC()->mailer()->get_emails()['WC_Email_New_Order']->recipient);
         }
 
         return $storeAddress;
@@ -106,7 +110,7 @@ abstract class Abstract_Flagship_Api_Request {
             $product = $productItem['product'];
             $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), 'lbs', $unit)) : 1;
             $totalWeight += $weight*$productItem['quantity'];
-            $productDescriptions[] = $product->get_short_description();
+            $productDescriptions[] = $product->get_name();
         }
 
         $description = implode(';', $productDescriptions);

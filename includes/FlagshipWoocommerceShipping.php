@@ -44,10 +44,6 @@ class FlagshipWoocommerceShipping {
 	//Handle the scenario that the plugin is installed without composer require
 	public function handleThirdPartyLibraries() {
 		if (!class_exists('Flagship\Shipping\Flagship')) {
-			include_once realpath(dirname(__FILE__) . '/..'). '/vendor/autoload.php';
-		}
-
-		if (!class_exists('Flagship\Shipping\Flagship')) {
 			$this->showSdkNotice();
 
 		    return;
@@ -59,32 +55,11 @@ class FlagshipWoocommerceShipping {
 	    add_filter( 'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ) );
 	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
 	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box'));
-	    add_action('admin_notices', array($this, 'flagship_warning_in_notice'));
+	    add_action('admin_notices', array((new Notification_Helper()), 'flagship_warning_in_notice'));
 	}   
 
 	public function showSdkNotice() {
-		add_action( 'admin_notices', array($this, 'add_flagship_sdk_missing_notice'));
-	}
-
-	public function flagship_warning_in_notice() {
-
-	    if (!isset($_REQUEST['flagship_warning']) || empty($_REQUEST['flagship_warning'])) {
-	        return;
-	    }
-
-	    $message = trim($_REQUEST['flagship_warning']);
-
-	    echo '<div class="notice notice-error is-dismissible"><p><strong>'
-	    .$message.
-	    '</strong></p></div>';
-	}
-
-	public function add_flagship_sdk_missing_notice() {
-		?>
-		  	<div class="update-nag notice">
-		      <p><?php _e( 'To ensure the FlagShip WooCommerce Shipping plugin function properly, please run "composer require flagshipcompany/flagship-api-sdk" to install the required classes', 'flagship-woocommerce-extension'); ?></p>
-		  	</div>
-		 <?php
+		add_action( 'admin_notices', array((new Notification_Helper()), 'add_flagship_sdk_missing_notice'));
 	}
 
 	public function plugin_action_links($links) {

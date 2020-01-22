@@ -41,6 +41,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 
 	$GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerce\FlagshipWoocommerceShipping::instance();
 
+	if (!class_exists('Flagship\Shipping\Flagship')) {
+		include_once dirname(__FILE__). '/vendor/autoload.php';
+	}
+
 	if (dirname(dirname( __FILE__ )) == WPMU_PLUGIN_DIR) {
 		load_muplugin_textdomain( 'flagship-woocommerce-extension', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}  else {

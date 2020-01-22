@@ -50,7 +50,7 @@ class Cart_Rates_Processor {
 
     protected function getRateOptions($instanceSettings)
     {
-        $allowedFields = array('signature_required', 'residential_receiver_address');
+        $allowedFields = array('signature_required', 'residential_receiver_address', 'send_tracking_emails');
 
         $optionValues = array_map(function($val) use ($instanceSettings) {
             if (get_array_value($instanceSettings, $val, 'no') == 'yes') {
