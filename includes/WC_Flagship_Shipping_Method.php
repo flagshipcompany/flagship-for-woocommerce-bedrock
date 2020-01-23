@@ -76,9 +76,9 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         return parent::get_option($key, $empty_value);
     }
 
-    public function validate_admin_options($settings) { 
+    public function validate_admin_options($settings) {
         if (isset($settings['tracking_emails']) && !empty(trim($settings['tracking_emails'])) && !Validation_Helper::validateMultiEmails($settings['tracking_emails'])) {
-            $settings = get_option($this->get_option_key(), null);
+            $settings = get_option($this->get_option_key(), array());
             $settings['tracking_emails'] = get_array_value($settings,'tracking_emails', '');
 
             add_action( 'admin_notices', array((new Notification_Helper()), 'add_tracking_email_invalid_notice'));
