@@ -76,8 +76,8 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         return parent::get_option($key, $empty_value);
     }
 
-    public function validate_admin_options($settings) {
-        if (isset($settings['tracking_emails']) && !Validation_Helper::validateMultiEmails($settings['tracking_emails'])) {
+    public function validate_admin_options($settings) { 
+        if (isset($settings['tracking_emails']) && !empty(trim($settings['tracking_emails'])) && !Validation_Helper::validateMultiEmails($settings['tracking_emails'])) {
             $settings = get_option($this->get_option_key(), null);
             $settings['tracking_emails'] = get_array_value($settings,'tracking_emails', '');
 
@@ -110,7 +110,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'tracking_emails' => array(
                 'title' => __('Tracking emails', 'flagship-woocommerce-extension'),
                 'type' => 'text',
-                'description' => sprintf(__('After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-woocommerce-extension'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
+                'description' => __('The emails to receive tracking information of shipments.', 'flagship-woocommerce-extension'),
             ),
             'debug_mode' => array(
                 'title' => __('Debug mode', 'flagship-woocommerce-extension'),
@@ -225,7 +225,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'title'       => __( 'Shipping class costs', 'woocommerce' ),
             'type'        => 'title',
             'default'     => '',
-            'description' => sprintf( __( 'These costs can optionally be added based on the <a href="%s">product shipping class</a>.', 'woocommerce' ) . ' ' . __('It will charge shipping for each shipping class individually.', 'flagship-woocommerce-extension'),  admin_url( 'admin.php?page=wc-settings&tab=shipping&section=classes' ) ),
+            'description' => sprintf( __( 'These costs can optionally be added based on the <a href="%s">product shipping class</a>.', 'woocommerce' ) . ' ' . __('This cost will be applied only once per shipment, regardless of the number of products belonging to that shipping class.', 'flagship-woocommerce-extension'),  admin_url( 'admin.php?page=wc-settings&tab=shipping&section=classes' ) ),
         );
 
         foreach ( $shipping_classes as $shipping_class ) {

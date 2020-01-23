@@ -130,8 +130,24 @@ msgid "If checked, all the receiver addresses in this shipping zone will be cons
 msgstr "Si cochée, toutes les adresses de réception dans cette zone d'expédition seront considérées comme résidentielle."
 
 #: includes/WC_Flagship_Shipping_Method.php
-msgid "It will charge shipping for each shipping class individually."
-msgstr "Il facturera l'expédition pour chaque classe d'expédition individuellement."
+msgid "This cost will be applied only once per shipment, regardless of the number of products belonging to that shipping class."
+msgstr "Le coût sera appliqué qu'une seule fois par expédition, quelque soit le nombre de produits appartenant à cette classe de livraison."
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Tracking emails"
+msgstr "Suivi par couriel"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "The emails to receive tracking information of shipments."
+msgstr "Les e-mails pour recevoir les informations de suivi des expéditions."
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Send tracking emails"
+msgstr "Envoyer des e-mails de suivi"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "If checked, customers will receive the tracking emails of a shipment."
+msgstr "Si cette case est cochée, les clients recevront les e-mails de suivi d'un envoi."
 
 #: includes/Order_Action_Processor.php
 msgid "FlagShip eCommerce Shipping"
