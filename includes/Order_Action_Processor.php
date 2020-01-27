@@ -50,7 +50,7 @@ class Order_Action_Processor {
         }
 
         if (!empty($shipmentUrl)) {
-            echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a></p>', __('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $shipmentUrl, $shipmentId);
+            echo sprintf('<p>%s: <a href="%s">%d</a></p>', __('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $shipmentUrl, $shipmentId);
 
             return;
         }
@@ -158,12 +158,13 @@ class Order_Action_Processor {
         }
 
         $status = $shipment->getStatus();
+        $flagshipPageUrl = menu_page_url('flagship', false);
 
         if (in_array($status, array('dispatched', 
             'manifested', 'cancelled'))) {
-            return sprintf('%s/shipping/%d/overview', FlagshipWoocommerceShipping::getFlagshipUrl(), $shipmentId);
+            return sprintf('%s&flagship_uri=shipping/%d/overview', $flagshipPageUrl, $shipmentId);
         }
 
-        return sprintf('%s/shipping/%d/convert', FlagshipWoocommerceShipping::getFlagshipUrl(), $shipmentId);
+        return sprintf('%s&flagship_uri=shipping/%d/convert', $flagshipPageUrl, $shipmentId);
     }
 }

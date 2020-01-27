@@ -56,6 +56,7 @@ class FlagshipWoocommerceShipping {
 	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
 	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box'));
 	    add_action('admin_notices', array((new Notification_Helper()), 'flagship_warning_in_notice'));
+	    add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
 	}   
 
 	public function showSdkNotice() {

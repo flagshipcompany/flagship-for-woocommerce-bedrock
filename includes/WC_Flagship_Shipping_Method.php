@@ -110,7 +110,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'tracking_emails' => array(
                 'title' => __('Tracking emails', 'flagship-woocommerce-extension'),
                 'type' => 'text',
-                'description' => __('The emails to receive tracking information of shipments.', 'flagship-woocommerce-extension'),
+                'description' => __('The emails (separated by ;) to receive tracking information of shipments.', 'flagship-woocommerce-extension'),
             ),
             'debug_mode' => array(
                 'title' => __('Debug mode', 'flagship-woocommerce-extension'),

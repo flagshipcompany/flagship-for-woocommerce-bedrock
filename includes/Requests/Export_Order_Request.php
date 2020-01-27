@@ -60,7 +60,6 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         if (get_array_value($orderOptions, 'signature_required', false)) {
             $request['options']['signature_required'] = true;
         }
-        console($request);
 
         return $request;
     }

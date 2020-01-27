@@ -17,6 +17,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if (!defined( 'FLAGSHIP_PLUGIN_FILE' )) {
+	define( 'FLAGSHIP_PLUGIN_FILE', __FILE__ );
+}
+
 if (file_exists(dirname( __FILE__ ) . '/env.php')) {
  	include_once dirname( __FILE__ ) . '/env.php';
 }

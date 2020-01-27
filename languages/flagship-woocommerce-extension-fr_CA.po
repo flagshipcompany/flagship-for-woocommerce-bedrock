@@ -188,3 +188,15 @@ msgstr "jour"
 #: includes/Cart_Rates_Processor.php
 msgid "days"
 msgstr "jours"
+
+#: includes/Menu_Helper.php
+msgid "Shipment"
+msgstr "Expédition"
+
+#: includes/Menu_Helper.php
+msgid "Manage shipment"
+msgstr "Gestion des expéditions"
+
+#: includes/Menu_Helper.php
+msgid "Visit FlagShip site"
+msgstr "Visitez la site de FlagShip"
