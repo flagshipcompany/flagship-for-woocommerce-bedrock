@@ -90,11 +90,14 @@ class Cart_Rates_Processor {
             $label .= $this->makeTransitTimeText($rate->getDeliveryDate());
         }
 
+        $metaData = $this->convertOptionsToMeta($this->rateOptions);
+        $metaData['selected_shipping'] = $rate->getCourierName().' - '.$rate->getServiceCode();
+
         $cartRate = array(
             'id' => $this->methodId.'|'.$rate->getCourierName().'|'.$rate->getServiceCode(),
             'label' => $label,
             'cost' => $this->markupCost($rate->getSubtotal(), $package),
-            'meta_data' => $this->convertOptionsToMeta($this->rateOptions),
+            'meta_data' => $metaData,
         );
 
         return $cartRate;

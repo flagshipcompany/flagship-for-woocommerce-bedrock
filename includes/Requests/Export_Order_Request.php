@@ -7,6 +7,17 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
     private $fullAddressFields = array();
 
+    private $editShipmentAddressFields = array(
+        'postal_code',
+        'country',
+        'state',
+        'city',
+        'address',
+        'name',
+        'attn',
+        'phone',
+    );
+
     public function __construct($token)
     {
     	$this->token = $token;
@@ -17,10 +28,18 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     public function exportOrder($order, $options)
     {
         $storeAddress = $this->getStoreAddress(true);
-        $apiRequest = $this->makeApiRequest($storeAddress, $order, $options);
+        $prepareRequest = $this->makePrepareRequest($storeAddress, $order, $options);
         $apiClient = new Flagship($this->token, $this->apiUrl);
 
-        return $apiClient->prepareShipmentRequest($apiRequest)->execute();
+        $exportedShipment = $apiClient->prepareShipmentRequest($prepareRequest)->execute();
+        $selectedService = $this->findShippingServiceInOrder($order);
+
+        if ($exportedShipment->getId() && $selectedService && empty($this->findMissingAddressFieldsForEdit($storeAddress))) {
+            $editRequestWithService = $this->addService($prepareRequest, $selectedService);
+            $exportedShipment = $apiClient->editShipmentRequest( $editRequestWithService, $exportedShipment->getId())->execute();
+        }
+
+        return $exportedShipment;
     }
 
     public function isOrderShippingAddressValid($order)
@@ -30,7 +49,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         return count(array_filter($address)) == count($address);
     }
 
-    protected function makeApiRequest($storeAddress, $order, $options)
+    protected function makePrepareRequest($storeAddress, $order, $options)
     {
         $orderOptions = $this->getOrderOptions($order);
 
@@ -64,6 +83,11 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         return $request;
     }
 
+    protected function addService($prepareRequest, $selectedService)
+    {
+        return array_merge($prepareRequest, array('service' => $selectedService));
+    }
+
     protected function extractOrderItems($items)
     {
         $orderItems = array();
@@ -87,6 +111,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $fullAddress['attn'] = trim($fullAddress['first_name'].' '.$fullAddress['last_name']);
         unset($fullAddress['first_name']);
         unset($fullAddress['last_name']);
+        $fullAddress['name'] = $fullAddress['attn'];
         $fullAddress['phone'] = trim($billingAddress['phone']);
         $fullAddress['email'] = trim($billingAddress['email']);
 
@@ -115,6 +140,15 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         return $options;
     }
 
+    protected function findShippingServiceInOrder($order)
+    {
+        $selectedService = $this->getOrderShippingMeta($order, 'selected_shipping');
+        $courierAndService = array_map('trim', explode('-', $selectedService));
+        $fields = array('courier_name', 'courier_code');
+
+        return array_combine($fields, $courierAndService);
+    }
+
     protected function getOrderShippingMeta($order, $key)
     {
         return reset($order->get_items('shipping'))->get_meta($key);
@@ -127,5 +161,14 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $trackingEmails = array_filter(array($adminEmail, $customerEmail));
 
         return implode(';', $trackingEmails);
+    }
+
+    protected function findMissingAddressFieldsForEdit($storeAddress)
+    {
+        $missingFields = array_filter($this->editShipmentAddressFields, function($val) use ($storeAddress) {
+            return !isset($storeAddress[$val]) || empty(trim($storeAddress[$val]));
+        });
+
+        return $missingFields;
     }
 }

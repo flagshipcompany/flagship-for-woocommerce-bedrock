@@ -41,6 +41,9 @@ abstract class Abstract_Flagship_Api_Request {
         if ($fullAddress) {
             $storeAddress['address'] = trim(get_option('woocommerce_store_address', ''));
             $storeAddress['suite'] = trim(get_option('woocommerce_store_address_2', ''));
+            $storeAddress['name'] = trim(get_option('woocommerce_store_name', ''));
+            $storeAddress['attn'] = trim(get_option('woocommerce_store_attn', ''));
+            $storeAddress['phone'] = trim(get_option('woocommerce_store_phone', ''));
         }
 
         if ($getEmail) {
