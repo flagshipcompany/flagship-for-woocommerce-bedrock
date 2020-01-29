@@ -39,7 +39,7 @@ class Menu_Helper {
         echo "
         <div class='wrap'>
             <h1 class='wp-heading-inline'>FlagShip</h1>
-            <iframe src='{$iframePageUrl}?&amp;iframe=true' style='min-height:500px' width='100%' height='100%'' frameborder='0'>
+            <iframe id='flagship_iframe' src='{$iframePageUrl}?&amp;iframe=true' style='min-height:500px' width='100%' height='100%' frameborder='0'>
             </iframe>
         </div>";
     }

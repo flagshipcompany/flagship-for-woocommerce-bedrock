@@ -130,7 +130,7 @@ class Cart_Rates_Processor {
 
         foreach($found_shipping_classes as $shipping_class => $products) {
             $shipping_class_term = get_term_by('slug', $shipping_class, 'product_shipping_class');
-            $class_cost_string = get_array_value($this->instanceSettings, 'class_cost_' . $shipping_class_term->term_id, '');
+            $class_cost_string = $shipping_class_term ? get_array_value($this->instanceSettings, 'class_cost_' . $shipping_class_term->term_id, '') : '';
 
             if ('' === $class_cost_string) {
                 continue;

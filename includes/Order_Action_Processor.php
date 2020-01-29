@@ -16,6 +16,11 @@ class Order_Action_Processor {
 
     private $errorMessages = array();
 
+    private $errorCodes = array(
+        'shipment_exists' => 401,
+        'token_missing' => 402,
+    );
+
     public function __construct($order, $pluginSettings) 
     {
         $this->order = $order;
@@ -74,11 +79,11 @@ class Order_Action_Processor {
             $this->exportOrder();
         }
         catch(\Exception $e){
-            $this->setErrorMessages(__('Order not exported to FlagShip').': '.$e->getMessage());
-            add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));          
+            if (in_array($e->getCode(), $this->errorCodes)) {
+                $this->setErrorMessages(__('Order not exported to FlagShip').': '.$e->getMessage());
+                add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));   
+            }     
         }
-
-        return $result;
     }
 
     public function order_custom_warning_filter($location)
@@ -112,13 +117,13 @@ class Order_Action_Processor {
     protected function exportOrder()
     {
         if ($this->getShipmentIdFromOrder($this->order->get_id())) {
-            throw new \Exception(__('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'));
+            throw new \Exception(__('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $this->errorCodes['shipment_exists']);
         }
 
         $token = get_array_value($this->pluginSettings, 'token');
 
         if (!$token) {
-            throw new \Exception(__('FlagShip API token is missing', 'flagship-woocommerce-extension'));
+            throw new \Exception(__('FlagShip API token is missing', 'flagship-woocommerce-extension'), $this->errorCodes['token_missing']);
         }
 
         $apiRequest = new Export_Order_Request($token);

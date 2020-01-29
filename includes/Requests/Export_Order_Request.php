@@ -32,14 +32,42 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $apiClient = new Flagship($this->token, $this->apiUrl);
 
         $exportedShipment = $apiClient->prepareShipmentRequest($prepareRequest)->execute();
-        $selectedService = $this->findShippingServiceInOrder($order);
 
-        if ($exportedShipment->getId() && $selectedService && empty($this->findMissingAddressFieldsForEdit($storeAddress))) {
-            $editRequestWithService = $this->addService($prepareRequest, $selectedService);
-            $exportedShipment = $apiClient->editShipmentRequest( $editRequestWithService, $exportedShipment->getId())->execute();
+        $editShipmentData = $this->makeExtraFieldsForEdit($order, $storeAddress, $exportedShipment, $prepareRequest);
+
+        if ($editShipmentData) {
+            $editRequest = array_merge($prepareRequest, $editShipmentData);
+            $exportedShipment = $apiClient->editShipmentRequest($editRequest, $exportedShipment->getId())->execute();
         }
 
         return $exportedShipment;
+    }
+
+    public function makeExtraFieldsForEdit($order, $storeAddress, $exportedShipment, $prepareRequest)
+    {
+        $extraFields = array();
+
+        $selectedService = $this->findShippingServiceInOrder($order);
+        $nbrOfMissingFields = count($this->findMissingAddressFieldsForEdit($storeAddress));
+        $shipmentId = $exportedShipment->getId();
+        $isIntl = $this->isIntShipment($prepareRequest);
+        $commercialInvFields = array();
+
+        if ($isIntl) {
+            $commercialInvFields = (new Commercial_Inv_Request_Helper())->makeIntShpFields($prepareRequest, $order, $currency);
+        }
+
+        if (!$shipmentId || !$selectedService || $nbrOfMissingFields || ($isIntl && !$commercialInvFields)) {
+            return array();
+        }
+
+        $extraFields['service'] = $selectedService;
+
+        if ($commercialInvFields) {
+            $extraFields = array_merge($extraFields, $commercialInvFields);
+        }
+
+        return $extraFields;
     }
 
     public function isOrderShippingAddressValid($order)
@@ -83,9 +111,9 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         return $request;
     }
 
-    protected function addService($prepareRequest, $selectedService)
+    protected function isIntShipment($prepareRequest)
     {
-        return array_merge($prepareRequest, array('service' => $selectedService));
+        return ($prepareRequest['from']['country'] == 'CA' && $prepareRequest['to']['country'] != 'CA') || ($prepareRequest['from']['country'] != 'CA' && $prepareRequest['to']['country'] == 'CA');
     }
 
     protected function extractOrderItems($items)
@@ -151,7 +179,9 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
     protected function getOrderShippingMeta($order, $key)
     {
-        return reset($order->get_items('shipping'))->get_meta($key);
+        $shipping = $order->get_items('shipping');
+
+        return reset($shipping)->get_meta($key);
     }
 
     protected function makeTrackingEmails($destinationAddress, $options, $orderOptions)

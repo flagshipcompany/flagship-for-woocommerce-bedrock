@@ -58,7 +58,12 @@ class FlagshipWoocommerceShipping {
 	    add_action('admin_notices', array((new Notification_Helper()), 'flagship_warning_in_notice'));
 	    add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
 	    add_filter('woocommerce_general_settings', array((new Store_Address_Helper()), 'add_extra_address_fields'));
-	}   
+
+	    $productHelper = (new Product_Helper());
+	    add_filter('woocommerce_product_data_tabs', array($productHelper, 'add_export_to_product_tabs') );
+	    add_action( 'woocommerce_product_data_panels', array($productHelper, 'display_product_export_tab') );
+	    add_action('woocommerce_process_product_meta', array($productHelper, 'save_product_export_data') );
+	}
 
 	public function showSdkNotice() {
 		add_action( 'admin_notices', array((new Notification_Helper()), 'add_flagship_sdk_missing_notice'));

@@ -200,3 +200,19 @@ msgstr "Gestion des expéditions"
 #: includes/Menu_Helper.php
 msgid "Visit FlagShip site"
 msgstr "Visitez la site de FlagShip"
+
+#: includes/Product_Helper.php
+msgid "Export"
+msgstr "Exportation"
+
+#: includes/Product_Helper.php
+msgid "HS code"
+msgstr "Code HS"
+
+#: includes/Product_Helper.php
+msgid "Country of origin"
+msgstr "Pays d'origine"
+
+#: includes/Product_Helper.php
+msgid "The HS (Harmonized Commodity Description and Coding System) Code is a 6–10 digit number for international shipments"
+msgstr "Le code HS (Système harmonisé de description et de codification des marchandises) est un numéro à 6 à 10 chiffres pour les expéditions internationales"
