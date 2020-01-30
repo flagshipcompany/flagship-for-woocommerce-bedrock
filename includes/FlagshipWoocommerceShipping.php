@@ -65,10 +65,6 @@ class FlagshipWoocommerceShipping {
 	    add_action('woocommerce_process_product_meta', array($productHelper, 'save_product_export_data') );
 	}
 
-	public function addCommands() {
-		\WP_CLI::add_command( 'firx', 'ExamplePluginWPCLI' );
-	}
-
 	public function showSdkNotice() {
 		add_action( 'admin_notices', array((new Notification_Helper()), 'add_flagship_sdk_missing_notice'));
 	}

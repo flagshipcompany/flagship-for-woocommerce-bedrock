@@ -4,7 +4,7 @@ namespace FlagshipWoocommerce\Commands;
 use FlagshipWoocommerce\WC_Flagship_Shipping_Method;
 use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
-class Fcs_Command {
+class Settings_Command {
 
     /**
     * Update a FlagShip Woocommerce plugin setting.
@@ -23,14 +23,10 @@ class Fcs_Command {
     * ## EXAMPLES
     *
     *     # Update a general setting.
-    *     $ wp fcs update_setting token xxxxxxxxxxxx
-    *     Success: Setting saved!
-    *
-    *     # Update one setting of a shipping zone (if zone name contains space, replace it with underscore).
-    *     $ wp fcs update_setting disable_courier_dhl --zone=United_States
+    *     $ wp fcs settings update token xxxxxxxxxxxx
     *     Success: Setting saved!
     */
-    public function update_setting($args, $assoc_args) {
+    public function update($args, $assoc_args) {
         $zoneName = isset($assoc_args['zone']) ? $assoc_args['zone'] : null;
 
         if (!$zoneName) {
@@ -53,10 +49,10 @@ class Fcs_Command {
     * ## EXAMPLES
     *
     *     # List all the settings.
-    *     $ wp fcs list_settings [--zone=<zone-name>] 
+    *     $ wp fcs settings list [--zone=<zone-name>] 
     *     allow_standard_rates/disable_courier_ups
     */
-    public function list_settings($args, $assoc_args) {
+    public function list($args, $assoc_args) {
         $zoneName = isset($assoc_args['zone']) ? $assoc_args['zone'] : null;
 
         if (!$zoneName) {
@@ -81,23 +77,6 @@ class Fcs_Command {
 
         array_walk($fields, function($val) {
             \WP_CLI::line($val);
-        });
-    }
-
-    /**
-    * List all the shipping zones with FlagSHip enabled.
-    *
-    * ## EXAMPLES
-    *
-    *     # List all the shipping zones with FlagShip enabled.
-    *     $ wp fcs list_zones 
-    *     Canada/United States
-    */
-    public function list_zones() {
-        $enabledZones = $this->getEnabledShippingZones();
-
-        array_walk($enabledZones, function($zone) {
-            \WP_CLI::line($zone->get_zone_name());
         });
     }
 
@@ -151,27 +130,6 @@ class Fcs_Command {
         $settings[$key] = $value;
 
         return update_option($instanceName, $settings);
-    }
-
-    protected function getEnabledShippingZones() {
-        $flagshipMethod = FlagshipWoocommerceShipping::$methodId;
-        $shippingZones = array_map(function($zone) {
-            return new \WC_Shipping_Zone($zone);
-        }, \WC_Data_Store::load( 'shipping-zone' )->get_zones());
-
-        $enabledZones = array_filter($shippingZones, function($zone) use ($flagshipMethod) {
-            $methods = $zone->get_shipping_methods();
-            $methods = array_filter($methods, function($val) {
-                return $val->is_enabled();
-            });
-            $methodNames = array_map(function($val) {
-                return $val->id;
-            }, $methods);
-
-            return in_array($flagshipMethod, $methodNames);
-        });
-
-        return $enabledZones;
     }
 
     protected function getInstanceIdByZoneName($name) {
