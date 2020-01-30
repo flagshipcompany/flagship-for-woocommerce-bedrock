@@ -54,4 +54,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 	}  else {
 		load_plugin_textdomain( 'flagship-woocommerce-extension', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
+
+	if (defined( 'WP_CLI' ) && WP_CLI) {
+		(new FlagshipWoocommerce\Commands\Console())->add_commands();
+	}
 }
+
