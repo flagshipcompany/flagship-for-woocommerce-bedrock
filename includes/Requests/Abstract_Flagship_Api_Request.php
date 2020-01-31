@@ -28,6 +28,14 @@ abstract class Abstract_Flagship_Api_Request {
     	return FlagshipWoocommerceShipping::isDebugMode() ? getenv('FLAGSHIP_API_URL') : 'https://api.smartship.io';
     }
 
+    protected function addHeaders($prepareRequest, $storeName, $orderId)
+    {
+        return $prepareRequest
+            ->setStoreName($storeName)
+            ->setOrderId($orderId)
+            ->setOrderLink(get_edit_post_link($orderId, null));
+    }
+
     protected function getStoreAddress($fullAddress = false, $getEmail = false)
     {
         $storeAddress = array();

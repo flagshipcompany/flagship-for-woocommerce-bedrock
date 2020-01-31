@@ -1,6 +1,9 @@
 <?php
 namespace FlagshipWoocommerce;
 
+use FlagshipWoocommerce\Helpers\Notification_Helper;
+use FlagshipWoocommerce\Helpers\Validation_Helper;
+
 class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     
 	private $token;

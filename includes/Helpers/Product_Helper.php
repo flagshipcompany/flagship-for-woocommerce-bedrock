@@ -1,5 +1,5 @@
 <?php
-namespace FlagshipWoocommerce;
+namespace FlagshipWoocommerce\Helpers;
 
 class Product_Helper {
 

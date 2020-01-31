@@ -1,5 +1,5 @@
 <?php
-namespace FlagshipWoocommerce;
+namespace FlagshipWoocommerce\Helpers;
 
 class Store_Address_Helper {
 

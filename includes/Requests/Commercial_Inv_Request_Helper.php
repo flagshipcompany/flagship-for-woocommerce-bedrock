@@ -2,7 +2,7 @@
 namespace FlagshipWoocommerce\Requests;
 
 use Flagship\Shipping\Flagship;
-use FlagshipWoocommerce\Product_Helper;
+use FlagshipWoocommerce\Helpers\Product_Helper;
 
 class Commercial_Inv_Request_Helper {
 

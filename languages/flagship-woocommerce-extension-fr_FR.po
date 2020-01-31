@@ -177,6 +177,18 @@ msgstr "Cliquez ici"
 msgid "Order not exported to FlagShip"
 msgstr "Commande non exportée vers FlagShip"
 
+#: includes/Order_Action_Processor.php
+msgid "Dispatched"
+msgstr "Confirmé"
+
+#: includes/Order_Action_Processor.php
+msgid "NOT dispatched"
+msgstr "PAS confirmé"
+
+#: includes/Order_Action_Processor.php
+msgid "Cancelled"
+msgstr "Annulé"
+
 #: includes/Cart_Rates_Processor.php
 msgid "Time in transit"
 msgstr "Temps en transit"
@@ -189,30 +201,34 @@ msgstr "jour"
 msgid "days"
 msgstr "jours"
 
-#: includes/Menu_Helper.php
+#: includes/Helpers/Menu_Helper.php
 msgid "Shipment"
 msgstr "Expédition"
 
-#: includes/Menu_Helper.php
+#: includes/Helpers/Menu_Helper.php
 msgid "Manage shipment"
 msgstr "Gestion des expéditions"
 
-#: includes/Menu_Helper.php
+#: includes/Helpers/Menu_Helper.php
 msgid "Visit FlagShip site"
 msgstr "Visitez la site de FlagShip"
 
-#: includes/Product_Helper.php
+#: includes/Helpers/Menu_Helper.php
+msgid "Settings"
+msgstr "Réglages"
+
+#: includes/Helpers/Product_Helper.php
 msgid "Export"
 msgstr "Exportation"
 
-#: includes/Product_Helper.php
+#: includes/Helpers/Product_Helper.php
 msgid "HS code"
 msgstr "Code HS"
 
-#: includes/Product_Helper.php
+#: includes/Helpers/Product_Helper.php
 msgid "Country of origin"
 msgstr "Pays d'origine"
 
-#: includes/Product_Helper.php
+#: includes/Helpers/Product_Helper.php
 msgid "The HS (Harmonized Commodity Description and Coding System) Code is a 6–10 digit number for international shipments"
 msgstr "Le code HS (Système harmonisé de description et de codification des marchandises) est un numéro à 6 à 10 chiffres pour les expéditions internationales"

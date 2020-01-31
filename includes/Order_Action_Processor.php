@@ -51,11 +51,14 @@ class Order_Action_Processor {
         $shipmentId = $box['args'][0];
 
         if ($shipmentId) {
-            $shipmentUrl = $this->makeShipmentUrl($shipmentId);
+            $shipmentStatus = $this->getShipmentStatus($shipmentId);
+            $shipmentUrl = $shipmentStatus ? $this->makeShipmentUrl($shipmentId, $shipmentStatus) : null;
         }
 
         if (!empty($shipmentUrl)) {
-            echo sprintf('<p>%s: <a href="%s">%d</a></p>', __('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $shipmentUrl, $shipmentId);
+            $statusDescription = $this->getShipmentStatusDesc($shipmentStatus);
+
+            echo sprintf('<p>%s: <a href="%s">%d</a> <strong>[%s]</strong></p>', __('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $shipmentUrl, $shipmentId, $statusDescription);
 
             return;
         }
@@ -145,7 +148,7 @@ class Order_Action_Processor {
         return count($eCommerceRates) > 0;
     }
 
-    protected function makeShipmentUrl($shipmentId)
+    protected function getShipmentStatus($shipmentId)
     {
         $token = get_array_value($this->pluginSettings, 'token');
 
@@ -162,7 +165,11 @@ class Order_Action_Processor {
             return;         
         }
 
-        $status = $shipment->getStatus();
+        return $shipment->getStatus();
+    }
+
+    protected function makeShipmentUrl($shipmentId, $status)
+    {
         $flagshipPageUrl = menu_page_url('flagship', false);
 
         if (in_array($status, array('dispatched', 
@@ -171,5 +178,20 @@ class Order_Action_Processor {
         }
 
         return sprintf('%s&flagship_uri=shipping/%d/convert', $flagshipPageUrl, $shipmentId);
+    }
+
+    protected function getShipmentStatusDesc($status)
+    {
+        if (in_array($status, array('dispatched', 
+            'manifested'))) {
+            return __('Dispatched', 'flagship-woocommerce-extension');
+        }
+
+        if (in_array($status, array('prequoted', 
+            'quoted'))) {
+            return __('NOT dispatched', 'flagship-woocommerce-extension');
+        }
+
+        return __($status, 'flagship-woocommerce-extension');
     }
 }

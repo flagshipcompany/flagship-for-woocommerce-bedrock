@@ -30,14 +30,17 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $storeAddress = $this->getStoreAddress(true);
         $prepareRequest = $this->makePrepareRequest($storeAddress, $order, $options);
         $apiClient = new Flagship($this->token, $this->apiUrl);
-
-        $exportedShipment = $apiClient->prepareShipmentRequest($prepareRequest)->execute();
+        $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);
+        $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
+        $exportedShipment = $prepareRequestObj->execute();
 
         $editShipmentData = $this->makeExtraFieldsForEdit($order, $storeAddress, $exportedShipment, $prepareRequest);
 
         if ($editShipmentData) {
             $editRequest = array_merge($prepareRequest, $editShipmentData);
-            $exportedShipment = $apiClient->editShipmentRequest($editRequest, $exportedShipment->getId())->execute();
+            $editRequestObj = $apiClient->editShipmentRequest($editRequest, $exportedShipment->getId());
+            $editRequestObj = $this->addHeaders($editRequestObj, $storeAddress['name'], $order->get_id());
+            $exportedShipment = $editRequestObj->execute();
         }
 
         return $exportedShipment;

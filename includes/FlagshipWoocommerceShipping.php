@@ -1,6 +1,11 @@
 <?php
 namespace FlagshipWoocommerce;
 
+use FlagshipWoocommerce\Helpers\Menu_Helper;
+use FlagshipWoocommerce\Helpers\Notification_Helper;
+use FlagshipWoocommerce\Helpers\Product_Helper;
+use FlagshipWoocommerce\Helpers\Store_Address_Helper;
+
 class FlagshipWoocommerceShipping {
 	
 	public static $methodId = 'flagship_shipping_method';

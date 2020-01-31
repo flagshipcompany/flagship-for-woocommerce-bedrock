@@ -1,5 +1,7 @@
 <?php
-namespace FlagshipWoocommerce;
+namespace FlagshipWoocommerce\Helpers;
+
+use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
 class Menu_Helper {
 
