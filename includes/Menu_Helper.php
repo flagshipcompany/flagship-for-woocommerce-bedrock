@@ -10,6 +10,8 @@ class Menu_Helper {
 
     public function add_flagship_to_menu($items) 
     {
+        $this->add_settings_link();
+
         add_menu_page( 'FlagShip', 'FlagShip', 'manage_options', 'flagship', array($this, 'load_flagship_shipment_page'), plugin_dir_url(FLAGSHIP_PLUGIN_FILE).'assets/images/flagship_logo.svg', 56.6);
         add_submenu_page('flagship', __( 'Shipment', 'flagship-woocommerce-extension'), __( 'Shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship', array($this, 'load_flagship_shipment_page'));
         add_submenu_page('flagship', __( 'Manage shipment', 'flagship-woocommerce-extension'), __( 'Manage shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
@@ -34,14 +36,21 @@ class Menu_Helper {
     {
         $flagshipUrl = FlagshipWoocommerceShipping::getFlagshipUrl();
         $pageUri =!empty($_GET['flagship_uri']) ? $_GET['flagship_uri'] : $this->flagshipUrlMap[$pageName];
-        $iframePageUrl = $flagshipUrl.'/'.$pageUri.'?iframe=true';
+        $iframePageUrl = $flagshipUrl.'/'.$pageUri.'?ex-iframe=true';
 
         echo "
         <div class='wrap'>
             <h1 class='wp-heading-inline'>FlagShip</h1>
-            <iframe id='flagship_iframe' src='{$iframePageUrl}?&amp;iframe=true' style='min-height:500px' width='100%' height='100%' frameborder='0'>
+            <iframe id='flagship_iframe' src='{$iframePageUrl}?&amp;iframe=true' style='min-height:500px' width='100%;border:none;'>
             </iframe>
-        </div>";
+        </div>
+        <script>
+            window.onmessage = (e) => {
+                if (e.data.hasOwnProperty('frameHeight')) {
+                    document.getElementById('flagship_iframe').style.height = (e.data.frameHeight + 30) + 'px';
+                }
+            };
+        </script>";
     }
 
     public function add_flagship_link()
@@ -51,12 +60,30 @@ class Menu_Helper {
         $submenu['flagship'][] = array(
             sprintf(
                 '<a href="%s" target="_blank">%s <span class="dashicons dashicons-external"></span></a>',
-                FlagshipWoocommerceShipping::getFlagshipUrl(),
+                FlagshipWoocommerceShipping::getFlagshipUrl().'?ex-iframe=false',
                 __('Visit FlagShip site', 'flagship-woocommerce-extension'),
             ),
             "manage_options",
             "flagship\/site",
             "Visit FlagShip site"
+        );
+    }
+
+    public function add_settings_link()
+    {
+        global $submenu;
+
+        $settingsUrl = 'admin.php?page=wc-settings&tab=shipping&section='.FlagshipWoocommerceShipping::$methodId;
+
+        $submenu['flagship'][] = array(
+            sprintf(
+                '<a href="%s">%s </a>',
+                $settingsUrl,
+                __('Settings', 'flagship-woocommerce-extension'),
+            ),
+            "manage_options",
+            "flagship\/settings",
+            "Settings"
         );
     }
 }
