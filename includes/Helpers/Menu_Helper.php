@@ -5,6 +5,8 @@ use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
 class Menu_Helper {
 
+    protected $menuItemUri = 'flagship/ship';
+
     protected $flagshipUrlMap = array(
         'flagship_shipment' => 'shipping/ship',
         'flagship_manage_shipment' => 'shipping/manage',
@@ -12,12 +14,12 @@ class Menu_Helper {
 
     public function add_flagship_to_menu($items) 
     {
+        add_menu_page( 'FlagShip', 'FlagShip', 'manage_options', $this->menuItemUri, '', plugin_dir_url(FLAGSHIP_PLUGIN_FILE).'assets/images/flagship_logo.svg', 56.6);
+
+        add_submenu_page($this->menuItemUri, __( 'Shipment', 'flagship-woocommerce-extension'), __( 'Shipment', 'flagship-woocommerce-extension'), 'manage_options', $this->menuItemUri, array($this, 'load_flagship_shipment_page'));
+        add_submenu_page($this->menuItemUri, __( 'Manage shipment', 'flagship-woocommerce-extension'), __( 'Manage shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
+
         $this->add_settings_link();
-
-        add_menu_page( 'FlagShip', 'FlagShip', 'manage_options', 'flagship', array($this, 'load_flagship_shipment_page'), plugin_dir_url(FLAGSHIP_PLUGIN_FILE).'assets/images/flagship_logo.svg', 56.6);
-        add_submenu_page('flagship', __( 'Shipment', 'flagship-woocommerce-extension'), __( 'Shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship', array($this, 'load_flagship_shipment_page'));
-        add_submenu_page('flagship', __( 'Manage shipment', 'flagship-woocommerce-extension'), __( 'Manage shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
-
         $this->add_flagship_link();
     }
 
@@ -59,7 +61,7 @@ class Menu_Helper {
     {
         global $submenu;
 
-        $submenu['flagship'][] = array(
+        $submenu[$this->menuItemUri][] = array(
             sprintf(
                 '<a href="%s" target="_blank">%s <span class="dashicons dashicons-external"></span></a>',
                 FlagshipWoocommerceShipping::getFlagshipUrl().'?ex-iframe=false',
@@ -77,7 +79,7 @@ class Menu_Helper {
 
         $settingsUrl = 'admin.php?page=wc-settings&tab=shipping&section='.FlagshipWoocommerceShipping::$methodId;
 
-        $submenu['flagship'][] = array(
+        $submenu[$this->menuItemUri][] = array(
             sprintf(
                 '<a href="%s">%s </a>',
                 $settingsUrl,
