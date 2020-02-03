@@ -3,6 +3,7 @@ namespace FlagshipWoocommerce;
 
 use FlagshipWoocommerce\Requests\Export_Order_Request;
 use FlagshipWoocommerce\Requests\Get_Shipment_Request;
+use FlagshipWoocommerce\Helpers\Menu_Helper;
 
 class Order_Action_Processor {
 
@@ -170,7 +171,7 @@ class Order_Action_Processor {
 
     protected function makeShipmentUrl($shipmentId, $status)
     {
-        $flagshipPageUrl = menu_page_url('flagship', false);
+        $flagshipPageUrl = menu_page_url(Menu_Helper::$menuItemUri, false);
 
         if (in_array($status, array('dispatched', 
             'manifested', 'cancelled'))) {

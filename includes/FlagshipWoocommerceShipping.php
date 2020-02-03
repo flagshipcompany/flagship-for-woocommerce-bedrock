@@ -10,6 +10,8 @@ class FlagshipWoocommerceShipping {
 	
 	public static $methodId = 'flagship_shipping_method';
 
+	public static $version = '1.0.0';
+
 	public static $couriers = array(
 		'UPS' => 'ups',
         'DHL' => 'dhl',

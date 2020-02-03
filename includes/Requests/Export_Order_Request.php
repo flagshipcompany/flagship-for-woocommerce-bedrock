@@ -2,6 +2,7 @@
 namespace FlagshipWoocommerce\Requests;
 
 use Flagship\Shipping\Flagship;
+use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
 class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
@@ -29,7 +30,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     {
         $storeAddress = $this->getStoreAddress(true);
         $prepareRequest = $this->makePrepareRequest($storeAddress, $order, $options);
-        $apiClient = new Flagship($this->token, $this->apiUrl);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
         $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);
         $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
         $exportedShipment = $prepareRequestObj->execute();

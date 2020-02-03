@@ -19,7 +19,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
     public function getRates($package, $options = array())
     {
         $apiRequest = $this->makeApiRequest($package, $options);
-    	$apiClient = new Flagship($this->token, $this->apiUrl);
+    	$apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
 
     	try{
 		    $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
