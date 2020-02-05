@@ -42,19 +42,9 @@ class Menu_Helper {
         $pageUri =!empty($_GET['flagship_uri']) ? $_GET['flagship_uri'] : $this->flagshipUrlMap[$pageName];
         $iframePageUrl = $flagshipUrl.'/'.$pageUri.'?ex-iframe=true';
 
-        echo "
-        <div class='wrap'>
-            <h1 class='wp-heading-inline'>FlagShip</h1>
-            <iframe id='flagship_iframe' src='{$iframePageUrl}?&amp;iframe=true' style='min-height:500px' width='100%;border:none;'>
-            </iframe>
-        </div>
-        <script>
-            window.onmessage = (e) => {
-                if (e.data.hasOwnProperty('frameHeight')) {
-                    document.getElementById('flagship_iframe').style.height = (e.data.frameHeight + 30) + 'px';
-                }
-            };
-        </script>";
+        Template_Helper::render('flagship_page.html', array(
+            'iframePageUrl' => $iframePageUrl,
+        ));
     }
 
     public function add_flagship_link()
