@@ -33,12 +33,12 @@ abstract class Abstract_Flagship_Api_Request {
         return $testEnv ? 'https://test-smartshipng.flagshipcompany.com' : 'https://smartship-ng.flagshipcompany.com';
     }
 
-    protected function addHeaders($prepareRequest, $storeName, $orderId)
+    protected function addHeaders($apiRequest, $storeName, $orderId)
     {
-        return $prepareRequest
+        return $apiRequest
             ->setStoreName($storeName)
             ->setOrderId($orderId)
-            ->setOrderLink(get_edit_post_link($orderId, null));
+            ->setOrderLink(fcs_get_edit_post_link($orderId));
     }
 
     public function getStoreAddress($fullAddress = false, $getEmail = false, $options = array())

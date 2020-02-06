@@ -38,3 +38,13 @@ if (!function_exists('get_array_value')) {
         return $array[$key];
     }
 }
+
+if (!function_exists('fcs_get_edit_post_link')) {
+    function fcs_get_edit_post_link($order_id)
+    {
+        $edit_link = get_post_type_object(get_post($order_id)->post_type)->_edit_link;
+        $link = admin_url(sprintf( $edit_link . '&action=edit', $order_id));
+
+        return $link;
+    }
+}
