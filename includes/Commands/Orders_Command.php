@@ -7,10 +7,11 @@ use FlagshipWoocommerce\Requests\Export_Order_Request;
 
 class Orders_Command {
 
-    protected $plugin_settings;
+    protected $export_helper;
 
     public function __construct() {
-        $this->plugin_settings = get_option(FlagshipWoocommerceShipping::getSettingsOptionKey());
+        $plugin_settings = get_option(FlagshipWoocommerceShipping::getSettingsOptionKey());
+        $this->export_helper = new Export_Order_Helper($plugin_settings);
     }
 
     /**
@@ -66,10 +67,10 @@ class Orders_Command {
             return;
         }
 
-        $export_helper = new Export_Order_Helper($order, $this->plugin_settings);
+        $this->export_helper->set_order($order);
 
         try{
-            $shipmentId = $export_helper->exportOrder();
+            $shipmentId = $this->export_helper->exportOrder();
         }
         catch(\Exception $e){
             \WP_CLI::error($e->getMessage());
@@ -110,9 +111,9 @@ class Orders_Command {
                 return false;
             }
 
-            $export_helper = new Export_Order_Helper($order, $this->plugin_settings);
+            $this->export_helper->set_order($order);
 
-            return empty($export_helper->getShipmentIdFromOrder($order->get_id()));
+            return empty($this->export_helper->getShipmentIdFromOrder($order->get_id()));
         });
 
         return $unexported_orders;

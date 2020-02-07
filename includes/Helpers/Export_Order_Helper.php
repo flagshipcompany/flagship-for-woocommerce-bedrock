@@ -16,9 +16,20 @@ class Export_Order_Helper {
         'token_missing' => 402,
     );
 
-	public function __construct($order, $pluginSettings) {
-        $this->order = $order;
+    public function __construct($pluginSettings) {
         $this->pluginSettings = $pluginSettings;
+    }
+
+    public function __call($method, $arguments) {
+        if (!$this->order) {
+            throw new \Exception('Order not set!');
+        }
+
+        return call_user_func_array(array($this, $method), $arguments);
+    }
+
+    public function set_order($order) {
+        $this->order = $order;
     }
     
     public function getShipmentIdFromOrder($orderId) {
