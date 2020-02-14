@@ -109,42 +109,6 @@ abstract class Abstract_Flagship_Api_Request {
         return $destinationAddress;
     }
 
-    protected function makePackages($orderItems)
-    {
-        $orderItems = $this->extractOrderItems($orderItems);
-
-        $unit = get_option('woocommerce_weight_unit');
-        $totalWeight = 0;
-        $productDescriptions = array();
-
-        foreach ( $orderItems as $item_id => $productItem ) { 
-            $product = $productItem['product'];
-            $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), 'lbs', $unit)) : 1;
-            $totalWeight += $weight*$productItem['quantity'];
-            $productDescriptions[] = $product->get_name();
-        }
-
-        $description = implode(';', $productDescriptions);
-
-        if (strlen($description) > 35) {
-            $description = $productDescriptions[0];
-        }
-
-        $item = array(
-            'length' => 1,
-            'width' => 1,
-            'height' => 1,
-            'weight' => $totalWeight,
-            'description' => $description,
-        );
-
-        return array(
-            'items' => array($item),
-            'units' => 'imperial',
-            'type' => 'package',
-        );
-    }
-
     protected function makeShippingOptions($options)
     {
         $shippingOptions = array();
@@ -154,5 +118,12 @@ abstract class Abstract_Flagship_Api_Request {
         }
 
         return $shippingOptions;
+    }
+
+    protected function debug($message, $type = 'notice')
+    {
+        if (FlagshipWoocommerceShipping::isDebugMode() || $this->debugMode) {
+            wc_add_notice($message, $type);
+        }
     }
 }

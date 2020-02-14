@@ -66,6 +66,9 @@ class Cart_Rates_Processor {
         }, $allowedFields);
 
         $options = array_combine($allowedFields, $optionValues);
+        $options['box_split'] = get_array_value($instanceSettings, 'box_split', 'one_box');
+        $options['box_split_weight'] = get_array_value($instanceSettings, 'box_split_weight', null);
+        $options['token'] = get_array_value($instanceSettings, 'token', '');        
 
         return  array_filter($options);
     }

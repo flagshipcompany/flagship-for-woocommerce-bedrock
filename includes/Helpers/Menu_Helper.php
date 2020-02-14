@@ -2,6 +2,7 @@
 namespace FlagshipWoocommerce\Helpers;
 
 use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
 
 class Menu_Helper {
 
@@ -18,6 +19,7 @@ class Menu_Helper {
 
         add_submenu_page(self::$menuItemUri, __( 'Shipment', 'flagship-woocommerce-extension'), __( 'Shipment', 'flagship-woocommerce-extension'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
         add_submenu_page(self::$menuItemUri, __( 'Manage shipment', 'flagship-woocommerce-extension'), __( 'Manage shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
+        add_submenu_page(self::$menuItemUri, __( 'Packing boxes', 'flagship-woocommerce-extension'), __( 'Packing boxes', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/boxes', array($this, 'list_boxes'));
 
         $this->add_settings_link();
         $this->add_flagship_link();
@@ -42,7 +44,7 @@ class Menu_Helper {
         $pageUri =!empty($_GET['flagship_uri']) ? $_GET['flagship_uri'] : $this->flagshipUrlMap[$pageName];
         $iframePageUrl = $flagshipUrl.'/'.$pageUri.'?ex-iframe=true';
 
-        Template_Helper::render('flagship_page.html', array(
+        Template_Helper::render_html('flagship_page.html', array(
             'iframePageUrl' => $iframePageUrl,
         ));
     }
@@ -79,5 +81,13 @@ class Menu_Helper {
             "flagship\/settings",
             "Settings"
         );
+    }
+
+    public function list_boxes()
+    {
+        Template_Helper::render_php('list_boxes.php', array(
+            'get_boxes_url' => rest_url(Package_Box_Controller::get_namespace().'/package_boxes/get'),
+            'save_boxes_url' => rest_url(Package_Box_Controller::get_namespace().'/package_boxes/save'),
+        ));
     }
 }

@@ -5,6 +5,8 @@ use FlagshipWoocommerce\Helpers\Menu_Helper;
 use FlagshipWoocommerce\Helpers\Notification_Helper;
 use FlagshipWoocommerce\Helpers\Product_Helper;
 use FlagshipWoocommerce\Helpers\Store_Address_Helper;
+use FlagshipWoocommerce\Helpers\Script_Helper;
+use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
 
 class FlagshipWoocommerceShipping {
 	
@@ -45,7 +47,7 @@ class FlagshipWoocommerceShipping {
 	public function __construct() {
 		$this->handleThirdPartyLibraries();
 
-		$this->hooks();			
+		$this->hooks();	
 	}
 
 	//Handle the scenario that the plugin is installed without composer require
@@ -70,6 +72,8 @@ class FlagshipWoocommerceShipping {
 	    add_filter('woocommerce_product_data_tabs', array($productHelper, 'add_export_to_product_tabs') );
 	    add_action( 'woocommerce_product_data_panels', array($productHelper, 'display_product_export_tab') );
 	    add_action('woocommerce_process_product_meta', array($productHelper, 'save_product_export_data') );
+	    add_action('rest_api_init', array((new Package_Box_Controller()), 'register_routes') );
+	    add_action('admin_enqueue_scripts', array((new Script_Helper()), 'load_scripts'));
 	}
 
 	public function showSdkNotice() {

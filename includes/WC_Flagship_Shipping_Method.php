@@ -3,6 +3,7 @@ namespace FlagshipWoocommerce;
 
 use FlagshipWoocommerce\Helpers\Notification_Helper;
 use FlagshipWoocommerce\Helpers\Validation_Helper;
+use FlagshipWoocommerce\Helpers\Template_Helper;
 
 class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     
@@ -62,7 +63,8 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     		return;
     	}
 
-        $ratesProcessor = new Cart_Rates_Processor($this->id, $this->token, array_merge($this->instance_settings, array('debug_mode' => $this->debugMode)));
+        $settings = array_merge($this->settings, $this->instance_settings);
+        $ratesProcessor = new Cart_Rates_Processor($this->id, $this->token, array_merge($settings, array('debug_mode' => $this->debugMode)));
         $rates = $ratesProcessor->fetchRates($package);
         $cartRates = $ratesProcessor->processRates($package, $rates);
 
@@ -90,6 +92,14 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         return $settings;
     }
 
+    public function generate_radio_html($key, $data)
+    {
+        $data['field_name'] = 'woocommerce_'.FlagshipWoocommerceShipping::$methodId.'_'.$key;
+        $data['value'] = $this->get_option($key, null);
+
+        return Template_Helper::render_embedded_php('_radio_field.php', $data);
+    }
+
     protected function init_method_settings() {
     	$this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->get_option('title', __('FlagShip Shipping', 'flagship-woocommerce-extension'));
@@ -114,6 +124,24 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'title' => __('Tracking emails', 'flagship-woocommerce-extension'),
                 'type' => 'text',
                 'description' => __('The emails (separated by ;) to receive tracking information of shipments.', 'flagship-woocommerce-extension'),
+            ),
+            'box_split' => array(
+                'title' => __('Box split', 'flagship-woocommerce-extension'),
+                'type' => 'radio',
+                'description' => __('If enabled, errors will be displayed in the pages showing shipping rates', 'flagship-woocommerce-extension'),
+                'default' => 'one_box',
+                'options' => array(
+                    'one_box' => 'Everything in one box',
+                    'box_per_item' => 'One box per item',
+                    'by_weight' => 'Split by weight',
+                    'packing_api' => 'Use FlagShip Packing API to pack items into boxes',
+                ),
+            ),
+            'box_split_weight' => array(
+                'title' => __('Box split weight', 'flagship-woocommerce-extension'),
+                'type' => 'decimal',
+                'description' => __("Maximum weight in each box (only used when 'Split by weight' is chosen for box split.", 'flagship-woocommerce-extension'),
+                'css' => 'width:70px;',
             ),
             'debug_mode' => array(
                 'title' => __('Debug mode', 'flagship-woocommerce-extension'),

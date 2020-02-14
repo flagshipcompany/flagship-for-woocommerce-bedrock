@@ -4,6 +4,7 @@ namespace FlagshipWoocommerce\Requests;
 use Flagship\Shipping\Flagship;
 use Flagship\Shipping\Collections\RatesCollection;
 use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerce\Helpers\Package_Helper;
 
 class Rates_Request extends Abstract_Flagship_Api_Request {
 
@@ -36,7 +37,8 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
     {
         $storeAddress = $this->getStoreAddress();
         $destinationAddress = $this->getDestinationAddress($package['destination'], $this->requiredAddressFields, $options);
-        $packages = $this->makePackages($package);
+        $packageHelper = new Package_Helper($this->debugMode);
+        $packages = $packageHelper->make_packages($this->extractOrderItems($package), $options);
         $shippingOptions = $this->makeShippingOptions($options);
 
         $request = array(

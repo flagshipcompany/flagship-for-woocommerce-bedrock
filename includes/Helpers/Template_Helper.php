@@ -5,12 +5,30 @@ class Template_Helper {
 
 	public static $placeholderPattern = '/{{(\s?)(%s)(\s?)}}/i';
 
-    public static function render($filePath, $data) {
-    	$content = file_get_contents(realpath(__DIR__ . '/../../templates').'/'.$filePath);
+    public static function render_php($filePath, $data) {
+        extract($data);
+        include(self::get_file_path($filePath));
+    }
+
+    public static function render_embedded_php($filePath, $data) {
+        extract($data);
+
+        ob_start();
+        include(self::get_file_path($filePath));
+        $content = ob_get_contents();
+        
+        return ob_get_clean();
+    }
+
+    public static function render_html($filePath, $data) {
+    	$content = file_get_contents(self::get_file_path($filePath));
         $matched = preg_match_all(sprintf(self::$placeholderPattern, '\S+'), $content, $matches);
 
         if (!$matched) {
-        	return $content;
+            $a = [1, 2,3, 4];
+        	echo $content;
+
+            return;
         }
 
         foreach ($matches[0] as $key => $value) {
@@ -32,5 +50,9 @@ class Template_Helper {
 	    }
 
         return preg_replace(sprintf(self::$placeholderPattern, $varName), $data[$varName], $content);
+    }
+
+    public static function get_file_path($file_path) {
+        return realpath(__DIR__ . '/../../templates').'/'.$file_path;
     }
 }

@@ -3,6 +3,7 @@ namespace FlagshipWoocommerce\Requests;
 
 use Flagship\Shipping\Flagship;
 use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerce\Helpers\Package_Helper;
 
 class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
@@ -86,8 +87,9 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $orderOptions = $this->getOrderOptions($order);
 
         $destinationAddress = $this->getFullDestinationAddress($order);
+        $packageHelper = new Package_Helper();
         $orderItems = $order->get_items();
-        $packages = $this->makePackages($orderItems);
+        $packages = $packageHelper->make_packages($this->extractOrderItems($orderItems), $options);
         $trackingEmails = $this->makeTrackingEmails($destinationAddress, $options, $orderOptions);
         unset($destinationAddress['email']);
 
