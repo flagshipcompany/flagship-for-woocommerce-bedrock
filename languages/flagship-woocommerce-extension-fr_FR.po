@@ -138,8 +138,8 @@ msgid "Tracking emails"
 msgstr "Suivi par couriel"
 
 #: includes/WC_Flagship_Shipping_Method.php
-msgid "The emails to receive tracking information of shipments."
-msgstr "Les e-mails pour recevoir les informations de suivi des expéditions."
+msgid "The emails (separated by ;) to receive tracking information of shipments"
+msgstr "Les e-mails (séparé par ;) pour recevoir les informations de suivi des expéditions."
 
 #: includes/WC_Flagship_Shipping_Method.php
 msgid "Send tracking emails"
@@ -148,6 +148,38 @@ msgstr "Envoyer des e-mails de suivi"
 #: includes/WC_Flagship_Shipping_Method.php
 msgid "If checked, customers will receive the tracking emails of a shipment."
 msgstr "Si cette case est cochée, les clients recevront les e-mails de suivi d'un envoi."
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Box split"
+msgstr "Répartir vos envois dans les boîtes"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Box split weight"
+msgstr "Poids par boîte"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Everything in one box"
+msgstr "Tout dans une seule boîte"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "One box per item"
+msgstr "Une boîte par article"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Split by weight"
+msgstr "Divisé en poids"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Use FlagShip Packing API to pack items into boxes"
+msgstr "Utiliser l'API FlagShip pour empaqueter les objets dans les boîtes"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Set up the boxes under "FlagShip/Packing boxes" in the menu"
+msgstr "Configurez les cases sous "FlagShip/Boîtes d'emballage" dans le menu"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Maximum weight in each box (only used when 'Split by weight' is chosen for box split."
+msgstr "Poids maximum dans chaque boîte (uniquement utilisé lorsque «Diviser en poids» est choisi pour la division de la boîte."
 
 #: includes/Order_Action_Processor.php
 msgid "FlagShip eCommerce Shipping"
@@ -214,6 +246,10 @@ msgid "Visit FlagShip site"
 msgstr "Visitez la site de FlagShip"
 
 #: includes/Helpers/Menu_Helper.php
+msgid "Packing boxes"
+msgstr "Boîtes d'emballage"
+
+#: includes/Helpers/Menu_Helper.php
 msgid "Settings"
 msgstr "Réglages"
 
@@ -232,3 +268,59 @@ msgstr "Pays d'origine"
 #: includes/Helpers/Product_Helper.php
 msgid "The HS (Harmonized Commodity Description and Coding System) Code is a 6–10 digit number for international shipments"
 msgstr "Le code HS (Système harmonisé de description et de codification des marchandises) est un numéro à 6 à 10 chiffres pour les expéditions internationales"
+
+#: templates/list_boxes.php
+msgid "Model name"
+msgstr "Nom du modèle"
+
+#: templates/list_boxes.php
+msgid "Length (in)"
+msgstr "Longueur (in)"
+
+#: templates/list_boxes.php
+msgid "Width (in)"
+msgstr "Largeur (in)"
+
+#: templates/list_boxes.php
+msgid "Height (in)"
+msgstr "Hauteur (in)"
+
+#: templates/list_boxes.php
+msgid "Weight (LB)"
+msgstr "Poids (LB)"
+
+#: templates/list_boxes.php
+msgid "Extra charge ($) (optional)"
+msgstr "Frais supplémentaire ($) (optionnel)"
+
+#: templates/list_boxes.php
+msgid "Boxes have been saved."
+msgstr "Les boîtes ont été enregistrées."
+
+#: templates/list_boxes.php
+msgid "Invalid submission. Please check all the fields."
+msgstr "Soumission non valide. Veuillez cocher tous les champs."
+
+#: templates/list_boxes.php
+msgid "Saving failed."
+msgstr "L'enregistrement a échoué."
+
+#: templates/list_boxes.php
+msgid "Note: When calculating shipping rates, if no box is set up or no suitable boxes are available for items, all the items will be placed in one single package for the calculation."
+msgstr "Remarque: lors du calcul des tarifs d'expédition, si aucune boîte n'est configurée ou qu'aucune boîte appropriée n'est disponible pour les articles, tous les articles seront placés dans un seul colis pour le calcul."
+
+#: templates/list_boxes.php
+msgid "Outer"
+msgstr "Extérieure"
+
+#: templates/list_boxes.php
+msgid "Inner"
+msgstr "Intérieur"
+
+#: templates/list_boxes.php
+msgid "Supported"
+msgstr "Soutenu"
+
+#: templates/list_boxes.php
+msgid "Empty"
+msgstr "Vide"
