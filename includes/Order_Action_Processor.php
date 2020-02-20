@@ -25,7 +25,7 @@ class Order_Action_Processor {
     public function __construct($order, $pluginSettings) 
     {
         $this->order = $order;
-        $this->pluginSettings = $pluginSettings;
+        $this->pluginSettings = $this->set_settings($pluginSettings);
     }
 
     public function addMetaBoxes()
@@ -88,6 +88,41 @@ class Order_Action_Processor {
                 add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));   
             }     
         }
+    }
+
+    protected function set_settings($settings) {
+        $instance_id = $this->get_instance_id($this->order->get_address('shipping'));
+
+        if ($instance_id) {
+            $instance_option_key = 'woocommerce_'.FlagshipWoocommerceShipping::$methodId.'_'.$instance_id.'_settings';
+            $instance_settings = get_option($instance_option_key);
+            $settings = array_merge($settings, $instance_settings);
+        }
+
+        return $settings;
+    }
+
+    protected function get_instance_id($shipping_address)
+    {
+        $fake_package = [];
+        $fake_package['destination'] = [
+            'country' => isset($shipping_address['country']) ? $shipping_address['country'] : null,
+            'state' => isset($shipping_address['state']) ? $shipping_address['state'] : null,
+            'postcode' => isset($shipping_address['postcode']) ? $shipping_address['postcode'] : null,
+        ];
+
+        $data_store = \WC_Data_Store::load( 'shipping-zone' );
+        $zone_id = $data_store->get_zone_id_from_package($fake_package);
+        $shipping_methods = (new \WC_Shipping_Zone($zone_id))->get_shipping_methods();
+        $filtered_methods = array_filter($shipping_methods, function($method) {
+            return $method->id == FlagshipWoocommerceShipping::$methodId && $method->is_enabled();
+        });
+        
+        if (count($filtered_methods) == 0) {
+            return;
+        }
+
+        return reset($filtered_methods)->instance_id;
     }
 
     public function order_custom_warning_filter($location)

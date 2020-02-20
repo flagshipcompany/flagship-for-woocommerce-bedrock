@@ -187,13 +187,17 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     {
         $shipping = $order->get_items('shipping');
 
+        if (!$shipping) {
+            return;
+        }
+
         return reset($shipping)->get_meta($key);
     }
 
     protected function makeTrackingEmails($destinationAddress, $options, $orderOptions)
     {
         $adminEmail = get_array_value($options, 'tracking_emails');
-        $customerEmail = get_array_value($orderOptions, 'send_tracking_emails', false) ? $destinationAddress['email'] : null;
+        $customerEmail = isset($destinationAddress['email']) && (get_array_value($orderOptions, 'send_tracking_emails', false) || get_array_value($options, 'send_tracking_emails', 'no') === 'yes') ? $destinationAddress['email'] : null;
         $trackingEmails = array_filter(array($adminEmail, $customerEmail));
 
         return implode(';', $trackingEmails);
