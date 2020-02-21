@@ -36,7 +36,7 @@
                       <th><?php _e('Inner','flagship-woocommerce-extension'); ?></th>
                       <th class="required_header"><?php _e('Outer','flagship-woocommerce-extension'); ?></th>
                       <th><?php _e('Inner','flagship-woocommerce-extension'); ?></th>
-                      <th class="required_header"><?php _e('Supported','flagship-woocommerce-extension'); ?></th>
+                      <th class="required_header" nowrap><?php _e('Supported','flagship-woocommerce-extension'); ?></th>
                       <th><?php _e('Empty','flagship-woocommerce-extension'); ?></th>
                       <th colspan="2"></th>
                       <th></th>
