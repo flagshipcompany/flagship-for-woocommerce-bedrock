@@ -328,3 +328,15 @@ msgstr "Soutenu"
 #: templates/list_boxes.php
 msgid "Empty"
 msgstr "Vide"
+
+#: templates/_order_filter.php
+msgid "FlagShip status"
+msgstr "Statut de FlagShip"
+
+#: templates/_order_filter.php
+msgid "exported"
+msgstr "exporté"
+
+#: templates/_order_filter.php
+msgid "not exported"
+msgstr "non exporté"

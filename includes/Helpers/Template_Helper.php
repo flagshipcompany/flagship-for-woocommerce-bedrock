@@ -5,18 +5,23 @@ class Template_Helper {
 
 	public static $placeholderPattern = '/{{(\s?)(%s)(\s?)}}/i';
 
-    public static function render_php($filePath, $data) {
-        extract($data);
-        include(self::get_file_path($filePath));
+    public static function render_php($filePath, $data = array()) {
+				if ($data) {
+					extract($data);
+				}
+
+				include(self::get_file_path($filePath));
     }
 
-    public static function render_embedded_php($filePath, $data) {
-        extract($data);
+    public static function render_embedded_php($filePath, $data = array()) {
+				if ($data) {
+					extract($data);
+				}
 
         ob_start();
         include(self::get_file_path($filePath));
         $content = ob_get_contents();
-        
+
         return ob_get_clean();
     }
 

@@ -6,7 +6,7 @@
     </th>
     <td class="forminp">
         <fieldset>
-            <legend class="screen-reader-text"><span>Box Split</span></legend>
+            <legend class="screen-reader-text"><span><?php esc_html_e('Box split', 'flagship-woocommerce-extension'); ?></span></legend>
               <?php
                 foreach ( $options as $key => $val ) {
                    ?>
