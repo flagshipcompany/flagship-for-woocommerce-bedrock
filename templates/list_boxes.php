@@ -1,4 +1,4 @@
-      
+
 <?php
   wp_enqueue_script('vuejs');
   wp_enqueue_script('package_boxes');
@@ -13,7 +13,7 @@
             <h1 class="woocommerce-layout__header-breadcrumbs"></h1>
         </div>
         <div class="wrap">
-            <h1 class="wp-heading-inline"><?php _e('Packing boxes','flagship-woocommerce-extension'); ?></h1>
+            <h1 class="wp-heading-inline"><?php _e('Package boxes','flagship-woocommerce-extension'); ?></h1>
             <div v-show="data_saved" id="saved_message" class="notice notice-success"><p><strong><?php _e('Boxes have been saved.','flagship-woocommerce-extension'); ?></strong></p></div>
             <div v-show="invalid_data" id="error_message" class="notice notice-error"><p><strong><?php _e('Invalid submission. Please check all the fields.', 'flagship-woocommerce-extension'); ?></strong></p></div>
             <div v-show="save_error" id="error_message" class="notice notice-error"><p><strong><?php _e('Saving failed.', 'flagship-woocommerce-extension'); ?></strong></p></div>
@@ -77,7 +77,7 @@
             <div>
               <p>
                 <?php _e('Note: When calculating shipping rates, if no box is set up or no suitable boxes are available for items, all the items will be placed in one single package for the calculation.','flagship-woocommerce-extension'); ?>
-              </p>              
+              </p>
             </div>
         </div>
     </div>

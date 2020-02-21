@@ -13,6 +13,12 @@ class Cart_Rates_Processor {
 
     private $rateOptions;
 
+    private $rate_meta_data_extra_fields = array(
+      'signature_required',
+      'residential_receiver_address',
+      'send_tracking_emails',
+    );
+
     public function __construct($methodId, $token, $instanceSettings) {
         $this->methodId = $methodId;
         $this->token = $token;
@@ -55,26 +61,24 @@ class Cart_Rates_Processor {
 
     protected function getRateOptions($instanceSettings)
     {
-        $allowedFields = array('signature_required', 'residential_receiver_address', 'send_tracking_emails');
-
         $optionValues = array_map(function($val) use ($instanceSettings) {
             if (get_array_value($instanceSettings, $val, 'no') == 'yes') {
                 return true;
             }
 
             return false;
-        }, $allowedFields);
+        }, $this->rate_meta_data_extra_fields);
 
-        $options = array_combine($allowedFields, $optionValues);
+        $options = array_combine($this->rate_meta_data_extra_fields, $optionValues);
         $options['box_split'] = get_array_value($instanceSettings, 'box_split', 'one_box');
         $options['box_split_weight'] = get_array_value($instanceSettings, 'box_split_weight', null);
-        $options['token'] = get_array_value($instanceSettings, 'token', '');        
+        $options['token'] = get_array_value($instanceSettings, 'token', '');
 
         return  array_filter($options);
     }
 
     protected function filterRates($rates)
-    {        
+    {
         $filteredRates = array_filter($rates, array($this, 'filterRateByServiceType'));
         $filteredRates = array_filter($filteredRates, array($this, 'filterRateByCourier'));
 
@@ -164,7 +168,7 @@ class Cart_Rates_Processor {
     }
 
     protected function filterRateByServiceType($rate)
-    {        
+    {
         $included = true;
 
         $settings = array(
@@ -178,13 +182,13 @@ class Cart_Rates_Processor {
             if ($matches[1] && $this->isSettingChecked($setting, 'no')) {
                 $included = !($this->removeRateByCodeType($rate->getFlagshipCode(), $matches[1]));
             }
-        }        
+        }
 
-        return $included;       
+        return $included;
     }
 
     protected function filterRateByCourier($rate)
-    {        
+    {
         $included = true;
         $couriers = FlagshipWoocommerceShipping::$couriers;
 
@@ -194,9 +198,9 @@ class Cart_Rates_Processor {
             if ($this->isSettingChecked($setting, 'yes')) {
                 $included = $rate->getCourierName() != array_flip(FlagshipWoocommerceShipping::$couriers)[$courier];
             }
-        }        
+        }
 
-        return $included;       
+        return $included;
     }
 
     protected function sortRates($a, $b)
@@ -244,13 +248,17 @@ class Cart_Rates_Processor {
 
     protected function convertOptionsToMeta($options)
     {
+        $meta_data_fields = array_filter($options, function($key) {
+          return in_array($key, $this->rate_meta_data_extra_fields);
+        }, ARRAY_FILTER_USE_KEY);
+
         return array_map(function($val) {
             if (is_bool($val)) {
                 return $val ? 'yes' : 'no';
             }
 
             return $val;
-        }, $options);
+        }, $meta_data_fields);
     }
 
     protected function makeTransitTimeText($deliveryDate)
@@ -260,7 +268,7 @@ class Cart_Rates_Processor {
         }
 
         $transitTime = ceil((strtotime($deliveryDate) - strtotime(date('Y-m-d')))/(24*60*60));
-        
+
         return sprintf(' - (%s: %s %s)', __('Time in transit', 'flagship-woocommerce-extension'), $transitTime, _n("day", __("days", 'flagship-woocommerce-extension'), $transitTime, 'flagship-woocommerce-extension'));
     }
 }

@@ -174,7 +174,7 @@ msgid "Use FlagShip Packing API to pack items into boxes"
 msgstr "Utiliser l'API FlagShip pour empaqueter les objets dans les boîtes"
 
 #: includes/WC_Flagship_Shipping_Method.php
-msgid "Set up the boxes under "FlagShip/Packing boxes" in the menu"
+msgid "Set up the boxes under "FlagShip/Package boxes" in the menu"
 msgstr "Configurez les cases sous "FlagShip/Boîtes d'emballage" dans le menu"
 
 #: includes/WC_Flagship_Shipping_Method.php
@@ -246,7 +246,7 @@ msgid "Visit FlagShip site"
 msgstr "Visitez la site de FlagShip"
 
 #: includes/Helpers/Menu_Helper.php
-msgid "Packing boxes"
+msgid "Package boxes"
 msgstr "Boîtes d'emballage"
 
 #: includes/Helpers/Menu_Helper.php

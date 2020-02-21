@@ -13,13 +13,13 @@ class Menu_Helper {
         'flagship_manage_shipment' => 'shipping/manage',
     );
 
-    public function add_flagship_to_menu($items) 
+    public function add_flagship_to_menu($items)
     {
         add_menu_page( 'FlagShip', 'FlagShip', 'manage_options', self::$menuItemUri, '', plugin_dir_url(FLAGSHIP_PLUGIN_FILE).'assets/images/flagship_logo.svg', 56.6);
 
         add_submenu_page(self::$menuItemUri, __( 'Shipment', 'flagship-woocommerce-extension'), __( 'Shipment', 'flagship-woocommerce-extension'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
         add_submenu_page(self::$menuItemUri, __( 'Manage shipment', 'flagship-woocommerce-extension'), __( 'Manage shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
-        add_submenu_page(self::$menuItemUri, __( 'Packing boxes', 'flagship-woocommerce-extension'), __( 'Packing boxes', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/boxes', array($this, 'list_boxes'));
+        add_submenu_page(self::$menuItemUri, __( 'Package boxes', 'flagship-woocommerce-extension'), __( 'Package boxes', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/boxes', array($this, 'list_boxes'));
 
         $this->add_settings_link();
         $this->add_flagship_link();
