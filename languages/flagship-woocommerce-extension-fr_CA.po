@@ -138,6 +138,10 @@ msgid "Tracking emails"
 msgstr "Suivi par couriel"
 
 #: includes/WC_Flagship_Shipping_Method.php
+msgid "Boxes"
+msgstr "Boîtes"
+
+#: includes/WC_Flagship_Shipping_Method.php
 msgid "The emails (separated by ;) to receive tracking information of shipments."
 msgstr "Les e-mails (séparé par ;) pour recevoir les informations de suivi des expéditions."
 

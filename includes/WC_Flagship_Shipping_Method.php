@@ -4,6 +4,7 @@ namespace FlagshipWoocommerce;
 use FlagshipWoocommerce\Helpers\Notification_Helper;
 use FlagshipWoocommerce\Helpers\Validation_Helper;
 use FlagshipWoocommerce\Helpers\Template_Helper;
+use FlagshipWoocommerce\Helpers\Menu_Helper;
 
 class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     
@@ -134,7 +135,10 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                     'one_box' => 'Everything in one box',
                     'box_per_item' => 'One box per item',
                     'by_weight' => 'Split by weight',
-                    'packing_api' => 'Use FlagShip Packing API to pack items into boxes',
+                    'packing_api' => 'Use FlagShip Packing API to pack items into',
+                ),
+                'extra_note' =>  array(
+                    'packing_api' => sprintf('<a href="%s">%s</a>', menu_page_url(Menu_Helper::$package_boxes_uri, false), __('Boxes','flagship-woocommerce-extension')),
                 ),
             ),
             'box_split_weight' => array(

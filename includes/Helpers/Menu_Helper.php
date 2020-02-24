@@ -8,6 +8,8 @@ class Menu_Helper {
 
     public static $menuItemUri = 'flagship/ship';
 
+    public static $package_boxes_uri = 'flagship/boxes';
+
     protected $flagshipUrlMap = array(
         'flagship_shipment' => 'shipping/ship',
         'flagship_manage_shipment' => 'shipping/manage',
@@ -19,7 +21,7 @@ class Menu_Helper {
 
         add_submenu_page(self::$menuItemUri, __( 'Shipment', 'flagship-woocommerce-extension'), __( 'Shipment', 'flagship-woocommerce-extension'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
         add_submenu_page(self::$menuItemUri, __( 'Manage shipment', 'flagship-woocommerce-extension'), __( 'Manage shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
-        add_submenu_page(self::$menuItemUri, __( 'Package boxes', 'flagship-woocommerce-extension'), __( 'Package boxes', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/boxes', array($this, 'list_boxes'));
+        add_submenu_page(self::$menuItemUri, __( 'Package boxes', 'flagship-woocommerce-extension'), __( 'Package boxes', 'flagship-woocommerce-extension'), 'manage_options', self::$package_boxes_uri, array($this, 'list_boxes'));
 
         $this->add_settings_link();
         $this->add_flagship_link();
