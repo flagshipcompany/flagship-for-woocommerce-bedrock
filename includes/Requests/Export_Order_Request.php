@@ -59,7 +59,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $commercialInvFields = array();
 
         if ($isIntl) {
-            $commercialInvFields = (new Commercial_Inv_Request_Helper())->makeIntShpFields($prepareRequest, $order, $currency);
+            $commercialInvFields = (new Commercial_Inv_Request_Helper())->makeIntShpFields($prepareRequest, $order);
         }
 
         if (!$shipmentId || !$selectedService || $nbrOfMissingFields || ($isIntl && !$commercialInvFields)) {
