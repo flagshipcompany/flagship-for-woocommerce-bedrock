@@ -31,9 +31,11 @@ class ECommerce_Request extends Rates_Request {
 
     protected function makeApiRequest($package, $options = array())
     {
+        $options['box_split'] = null; //Everything in one box
+        $options['dimension_unit'] = 'cm';
+        $options['weight_unit'] = 'g';
+        $options['units'] = 'metric';
         $request = parent::makeApiRequest($package, $options);
-        $request['packages']['items'][0]['weight'] = wc_get_weight($request['packages']['items'][0]['weight'], 'g', 'lbs');
-        $request['packages']['units'] = 'metric';
 
         return $request;
     }

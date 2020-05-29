@@ -13,7 +13,9 @@ class Package_Helper {
     }
 
     public function make_packages($order_items, $options) {
-    	$items = $this->extract_items($order_items);
+    	$items = $this->extract_items($order_items, $options);
+        $boxSplit = isset($options['box_split']) ? $options['box_split'] : null;
+        $units = isset($options['units']) ? $options['units'] : 'imperial';
 
     	switch ($options['box_split']) {
     		case 'packing_api':
@@ -33,22 +35,24 @@ class Package_Helper {
 
     	return array(
             'items' => $package_items,
-            'units' => 'imperial',
+            'units' => $units,
             'type' => 'package',
         );
     }
 
-    protected function extract_items($order_items) {
+    protected function extract_items($order_items, $options) {
         $weight_unit = get_option('woocommerce_weight_unit');
         $dimension_unit = get_option('woocommerce_dimension_unit');
+        $output_weight_unit = isset($options['weight_unit']) ? $options['weight_unit'] : 'lbs';
+        $output_dimension_unit = isset($options['dimension_unit']) ? $options['dimension_unit'] : 'in';
         $items = array();
 
         foreach ( $order_items as $item_id => $product_item ) { 
             $product = $product_item['product'];
-            $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), 'lbs', $weight_unit)) : 1;
-            $length = $product->get_length() ? round(wc_get_dimension($product->get_length(), 'in', $dimension_unit)) : 1;
-            $width = $product->get_width() ? round(wc_get_dimension($product->get_width(), 'in', $dimension_unit)) : 1;
-            $height = $product->get_height() ? round(wc_get_dimension($product->get_height(), 'in', $dimension_unit)) : 1;            
+            $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), $output_weight_unit, $weight_unit)) : 1;
+            $length = $product->get_length() ? round(wc_get_dimension($product->get_length(), $output_dimension_unit, $dimension_unit)) : 1;
+            $width = $product->get_width() ? round(wc_get_dimension($product->get_width(), $output_dimension_unit, $dimension_unit)) : 1;
+            $height = $product->get_height() ? round(wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit)) : 1;            
            	$description = $product->get_name();
            	$item = array(
            		'length' => $length,
