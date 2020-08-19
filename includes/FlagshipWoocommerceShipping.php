@@ -9,7 +9,7 @@ use FlagshipWoocommerce\Helpers\Script_Helper;
 use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
 
 class FlagshipWoocommerceShipping {
-	
+
 	public static $methodId = 'flagship_shipping_method';
 
 	public static $version = '1.0.0';
@@ -20,6 +20,7 @@ class FlagshipWoocommerceShipping {
         'FedEx' => 'fedex',
         'Purolator' => 'purolator',
         'Canpar' => 'canpar',
+		'Dicom' => 'dicom',
 	);
 
 	protected static $_instance = null;
@@ -43,11 +44,11 @@ class FlagshipWoocommerceShipping {
 	public static function getFlagshipUrl() {
 		return self::isDebugMode() ? getenv('FLAGSHIP_URL') : 'https://smartship-ng.flagshipcompany.com';
 	}
-	
+
 	public function __construct() {
 		$this->handleThirdPartyLibraries();
 
-		$this->hooks();	
+		$this->hooks();
 	}
 
 	//Handle the scenario that the plugin is installed without composer require
@@ -91,10 +92,10 @@ class FlagshipWoocommerceShipping {
 
 	public function save_meta_box($orderId) {
 		$orderActionProcessor = $this->init_order_action_processor(wc_get_order($orderId));
-        
+
         return $orderActionProcessor->processOrderActions($_POST);
 	}
-	
+
 	public function add_flagship_shipping_method($methods) {
 		$methods[self::$methodId] = new WC_Flagship_Shipping_Method();
 
@@ -115,7 +116,7 @@ class FlagshipWoocommerceShipping {
     }
 
 	protected function init_order_action_processor($order)
-	{      
+	{
         $settings = get_option(self::getSettingsOptionKey());
 
         return new Order_Action_Processor($order, $settings);

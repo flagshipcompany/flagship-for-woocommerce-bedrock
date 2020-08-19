@@ -26,7 +26,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     	$this->apiUrl = $this->getApiUrl();
         $this->fullAddressFields = array_merge($this->requiredAddressFields, array('address', 'suite', 'first_name', 'last_name'));
     }
-    
+
     public function exportOrder($order, $options)
     {
         $storeAddress = $this->getStoreAddress(true);
@@ -142,12 +142,14 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $billingAddress = $order->get_address('billing');
 
         $fullAddress = $this->getDestinationAddress($shippingAddress, $this->fullAddressFields);
-        $fullAddress['attn'] = trim($fullAddress['first_name'].' '.$fullAddress['last_name']);
+        $fullAddress['attn'] = substr(trim($fullAddress['first_name'].' '.$fullAddress['last_name']),0,21);
         unset($fullAddress['first_name']);
         unset($fullAddress['last_name']);
-        $fullAddress['name'] = $fullAddress['attn'];
+        $fullAddress['name'] = substr($fullAddress['attn'],0,30);
         $fullAddress['phone'] = trim($billingAddress['phone']);
         $fullAddress['email'] = trim($billingAddress['email']);
+
+        $fullAddress['address'] = substr($fullAddress['address'],0,30);
 
         if ($this->getOrderShippingMeta($order, 'residential_receiver_address') == 'yes') {
             $fullAddress['is_commercial'] = false;

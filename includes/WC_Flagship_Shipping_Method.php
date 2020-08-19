@@ -7,7 +7,7 @@ use FlagshipWoocommerce\Helpers\Template_Helper;
 use FlagshipWoocommerce\Helpers\Menu_Helper;
 
 class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
-    
+
 	private $token;
 
     /**
@@ -18,8 +18,8 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     public function __construct($instance_id = 0) {
         parent::__construct($instance_id);
 
-        $this->id = FlagshipWoocommerceShipping::$methodId; 
-        $this->method_title = __('FlagShip Shipping', 'flagship-woocommerce-extension');  
+        $this->id = FlagshipWoocommerceShipping::$methodId;
+        $this->method_title = __('FlagShip Shipping', 'flagship-woocommerce-extension');
         $this->method_description = __('Obtain FlagShip shipping rates for orders and export order to FlagShip to dispatch shipment', 'flagship-woocommerce-extension');
         $this->supports = array(
             'shipping-zones',
@@ -38,7 +38,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
      * @return void
      */
     public function init() {
-        $this->init_form_fields(); 
+        $this->init_form_fields();
         $this->init_settings();
 
         add_action( 'woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
@@ -46,9 +46,9 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     }
 
     /**
-     * @return void 
+     * @return void
      */
-    public function init_form_fields() { 
+    public function init_form_fields() {
 
         $this->form_fields = $this->makeGeneralFields();
         $this->instance_form_fields = $this->makeInstanceFields();
@@ -138,7 +138,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                     'packing_api' => 'Use FlagShip Packing API to pack items into',
                 ),
                 'extra_note' =>  array(
-                    'packing_api' => sprintf('<a href="%s">%s</a>', menu_page_url(Menu_Helper::$package_boxes_uri, false), __('Boxes','flagship-woocommerce-extension')),
+                    'packing_api' => sprintf('<a href="%s" target="_blank">%s</a>',admin_url('admin.php?page=flagship/boxes'), __('Boxes','flagship-woocommerce-extension')),
                 ),
             ),
             'box_split_weight' => array(
@@ -297,7 +297,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 break;
             case 'state':
                 $country = explode(':', $location->code)[0];
-                break;            
+                break;
             default:
                 $country = null;
                 break;
