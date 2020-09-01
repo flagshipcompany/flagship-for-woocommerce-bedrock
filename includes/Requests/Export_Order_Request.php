@@ -4,6 +4,7 @@ namespace FlagshipWoocommerce\Requests;
 use Flagship\Shipping\Flagship;
 use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 use FlagshipWoocommerce\Helpers\Package_Helper;
+use FlagshipWoocommerce\Requests\Confirm_Shipment_Request;
 
 class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
@@ -24,34 +25,54 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     {
     	$this->token = $token;
     	$this->apiUrl = $this->getApiUrl();
+        $this->webUrl = $this->getWebUrl();
         $this->fullAddressFields = array_merge($this->requiredAddressFields, array('address', 'suite', 'first_name', 'last_name'));
     }
 
     public function exportOrder($order, $options)
     {
-        $storeAddress = $this->getStoreAddress(true);
-        $prepareRequest = $this->makePrepareRequest($storeAddress, $order, $options);
+        $storeAddress = $this->getStoreAddress(true, false, $options);
+        $prepareRequest = $this->makePrepareRequest($order, $options);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
-        $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);
-        $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
-        $exportedShipment = $prepareRequestObj->execute();
+        try
+        {
+            $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);
+            $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
+            $exportedShipment = $prepareRequestObj->execute();
 
-        $editShipmentData = $this->makeExtraFieldsForEdit($order, $storeAddress, $exportedShipment, $prepareRequest);
+            $editShipmentData = $this->makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options);
 
-        if ($editShipmentData) {
-            $editRequest = array_merge($prepareRequest, $editShipmentData);
-            $editRequestObj = $apiClient->editShipmentRequest($editRequest, $exportedShipment->getId());
-            $editRequestObj = $this->addHeaders($editRequestObj, $storeAddress['name'], $order->get_id());
-            $exportedShipment = $editRequestObj->execute();
+            if($editShipmentData)
+            {
+                $exportedShipment = $this->editShipment($order,$exportedShipment,$prepareRequest,$editShipmentData, $options);
+            }
+            return $exportedShipment;
         }
-
-        return $exportedShipment;
+        catch(\Exception $e)
+        {
+            error_log($e->getMessage());
+        }
     }
 
-    public function makeExtraFieldsForEdit($order, $storeAddress, $exportedShipment, $prepareRequest)
+    public function editShipment($order, $flagshipShipment, $preparePayload, $editShipmentData, $options)
+    {
+        $storeAddress = $this->getStoreAddress(true, false, $options);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
+        $editRequest = array_merge($preparePayload, $editShipmentData);
+        $editRequestObj = $apiClient->editShipmentRequest($editRequest, $flagshipShipment->getId());
+        $editRequestObj = $this->addHeaders($editRequestObj, $storeAddress['name'], $order->get_id());
+        try{
+            $exportedShipment = $editRequestObj->execute();
+            return $exportedShipment;
+        } catch(\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options)
     {
         $extraFields = array();
-
+        $storeAddress = $this->getStoreAddress(true,false,$options);
         $selectedService = $this->findShippingServiceInOrder($order);
         $nbrOfMissingFields = count($this->findMissingAddressFieldsForEdit($storeAddress));
         $shipmentId = $exportedShipment->getId();
@@ -82,8 +103,9 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         return count(array_filter($address)) == count($address);
     }
 
-    protected function makePrepareRequest($storeAddress, $order, $options)
+    public function makePrepareRequest($order, $options)
     {
+        $storeAddress = $this->getStoreAddress(true, false, $options);
         $orderOptions = $this->getOrderOptions($order);
 
         $destinationAddress = $this->getFullDestinationAddress($order);
@@ -117,12 +139,24 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         return $request;
     }
 
+    public function getFlagshipUrl()
+    {
+        return $this->webUrl;
+    }
+
+    public function confirmShipment($shipmentId)
+    {
+        $confirmShipmentRequest = new Confirm_Shipment_Request($this->token);
+        $confirmedShipment = $confirmShipmentRequest->confirmShipmentById($shipmentId);
+        return $confirmedShipment;
+    }
+
     protected function isIntShipment($prepareRequest)
     {
         return ($prepareRequest['from']['country'] == 'CA' && $prepareRequest['to']['country'] != 'CA') || ($prepareRequest['from']['country'] != 'CA' && $prepareRequest['to']['country'] == 'CA');
     }
 
-    protected function extractOrderItems($items)
+    public function extractOrderItems($items)
     {
         $orderItems = array();
 

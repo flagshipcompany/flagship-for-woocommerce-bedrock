@@ -28,6 +28,11 @@ abstract class Abstract_Flagship_Api_Request {
     	return FlagshipWoocommerceShipping::isDebugMode() ? getenv('FLAGSHIP_API_URL') : 'https://api.smartship.io';
     }
 
+    protected function getWebUrl()
+    {
+        return FlagshipWoocommerceShipping::isDebugMode() ? getenv('FLAGSHIP_WEB_URL') : 'https://smartship-ng.flagshipcompany.com';
+    }
+
     protected function addHeaders($prepareRequest, $storeName, $orderId)
     {
         return $prepareRequest
@@ -36,9 +41,27 @@ abstract class Abstract_Flagship_Api_Request {
             ->setOrderLink(get_edit_post_link($orderId, null));
     }
 
-    protected function getStoreAddress($fullAddress = false, $getEmail = false)
+    public function getStoreAddress($fullAddress = false, $getEmail = false, $options = array())
     {
         $storeAddress = array();
+
+        if(isset($options['dropshipping_address_city']))
+        {
+            $dropShipAddress['postal_code'] = trim($options['dropshipping_address_postal_code']);
+            $dropShipAddress['country'] = 'CA';
+            $dropShipAddress['state'] = $options['dropshipping_address_state'];
+            $dropShipAddress['city'] = trim($options['dropshipping_address_city']);
+            if($fullAddress){
+                $address = trim($options['dropshipping_address_street_address']);
+                $dropShipAddress['address'] = substr($address,0,30);
+                $dropShipAddress['suite'] = substr(trim($options['dropshipping_address_suite']),0,18);
+                $company = $options['dropshipping_address_company'];
+                $dropShipAddress['name'] = substr((empty($company) ? trim($options['dropshipping_address_name']) : $company),0,30);
+                $dropShipAddress['attn'] = substr(trim($options['dropshipping_address_name']),0,21);
+                $dropShipAddress['phone'] = trim($options['dropshipping_address_phone']);
+            }
+            return $dropShipAddress;
+        }
 
         $storeAddress['postal_code'] = trim(get_option('woocommerce_store_postcode', ''));
         $countryState = $this->getCountryState();
@@ -47,10 +70,10 @@ abstract class Abstract_Flagship_Api_Request {
         $storeAddress['city'] = trim(get_option('woocommerce_store_city', ''));
 
         if ($fullAddress) {
-            $storeAddress['address'] = trim(get_option('woocommerce_store_address', ''));
-            $storeAddress['suite'] = trim(get_option('woocommerce_store_address_2', ''));
-            $storeAddress['name'] = trim(get_option('woocommerce_store_name', ''));
-            $storeAddress['attn'] = trim(get_option('woocommerce_store_attn', ''));
+            $storeAddress['address'] = substr(trim(get_option('woocommerce_store_address', '')),0,30);
+            $storeAddress['suite'] = substr(trim(get_option('woocommerce_store_address_2', '')),0,18);
+            $storeAddress['name'] = substr(trim(get_option('woocommerce_store_name', '')),0,30);
+            $storeAddress['attn'] = substr(trim(get_option('woocommerce_store_attn', '')),0,21);
             $storeAddress['phone'] = trim(get_option('woocommerce_store_phone', ''));
         }
 
@@ -125,5 +148,22 @@ abstract class Abstract_Flagship_Api_Request {
         if (FlagshipWoocommerceShipping::isDebugMode() || $this->debugMode) {
             wc_add_notice($message, $type);
         }
+    }
+
+    protected function getOrderShippingAddress($order)
+    {
+        $shippingAddress = [];
+
+        $shippingAddress['postal_code'] = $order->get_shipping_postcode();
+        $shippingAddress['country'] = $order->get_shipping_country();
+        $shippingAddress['state'] = $order->get_shipping_state();
+        $shippingAddress['city'] = $order->get_shipping_city();
+        $shippingAddress['address'] = substr($order->get_shipping_address_1(),0,30);
+        $shippingAddress['suite'] = substr($order->get_shipping_address_2(),0,18);
+        $shippingAddress['name'] = substr($order->get_shipping_first_name().' '.$order->get_shipping_last_name(),0,30);
+        $shippingAddress['attn'] = substr($order->get_shipping_first_name(),0,21);
+        $shippingAddress['phone'] = $order->get_billing_phone();
+
+        return $shippingAddress;
     }
 }

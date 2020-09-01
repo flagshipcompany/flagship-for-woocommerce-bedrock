@@ -1,8 +1,10 @@
 
 <?php
-  wp_enqueue_script('vuejs');
-  wp_enqueue_script('package_boxes');
-  wp_enqueue_style('flagship_style');
+    wp_enqueue_script('vuejs');
+    wp_enqueue_script('package_boxes');
+    wp_enqueue_style('flagship_style');
+
+    $shipping_classes = get_terms( array('taxonomy' => 'product_shipping_class', 'hide_empty' => false ) );
 ?>
 
 <div id="flagship_package_boxes">
@@ -26,6 +28,7 @@
                       <th colspan="2"><strong><?php _e('Height (in)','flagship-woocommerce-extension'); ?></strong></th>
                       <th colspan="2"><strong><?php _e('Weight (LB)','flagship-woocommerce-extension'); ?></strong></th>
                       <th colspan="2"><strong><?php _e('Extra charge ($) (optional)','flagship-woocommerce-extension'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Shipping Class (optional)','flagship-woocommerce-extension'); ?></strong></th>
                       <th></th>
                   </tr>
                   <tr>
@@ -39,34 +42,41 @@
                       <th class="required_header" nowrap><?php _e('Supported','flagship-woocommerce-extension'); ?></th>
                       <th><?php _e('Empty','flagship-woocommerce-extension'); ?></th>
                       <th colspan="2"></th>
+                      <th colspan="2"></th>
                       <th></th>
                   </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(box, index) in boxes" v-bind:key="index" ref="box_list">
                         <td colspan="2"><input v-model.trim="box.model" v-bind:name=" 'flagship_boxes' + index + '_model' " v-bind:id=" 'flagship_boxes' + index + '_model' " type="text" style="width:100px;"></td>
-                        <td><input v-model.number="box.length" v-bind:name=" 'flagship_boxes' + index + '_length' " v-bind:id=" 'flagship_boxes' + index + '_length' " type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box.inner_length" v-bind:name=" 'flagship_boxes' + index + '_inner_length' " v-bind:id=" 'flagship_boxes' + index + '_inner_length' " type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box.width" v-bind:name=" 'flagship_boxes' + index + '_width' " v-bind:id=" 'flagship_boxes' + index + '_width' " type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box.inner_width" v-bind:name=" 'flagship_boxes' + index + '_inner_width' " v-bind:id=" 'flagship_boxes' + index + '_inner_width' " type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box.height" v-bind:name=" 'flagship_boxes' + index + '_height' " v-bind:id=" 'flagship_boxes' + index + '_height' " type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box.inner_height" v-bind:name=" 'flagship_boxes' + index + '_inner_height' " v-bind:id=" 'flagship_boxes' + index + '_inner_height' " type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box.max_weight" v-bind:name=" 'flagship_boxes' + index + '_max_weight' " v-bind:id=" 'flagship_boxes' + index + '_max_weight' " type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box.weight" v-bind:name=" 'flagship_boxes' + index + '_weight' " v-bind:id=" 'flagship_boxes' + index + '_weight' " type="number" style="width:50px;"></td>
-                        <td colspan="2"><input v-model.number="box.extra_charge" v-bind:name=" 'flagship_boxes' + index + '_extra_charge' " v-bind:id=" 'flagship_boxes' + index + '_extra_charge' " type="number" style="width:100px;"></td>
-                        <td><button v-on:click="removeBox(box.id)" v-bind:name=" 'remove_' + box.id" class="button-link-delete"><?php _e('Remove'); ?></button></td>
+                        <td><input v-model.number="box.length" v-bind:name=" 'flagship_boxes' + index + '_length' " v-bind:id=" 'flagship_boxes' + index + '_length' " type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box.inner_length" v-bind:name=" 'flagship_boxes' + index + '_inner_length' " v-bind:id=" 'flagship_boxes' + index + '_inner_length' " type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box.width" v-bind:name=" 'flagship_boxes' + index + '_width' " v-bind:id=" 'flagship_boxes' + index + '_width' " type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box.inner_width" v-bind:name=" 'flagship_boxes' + index + '_inner_width' " v-bind:id=" 'flagship_boxes' + index + '_inner_width' " type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box.height" v-bind:name=" 'flagship_boxes' + index + '_height' " v-bind:id=" 'flagship_boxes' + index + '_height' " type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box.inner_height" v-bind:name=" 'flagship_boxes' + index + '_inner_height' " v-bind:id=" 'flagship_boxes' + index + '_inner_height' " type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box.max_weight" v-bind:name=" 'flagship_boxes' + index + '_max_weight' " v-bind:id=" 'flagship_boxes' + index + '_max_weight' " type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box.weight" v-bind:name=" 'flagship_boxes' + index + '_weight' " v-bind:id=" 'flagship_boxes' + index + '_weight' " type="text" style="width:50px;"></td>
+                        <td colspan="2"><input v-model.number="box.extra_charge" v-bind:name=" 'flagship_boxes' + index + '_extra_charge' " v-bind:id=" 'flagship_boxes' + index + '_extra_charge' " type="text" style="width:100px;"></td>
+                        <td colspan="2"><input v-model.trim="box.shipping_class" v-bind:name=" 'flagship_boxes' + index + '_shipping_class'" v-bind:id=" 'flagship_boxes' + index + '_shipping_class' " type="text" style="width:100px;" disabled="disabled"></td>
+                        <td><button v-on:click="removeBox(box.id)" v-bind:name=" 'remove_' + box.id" class="button-link-delete button"><?php _e('Remove'); ?></button></td>
                     </tr>
                     <tr ref="box_new">
                         <td colspan="2"><input v-model.trim="box_form.model" name="flagship_boxes_new_model" id="flagship_boxes_new_model" type="text" style="width:100px;"></td>
-                        <td><input v-model.number="box_form.length" name="flagship_boxes_new_length" id="flagship_boxes_new_length" type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box_form.inner_length" name="flagship_boxes_new_inner_length" id="flagship_boxes_new_inner_length" type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box_form.width" name="flagship_boxes_new_width" id="flagship_boxes_new_width" type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box_form.inner_width" name="flagship_boxes_new_inner_width" id="flagship_boxes_new_inner_width" type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box_form.height" name="flagship_boxes_new_height" id="flagship_boxes_new_height" type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box_form.inner_height" name="flagship_boxes_new_inner_height" id="flagship_boxes_new_inner_height" type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box_form.max_weight" name="flagship_boxes_new_max_weight" id="flagship_boxes_new_max_weight" type="number" style="width:50px;"></td>
-                        <td><input v-model.number="box_form.weight" name="flagship_boxes_new_weight" id="flagship_boxes_new_weight" type="number" style="width:50px;"></td>
-                        <td colspan="2"><input v-model.number="box_form.extra_charge" name="flagship_boxes_new_extra_charge" id="flagship_boxes_new_extra_charge" type="number" style="width:100px;"></td>
+                        <td><input v-model.number="box_form.length" name="flagship_boxes_new_length" id="flagship_boxes_new_length" type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box_form.inner_length" name="flagship_boxes_new_inner_length" id="flagship_boxes_new_inner_length" type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box_form.width" name="flagship_boxes_new_width" id="flagship_boxes_new_width" type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box_form.inner_width" name="flagship_boxes_new_inner_width" id="flagship_boxes_new_inner_width" type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box_form.height" name="flagship_boxes_new_height" id="flagship_boxes_new_height" type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box_form.inner_height" name="flagship_boxes_new_inner_height" id="flagship_boxes_new_inner_height" type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box_form.max_weight" name="flagship_boxes_new_max_weight" id="flagship_boxes_new_max_weight" type="text" style="width:50px;"></td>
+                        <td><input v-model.number="box_form.weight" name="flagship_boxes_new_weight" id="flagship_boxes_new_weight" type="text" style="width:50px;"></td>
+                        <td colspan="2"><input v-model.number="box_form.extra_charge" name="flagship_boxes_new_extra_charge" id="flagship_boxes_new_extra_charge" type="text" style="width:100px;"></td>
+                        <td colspan="2"><select v-model.trim="box_form.shipping_class" name="flagship_boxes_new_shipping_class" id="flagship_boxes_new_shipping_class" style="width:100px">
+                            <?php foreach ($shipping_classes as $shipping_class) { ?>
+                                <option value="<?php echo $shipping_class->name; ?>"><?php echo $shipping_class->name; ?></option>
+                            <?php } ?>
+                        </select></td>
                         <td></td>
                     </tr>
                 </tbody>

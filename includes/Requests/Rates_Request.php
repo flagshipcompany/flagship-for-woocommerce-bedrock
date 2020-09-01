@@ -9,7 +9,7 @@ use FlagshipWoocommerce\Helpers\Package_Helper;
 class Rates_Request extends Abstract_Flagship_Api_Request {
 
     protected $debugMode = false;
-    
+
     public function __construct($token, $debugMode = false)
     {
     	$this->token = $token;
@@ -17,32 +17,64 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         $this->debugMode = $debugMode;
     }
 
-    public function getRates($package, $options = array())
+    public function getRates($package, $options = array(), $admin=0, $order=null)
     {
-        $apiRequest = $this->makeApiRequest($package, $options);
+        if($admin==1)
+        {
+            $orderItems = $this->getOrderItems($order);
+            $packages = $this->getPackages($orderItems,$options);
+            $sourceAddress = $this->getStoreAddress();
+
+            $shippingAddress = $this->getOrderShippingAddress($order);
+            $apiRequest = $this->getRequest($sourceAddress,$shippingAddress,$packages, $options);
+        }
+        if($admin==0)
+        {
+            $apiRequest = $this->makeApiRequest($package, $options);
+        }
+
     	$apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
 
     	try{
 		    $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
 		}
 		catch(\Exception $e){
-			$this->debug($e->getMessage(), 'error');
 			$rates = new RatesCollection();
 		}
 
 		return $rates;
     }
 
+    public function getOrderItems($order)
+    {
+        $orderItems = [];
+        $items = $order->get_items();
+        foreach ($items as $item_id => $value) {
+            $item = [];
+            $item["product"] = $value->get_product();
+            $item["quantity"] = $value->get_quantity();
+            $orderItems[] = $item;
+        }
+        return $orderItems;
+    }
+
     protected function makeApiRequest($package, $options = array())
     {
         $storeAddress = $this->getStoreAddress();
         $destinationAddress = $this->getDestinationAddress($package['destination'], $this->requiredAddressFields, $options);
-        $packageHelper = new Package_Helper($this->debugMode);
-        $packages = $packageHelper->make_packages($this->extractOrderItems($package), $options);
+
+        $packages = $this->getPackages($this->extractOrderItems($package),$options);
+
+        $request = $this->getRequest($storeAddress,$destinationAddress,$packages, $options);
+        return $request;
+    }
+
+    protected function getRequest($sourceAddress, $destinationAddress, $packages, $options)
+    {
         $shippingOptions = $this->makeShippingOptions($options);
 
         $request = array(
-            'from' => $storeAddress,
+            'from' => $sourceAddress,
             'to' => $destinationAddress,
             'packages' => $packages
         );
@@ -52,6 +84,14 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         }
 
         return $request;
+
+    }
+
+    public function getPackages($orderItems,$options)
+    {
+        $packageHelper = new Package_Helper($this->debugMode);
+        $packages = $packageHelper->make_packages($orderItems,$options);
+        return $packages;
     }
 
     protected function extractOrderItems($items)

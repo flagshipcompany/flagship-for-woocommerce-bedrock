@@ -7,7 +7,7 @@ use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 class Packing_Request extends Abstract_Flagship_Api_Request {
 
     protected $debugMode = false;
-    
+
     public function __construct($token, $debugMode = false) {
     	$this->token = $token;
     	$this->apiUrl = $this->getApiUrl();
@@ -15,29 +15,107 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
     }
 
     public function pack_boxes($items, $boxes) {
-        $apiRequest = $this->make_api_request($items, $boxes);
+        $packageBoxes = [];
+        $apiRequests = $this->make_api_request($items, $boxes);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
 
         try{
-            $packing_results = $apiClient->packingRequest($apiRequest)->execute();
+            foreach ($apiRequests as $apiRequest) {
+                $packing_results = $apiClient->packingRequest($apiRequest)->execute();
+                $packageBoxes[] = $this->prepareBoxesFromPackages($packing_results);
+            }
+            return $packageBoxes;
         }
         catch(\Exception $e){
             $this->debug($e->getMessage(), 'error');
-
             return false;
         }
+    }
 
-        return $this->convert_packing_to_boxes($packing_results);
+    protected function prepareBoxesFromPackages($packages)
+    {
+        foreach ($packages as $key => $package) {
+            $temp = [
+                "description" => $package->getBoxModel(),
+                "length" => $package->getLength(),
+                "width" => $package->getWidth(),
+                "height" => $package->getHeight(),
+                "weight" => $package->getWeight(),
+            ];
+        }
+        return $temp;
     }
 
     protected function make_api_request($items, $boxes) {
-        $boxes = $this->make_boxes_request($boxes);
 
-        return array(
-            'items' => $items,
-            'boxes' => $boxes,
-            'units' => 'imperial',
-        );
+        $shipping_classes = get_terms( array('taxonomy' => 'product_shipping_class', 'hide_empty' => false ) );
+
+        if(count($shipping_classes) == 0)
+        {
+            $boxes = $this->make_boxes_request($boxes);
+            return array(
+                'items' => $items,
+                'boxes' => $boxes,
+                'units' => 'imperial',
+            );
+        }
+
+        foreach ($items as $item) {
+            if($item['shipping_class'] != null)
+            {
+                $packages[$item['shipping_class']]['items'][] = $this->getShippingClassItem($item);
+                continue;
+            }
+            $packages['no_shipping_class']['items'][] = $this->getShippingClassItem($item);
+        }
+        foreach ($boxes as $box) {
+            if($box['shipping_class'] != null)
+            {
+                $packages[$box['shipping_class']]['boxes'][] = $this->getShippingClassBox($box);
+
+                continue;
+            }
+            $packages['no_shipping_class']['boxes'][] = $this->getShippingClassBox($box);
+        }
+
+        $packages = $this->addUnits($packages,$boxes);
+
+        return $packages;
+    }
+
+    protected function addUnits($packages,$boxes)
+    {
+        $packages = array_map(function($arr) use ($boxes){
+            $arr['units'] = 'imperial';
+            if(!array_key_exists('boxes',$arr))
+            {
+                $arr['boxes'] = $this->make_boxes_request($boxes);
+            }
+            if(!array_key_exists('items', $arr)){
+                $arr = [];
+            }
+
+            return $arr;
+        }, $packages);
+
+        $packages = array_filter($packages,function($value){ return count($value)>0; });
+        return $packages;
+    }
+
+    protected function getShippingClassBox($box){
+
+            $box['box_model'] = $box['model'];
+            $box['weight'] = 0;
+            unset($box['id']);
+            unset($box['model']);
+            unset($box['extra_charge']);
+            unset($box['shipping_class']);
+            return $box;
+    }
+
+    protected function getShippingClassItem($item){
+        unset($item['shipping_class']);
+        return $item;
     }
 
     protected function make_boxes_request($boxes) {
@@ -47,28 +125,8 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
             unset($box['id']);
             unset($box['model']);
             unset($box['extra_charge']);
-
+            unset($box['shipping_class']);
             return $box;
         }, $boxes);
-    }
-
-    protected function convert_packing_to_boxes($packed_boxes) {
-        return array_map(function($box) {
-            $package_item = array();
-            $package_item['length'] = $box->getLength();
-            $package_item['width'] = $box->getWidth();
-            $package_item['height'] = $box->getHeight();
-            $package_item['weight'] = $box->getWeight();
-            $descriptions = array_unique($box->getItems());
-            $description = implode(';', $descriptions);
-
-            if (strlen($description) > 35) {
-                $description = $descriptions[0];
-            }
-
-            $package_item['description'] = $description;
-
-            return $package_item;
-        }, $packed_boxes->all());
     }
 }

@@ -23,6 +23,18 @@ class FlagshipWoocommerceShipping {
 		'Dicom' => 'dicom',
 	);
 
+	public static $dropShippingAddressFields = array(
+		'name' => 'Name',
+		'company' => 'Company',
+		'street_address' => 'Street Address',
+		'suite' => 'Suite',
+		'city' => 'City',
+		'state' => 'Province',
+		'postal_code' => 'Postal Code',
+		'phone' => 'Phone',
+		'phone_ext' => 'Phone Ext',
+	);
+
 	protected static $_instance = null;
 
 	public static function instance() {
@@ -34,7 +46,7 @@ class FlagshipWoocommerceShipping {
 	}
 
 	public static function isDebugMode() {
-		return getenv('FLAGSHIP_DEBUG_MODE') === 'yes';
+		return getenv('FLAGSHIP_DEBUG_MODE') === true;
 	}
 
 	public static function getSettingsOptionKey() {
@@ -42,7 +54,7 @@ class FlagshipWoocommerceShipping {
 	}
 
 	public static function getFlagshipUrl() {
-		return self::isDebugMode() ? getenv('FLAGSHIP_URL') : 'https://smartship-ng.flagshipcompany.com';
+		return self::isDebugMode() ? getenv('FLAGSHIP_URL') : 'http://192.168.2.25:3006';
 	}
 
 	public function __construct() {
