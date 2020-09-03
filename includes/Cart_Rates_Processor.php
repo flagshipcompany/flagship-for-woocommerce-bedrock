@@ -28,8 +28,10 @@ class Cart_Rates_Processor {
 
     public function fetchRates($package)
     {
+
         $debugMode = get_array_value($this->instanceSettings, 'debug_mode', 'no') == 'yes';
-        $ratesRequest = new Rates_Request($this->token, $debugMode);
+        $testEnv = get_array_value($this->instanceSettings,'test_env') == 'no' ? 0 : 1;
+        $ratesRequest = new Rates_Request($this->token, $debugMode, $testEnv);
         $rates = $ratesRequest->getRates($package, $this->rateOptions)->all();
 
         if (get_array_value($this->instanceSettings, 'offer_dhl_ecommerce_rates', null) == 'yes') {

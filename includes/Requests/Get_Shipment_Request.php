@@ -6,10 +6,10 @@ use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
 class Get_Shipment_Request extends Abstract_Flagship_Api_Request {
 
-    public function __construct($token)
+    public function __construct($token, $testEnv=0)
     {
     	$this->token = $token;
-    	$this->apiUrl = $this->getApiUrl();
+    	$this->apiUrl = $this->getApiUrl($testEnv);
     }
 
     public function getShipmentById($id)

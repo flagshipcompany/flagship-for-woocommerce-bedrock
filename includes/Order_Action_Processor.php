@@ -5,12 +5,6 @@ use FlagshipWoocommerce\Requests\Export_Order_Request;
 use FlagshipWoocommerce\Requests\Get_Shipment_Request;
 use FlagshipWoocommerce\Requests\Rates_Request;
 use FlagshipWoocommerce\Helpers\Menu_Helper;
-use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
-use FlagshipWoocommerce\Requests\Packing_Request;
-use FlagshipWoocommerce\Helpers\Package_Helper;
-
-//TBD : exception handling for all requests
-//commit vendor folder and remove sdk notice
 
 class Order_Action_Processor {
 
@@ -142,7 +136,8 @@ class Order_Action_Processor {
 
             $shipmentId = $this->getShipmentIdFromOrder($this->order->get_id());
             $token = get_array_value($this->pluginSettings,'token');
-            $exportOrder = new Export_Order_Request($token);
+            $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
+            $exportOrder = new Export_Order_Request($token, $testEnv);
 
             $flagshipShipment = $this->getShipmentFromFlagship($shipmentId);
             $courierDetails = $request['flagship_service'];
@@ -170,7 +165,8 @@ class Order_Action_Processor {
     protected function getFlagshipUrl()
     {
         $token = get_array_value($this->pluginSettings,'token');
-        $exportOrder = new Export_Order_Request($token);
+        $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
+        $exportOrder = new Export_Order_Request($token, $testEnv);
         $url = $exportOrder->getFlagshipUrl();
         return $url;
     }
@@ -208,7 +204,8 @@ class Order_Action_Processor {
     protected function getShipmentFromFlagship($shipmentId)
     {
         $token = get_array_value($this->pluginSettings,'token');
-        $request = new Get_Shipment_Request($token);
+        $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
+        $request = new Get_Shipment_Request($token,$testEnv);
         $shipment = $request->getShipmentById($shipmentId);
         if(is_string($shipment)){
             $this->setErrorMessages(__($shipment));
@@ -231,7 +228,8 @@ class Order_Action_Processor {
     protected function getPackages()
     {
         $token = get_array_value($this->pluginSettings, 'token');
-        $ratesRequest = new Rates_Request($token);
+        $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no'?0:1;
+        $ratesRequest = new Rates_Request($token, false, $testEnv);
         $orderItems = $ratesRequest->getOrderItems($this->order);
         $packages = $ratesRequest->getPackages($orderItems,$this->pluginSettings);
 
@@ -248,7 +246,9 @@ class Order_Action_Processor {
     protected function getRates()
     {
         $token = get_array_value($this->pluginSettings, 'token');
-        $ratesRequest = new Rates_Request($token);
+        $testEnv = $this->pluginSettings['test_env'] == 'no' ? 0 : 1;
+
+        $ratesRequest = new Rates_Request($token,false,$testEnv);
 
         $rates = $ratesRequest->getRates([], $this->pluginSettings,1,$this->order)->sortByPrice();
 
@@ -345,8 +345,8 @@ class Order_Action_Processor {
         if (!$token) {
             throw new \Exception(__('FlagShip API token is missing', 'flagship-woocommerce-extension'), $this->errorCodes['token_missing']);
         }
-
-        $apiRequest = new Export_Order_Request($token);
+        $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
+        $apiRequest = new Export_Order_Request($token, $testEnv);
         $exportedShipment = $apiRequest->exportOrder($this->order, $this->pluginSettings);
 
         if ($exportedShipment) {
@@ -372,14 +372,14 @@ class Order_Action_Processor {
         if (!$token) {
             return;
         }
-
-        $apiRequest = new Get_Shipment_Request($token);
+        $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
+        $apiRequest = new Get_Shipment_Request($token, $testEnv);
 
         try{
             $shipment = $apiRequest->getShipmentById($shipmentId);
         }
         catch(\Exception $e){
-            return;
+            return $e->getMessage();
         }
 
         return $shipment->getStatus();

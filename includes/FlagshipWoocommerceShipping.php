@@ -46,7 +46,7 @@ class FlagshipWoocommerceShipping {
 	}
 
 	public static function isDebugMode() {
-		return getenv('FLAGSHIP_DEBUG_MODE') === true;
+		return getenv('FLAGSHIP_DEBUG_MODE') == true;
 	}
 
 	public static function getSettingsOptionKey() {
@@ -54,7 +54,7 @@ class FlagshipWoocommerceShipping {
 	}
 
 	public static function getFlagshipUrl() {
-		return self::isDebugMode() ? getenv('FLAGSHIP_URL') : 'http://192.168.2.25:3006';
+		return 'https://smartship-ng.flagshipcompany.com';
 	}
 
 	public function __construct() {

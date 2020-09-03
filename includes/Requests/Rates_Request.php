@@ -10,10 +10,10 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     protected $debugMode = false;
 
-    public function __construct($token, $debugMode = false)
+    public function __construct($token, $debugMode = false, $testEnv = 0)
     {
     	$this->token = $token;
-    	$this->apiUrl = $this->getApiUrl();
+    	$this->apiUrl = $this->getApiUrl($testEnv);
         $this->debugMode = $debugMode;
     }
 
@@ -89,7 +89,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     public function getPackages($orderItems,$options)
     {
-        $packageHelper = new Package_Helper($this->debugMode);
+        $packageHelper = new Package_Helper($this->debugMode,$this->apiUrl);
         $packages = $packageHelper->make_packages($orderItems,$options);
         return $packages;
     }

@@ -8,9 +8,9 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
 
     protected $debugMode = false;
 
-    public function __construct($token, $debugMode = false) {
+    public function __construct($token, $debugMode = false, $apiUrl) {
     	$this->token = $token;
-    	$this->apiUrl = $this->getApiUrl();
+    	$this->apiUrl = $apiUrl;
         $this->debugMode = $debugMode;
     }
 
@@ -27,8 +27,8 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
             return $packageBoxes;
         }
         catch(\Exception $e){
-            $this->debug($e->getMessage(), 'error');
-            return false;
+            // $this->debug
+            return $e->getMessage();
         }
     }
 
@@ -53,11 +53,14 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
         if(count($shipping_classes) == 0)
         {
             $boxes = $this->make_boxes_request($boxes);
-            return array(
-                'items' => $items,
-                'boxes' => $boxes,
-                'units' => 'imperial',
-            );
+            return [
+                    "no_shipping_class" =>[
+                    'items' => $items,
+                    'boxes' => $boxes,
+                    'units' => 'imperial',
+                    ]
+                ];
+
         }
 
         foreach ($items as $item) {

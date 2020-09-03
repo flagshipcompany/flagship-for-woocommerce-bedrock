@@ -23,11 +23,18 @@ class Notification_Helper {
               <p>'.__( 'To ensure the FlagShip WooCommerce Shipping plugin function properly, please run "composer require flagshipcompany/flagship-api-sdk" to install the required classes', 'flagship-woocommerce-extension').'</p>
             </div>';
     }
-    
+
     public function add_tracking_email_invalid_notice()
     {
         echo '<div class="updated notice error">
               <p>'.__( 'Email addresses for tracking are invalid.', 'flagship-woocommerce-extension').'</p>
+            </div>';
+    }
+
+    public function add_token_invalid_notice()
+    {
+        echo '<div class="updated notice error">
+              <p>'.__( 'Invalid FlagShip Token', 'flagship-woocommerce-extension').'</p>
             </div>';
     }
 }

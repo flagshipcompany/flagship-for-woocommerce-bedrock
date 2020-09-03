@@ -21,11 +21,11 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         'phone',
     );
 
-    public function __construct($token)
+    public function __construct($token, $testEnv=0)
     {
     	$this->token = $token;
-    	$this->apiUrl = $this->getApiUrl();
-        $this->webUrl = $this->getWebUrl();
+    	$this->apiUrl = $this->getApiUrl($testEnv);
+        $this->webUrl = $this->getWebUrl($testEnv);
         $this->fullAddressFields = array_merge($this->requiredAddressFields, array('address', 'suite', 'first_name', 'last_name'));
     }
 
@@ -50,7 +50,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         }
         catch(\Exception $e)
         {
-            error_log($e->getMessage());
+            return $e->getMessage();
         }
     }
 
@@ -109,7 +109,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $orderOptions = $this->getOrderOptions($order);
 
         $destinationAddress = $this->getFullDestinationAddress($order);
-        $packageHelper = new Package_Helper();
+        $packageHelper = new Package_Helper(false,$this->apiUrl);
         $orderItems = $order->get_items();
         $packages = $packageHelper->make_packages($this->extractOrderItems($orderItems), $options);
         $trackingEmails = $this->makeTrackingEmails($destinationAddress, $options, $orderOptions);
@@ -146,7 +146,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
     public function confirmShipment($shipmentId)
     {
-        $confirmShipmentRequest = new Confirm_Shipment_Request($this->token);
+        $confirmShipmentRequest = new Confirm_Shipment_Request($this->token,$this->apiUrl);
         $confirmedShipment = $confirmShipmentRequest->confirmShipmentById($shipmentId);
         return $confirmedShipment;
     }

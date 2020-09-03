@@ -8,8 +8,9 @@ class Package_Helper {
 
 	protected $debug_mode;
 
-	public function __construct($debug_mode = false) {
+	public function __construct($debug_mode = false, $apiUrl) {
         $this->debug_mode = $debug_mode;
+        $this->apiUrl = $apiUrl;
     }
 
     public function make_packages($order_items, $options) {
@@ -27,7 +28,7 @@ class Package_Helper {
     		case 'by_weight':
     			$split_weight = $options['box_split_weight'];
     			$package_items = $this->split_by_weight($items, $split_weight);
-    			break;     		
+    			break;
     		default:
     			$package_items = $this->make_one_box($items);
     			break;
@@ -47,12 +48,12 @@ class Package_Helper {
         $output_dimension_unit = isset($options['dimension_unit']) ? $options['dimension_unit'] : 'in';
         $items = array();
 
-        foreach ( $order_items as $item_id => $product_item ) { 
+        foreach ( $order_items as $item_id => $product_item ) {
             $product = $product_item['product'];
             $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), $output_weight_unit, $weight_unit)) : 1;
             $length = $product->get_length() ? round(wc_get_dimension($product->get_length(), $output_dimension_unit, $dimension_unit)) : 1;
             $width = $product->get_width() ? round(wc_get_dimension($product->get_width(), $output_dimension_unit, $dimension_unit)) : 1;
-            $height = $product->get_height() ? round(wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit)) : 1;            
+            $height = $product->get_height() ? round(wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit)) : 1;
            	$description = $product->get_name();
            	$item = array(
            		'length' => $length,
@@ -92,11 +93,10 @@ class Package_Helper {
     	$boxes_data = Package_Box_Controller::get_boxes();
 
     	if (!$boxes_data) {
-			return $this->make_one_box($items);    		
+			return $this->make_one_box($items);
     	}
-
     	$boxes = json_decode($boxes_data, true);
-    	$package_request = new Packing_Request($token, $this->debug_mode);
+    	$package_request = new Packing_Request($token, $this->debug_mode,$this->apiUrl);
     	$packed_boxes = $package_request->pack_boxes($items, $boxes);
 
     	return $packed_boxes ? $packed_boxes : $this->make_one_box($items);

@@ -59,4 +59,3 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 		(new FlagshipWoocommerce\Commands\Console())->add_commands();
 	}
 }
-

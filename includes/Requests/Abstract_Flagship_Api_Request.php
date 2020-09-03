@@ -23,14 +23,14 @@ abstract class Abstract_Flagship_Api_Request {
         'city',
     );
 
-    protected function getApiUrl()
+    protected function getApiUrl($testEnv = 0)
     {
-    	return FlagshipWoocommerceShipping::isDebugMode() ? getenv('FLAGSHIP_API_URL') : 'https://api.smartship.io';
+    	return $testEnv ? 'https://test-api.smartship.io' : 'https://api.smartship.io';
     }
 
-    protected function getWebUrl()
+    protected function getWebUrl($testEnv = 0)
     {
-        return FlagshipWoocommerceShipping::isDebugMode() ? getenv('FLAGSHIP_WEB_URL') : 'https://smartship-ng.flagshipcompany.com';
+        return $testEnv ? 'https://test-smartshipng.flagshipcompany.com' : 'https://smartship-ng.flagshipcompany.com';
     }
 
     protected function addHeaders($prepareRequest, $storeName, $orderId)
@@ -141,13 +141,6 @@ abstract class Abstract_Flagship_Api_Request {
         }
 
         return $shippingOptions;
-    }
-
-    protected function debug($message, $type = 'notice')
-    {
-        if (FlagshipWoocommerceShipping::isDebugMode() || $this->debugMode) {
-            wc_add_notice($message, $type);
-        }
     }
 
     protected function getOrderShippingAddress($order)

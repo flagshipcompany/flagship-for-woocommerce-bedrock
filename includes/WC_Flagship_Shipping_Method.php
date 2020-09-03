@@ -8,7 +8,7 @@ use FlagshipWoocommerce\Helpers\Menu_Helper;
 
 class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
 
-	private $token;
+    private $token;
 
     /**
      * @access public
@@ -60,8 +60,8 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
      */
     public function calculate_shipping($package = Array()) {
         if (count($package) == 0 || $this->enabled != 'yes') {
-    		return;
-    	}
+            return;
+        }
 
         $settings = array_merge($this->settings, $this->instance_settings);
         $ratesProcessor = new Cart_Rates_Processor($this->id, $this->token, array_merge($settings, array('debug_mode' => $this->debugMode)));
@@ -82,6 +82,16 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     }
 
     public function validate_admin_options($settings) {
+        $testEnv = $settings['test_env'] == 'no' ? 0 : 1;
+        $validationHelper = new Validation_Helper($testEnv);
+
+        if(isset($settings['token']) && !empty(trim($settings['token'])) && !$validationHelper->validateToken($settings['token']))
+        {
+            $settings['token'] = '';
+            add_action('admin_notices', array((new Notification_Helper()),'add_token_invalid_notice'));
+        }
+
+
         if (isset($settings['tracking_emails']) && !empty(trim($settings['tracking_emails'])) && !Validation_Helper::validateMultiEmails($settings['tracking_emails'])) {
             $settings = get_option($this->get_option_key(), array());
             $settings['tracking_emails'] = get_array_value($settings,'tracking_emails', '');
@@ -101,7 +111,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
     }
 
     protected function init_method_settings() {
-    	$this->enabled = $this->get_option('enabled', 'no');
+        $this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->get_option('title', __('FlagShip Shipping', 'flagship-woocommerce-extension'));
         $this->token = $this->get_option('token', '');
         $this->debugMode = $this->get_option('debug_mode', 'no');
@@ -115,10 +125,16 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'description' => __( 'Enable this shipping method', 'flagship-woocommerce-extension'),
                 'default' => 'no'
             ),
+            'test_env' => array(
+                'title' => __('Enable Test Environment', 'flagship-woocommerce-extension'),
+                'type' => 'checkbox',
+                'description' => __('Use FlagShip\'s test environment. Any shipments made in the test environment will not be shipped','flagship-woocommerce-extension'),
+                'default' => 'no'
+            ),
             'token' => array(
                 'title' => __('FlagShip access token', 'flagship-woocommerce-extension'),
                 'type' => 'text',
-                'description' => sprintf(__('After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-woocommerce-extension'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
+                'description' => sprintf(__('After <a href="%s" target="_blank">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-woocommerce-extension'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
             ),
             'tracking_emails' => array(
                 'title' => __('Tracking emails', 'flagship-woocommerce-extension'),

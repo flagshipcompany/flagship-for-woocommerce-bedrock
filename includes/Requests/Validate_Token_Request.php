@@ -4,23 +4,21 @@ namespace FlagshipWoocommerce\Requests;
 use Flagship\Shipping\Flagship;
 use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
-class Confirm_Shipment_Request extends Abstract_Flagship_Api_Request {
+class Validate_Token_Request extends Abstract_Flagship_Api_Request {
 
-    public function __construct($token, $apiUrl)
+    public function __construct($token, $testEnv = 0)
     {
         $this->token = $token;
-        $this->apiUrl = $apiUrl;
+        $this->apiUrl = $this->getApiUrl($testEnv);
     }
 
-    public function confirmShipmentById($id)
+    public function validateToken()
     {
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
-
         try{
-            $shipment = $apiClient->confirmShipmentByIdRequest($id)->execute();
-            return $shipment;
-        } catch(\Exception $e)
-        {
+            $httpCode = $apiClient->validateTokenRequest($this->token)->execute();
+            return $httpCode;
+        } catch(\Exception $e){
             return $e->getMessage();
         }
     }
