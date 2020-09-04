@@ -23,8 +23,8 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
     public function __construct($token, $testEnv=0)
     {
-    	$this->token = $token;
-    	$this->apiUrl = $this->getApiUrl($testEnv);
+        $this->token = $token;
+        $this->apiUrl = $this->getApiUrl($testEnv);
         $this->webUrl = $this->getWebUrl($testEnv);
         $this->fullAddressFields = array_merge($this->requiredAddressFields, array('address', 'suite', 'first_name', 'last_name'));
     }

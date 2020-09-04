@@ -89,27 +89,7 @@ class Order_Action_Processor {
 
             echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a> <strong>[%s]</strong></p>', __('FlagShip Shipment', 'flagship-woocommerce-extension'), $shipmentUrl, $shipmentId, $statusDescription);
 
-            if($statusDescription != 'Dispatched'){
-                $rates = get_post_meta($this->order->get_id(),'rates');
-
-                $ratesDropdownHtml = '';
-                if($rates != null)
-                {
-                    $ratesDropdownHtml = $this->getRatesDropDown($rates);
-
-                    echo '<select id="flagship-rates" style="width:100%" name="flagship_service">'.$ratesDropdownHtml.'</select><br/><br/>';
-                }
-                echo sprintf('&nbsp;&nbsp;<button type="submit" class="button save_order button-primary" name="%s" value="quote">%s </button>', self::$getAQuoteActionName, __('Get a Quote', 'flagship-woocommerce-extension'));
-
-                echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" value="%s">%s</button>',self::$confirmShipmentActionName,self::$confirmShipmentActionName,__('Confirm Shipment','flagship-woocommerce-extension'));
-            }
-
-
-            if($statusDescription == 'Dispatched')
-            {
-                echo sprintf('<a href="'.$flagshipUrl.'/shipping/'.$shipmentId.'/overview" class="button button-primary" target="_blank"> View Shipment on FlagShip</a>');
-                return;
-            }
+            $this->getFlagshipShippingMetaBoxContent($statusDescription);
 
             return;
         }
@@ -124,6 +104,36 @@ class Order_Action_Processor {
         {
             echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export">%s </button>', self::$exportOrderActionName, __('Send to FlagShip', 'flagship-woocommerce-extension'));
         }
+    }
+
+    protected function getFlagshipShippingMetaBoxContent($statusDescription)
+    {
+        if($statusDescription != 'Dispatched'){
+            $rates = get_post_meta($this->order->get_id(),'rates');
+
+            $ratesDropdownHtml = $this->getRatesDropDownHtml($rates);
+            
+            echo sprintf('&nbsp;&nbsp;<button type="submit" class="button save_order button-primary" name="%s" value="quote">%s </button>', self::$getAQuoteActionName, __('Get a Quote', 'flagship-woocommerce-extension'));
+
+            echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" value="%s">%s</button>',self::$confirmShipmentActionName,self::$confirmShipmentActionName,__('Confirm Shipment','flagship-woocommerce-extension'));
+        }
+
+        if($statusDescription == 'Dispatched')
+        {
+            echo sprintf('<a href="'.$flagshipUrl.'/shipping/'.$shipmentId.'/overview" class="button button-primary" target="_blank"> View Shipment on FlagShip</a>');
+            return;
+        }
+    }
+
+    protected function getRatesDropDownHtml($rates)
+    {
+        $ratesDropdownHtml = '';
+        if($rates != null)
+        {
+            $ratesDropdownHtml = $this->getRatesDropDown($rates);
+            echo '<select id="flagship-rates" style="width:100%" name="flagship_service">'.$ratesDropdownHtml.'</select><br/><br/>';
+        }
+        return $ratesDropdownHtml;
     }
 
     public function processOrderActions($request)
@@ -385,12 +395,11 @@ class Order_Action_Processor {
 
         try{
             $shipment = $apiRequest->getShipmentById($shipmentId);
+            return $shipment->getStatus();
         }
         catch(\Exception $e){
             return $e->getMessage();
         }
-
-        return $shipment->getStatus();
     }
 
     protected function makeShipmentUrl($shipmentId, $status)

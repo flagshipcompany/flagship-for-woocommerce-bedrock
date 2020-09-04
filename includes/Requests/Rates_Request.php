@@ -12,8 +12,8 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     public function __construct($token, $debugMode = false, $testEnv = 0)
     {
-    	$this->token = $token;
-    	$this->apiUrl = $this->getApiUrl($testEnv);
+        $this->token = $token;
+        $this->apiUrl = $this->getApiUrl($testEnv);
         $this->debugMode = $debugMode;
     }
 
@@ -30,18 +30,18 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         }
         if($admin==0)
         {
-            $apiRequest = $this->makeApiRequest($package, $options);
+            $apiRequest = $this->makeApiRequest($package, $options);         
         }
 
-    	$apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
 
-    	try{
-		    $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
+        try{
+            $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
             return $rates;
-		}
-		catch(\Exception $e){
-			return $e->getMessage();
-		}
+        }
+        catch(\Exception $e){
+            return $e->getMessage();
+        }
     }
 
     public function getOrderItems($order)

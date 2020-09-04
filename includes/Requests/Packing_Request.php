@@ -9,8 +9,8 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
     protected $debugMode = false;
 
     public function __construct($token, $debugMode = false, $apiUrl) {
-    	$this->token = $token;
-    	$this->apiUrl = $apiUrl;
+        $this->token = $token;
+        $this->apiUrl = $apiUrl;
         $this->debugMode = $debugMode;
     }
 
@@ -27,7 +27,6 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
             return $packageBoxes;
         }
         catch(\Exception $e){
-            // $this->debug
             return $e->getMessage();
         }
     }

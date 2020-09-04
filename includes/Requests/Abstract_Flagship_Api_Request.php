@@ -5,14 +5,9 @@ use FlagshipWoocommerce\FlagshipWoocommerceShipping;
 
 abstract class Abstract_Flagship_Api_Request {
 
-	private $token;
+    private $token;
 
-	private $apiUrl;
-
-    public function setApiUrl($url)
-    {
-        $this->apiUrl = $url;
-    }
+    private $apiUrl;
 
     // address field in request => field in woocommerce address
     private $addressFieldMap = array(
@@ -30,7 +25,7 @@ abstract class Abstract_Flagship_Api_Request {
 
     protected function getApiUrl($testEnv = 0)
     {
-    	return $testEnv ? 'https://test-api.smartship.io' : 'https://api.smartship.io';
+        return $testEnv ? 'https://test-api.smartship.io' : 'https://api.smartship.io';
     }
 
     protected function getWebUrl($testEnv = 0)
@@ -38,12 +33,12 @@ abstract class Abstract_Flagship_Api_Request {
         return $testEnv ? 'https://test-smartshipng.flagshipcompany.com' : 'https://smartship-ng.flagshipcompany.com';
     }
 
-    protected function addHeaders($apiRequest, $storeName, $orderId)
+    protected function addHeaders($prepareRequest, $storeName, $orderId)
     {
-        return $apiRequest
+        return $prepareRequest
             ->setStoreName($storeName)
             ->setOrderId($orderId)
-            ->setOrderLink(fcs_get_edit_post_link($orderId));
+            ->setOrderLink(get_edit_post_link($orderId, null));
     }
 
     public function getStoreAddress($fullAddress = false, $getEmail = false, $options = array())
@@ -91,24 +86,24 @@ abstract class Abstract_Flagship_Api_Request {
 
     protected function getCountryState()
     {
-    	$countryAndState = array(
-			'country' => null,
-			'state' => null,
-		);
-    	$countryState = get_option('woocommerce_default_country', '');
+        $countryAndState = array(
+            'country' => null,
+            'state' => null,
+        );
+        $countryState = get_option('woocommerce_default_country', '');
 
-    	if (empty($countryState)) {
-    		return $countryAndState;
-    	}
+        if (empty($countryState)) {
+            return $countryAndState;
+        }
 
-    	$splitValues = explode(':', $countryState);
-    	$country = isset($splitValues[0]) ? $splitValues[0] : null;
-    	$state = isset($splitValues[1]) ? $splitValues[1] : null;
+        $splitValues = explode(':', $countryState);
+        $country = isset($splitValues[0]) ? $splitValues[0] : null;
+        $state = isset($splitValues[1]) ? $splitValues[1] : null;
 
-    	return array(
-			'country' => $country,
-			'state' => $state,
-		);
+        return array(
+            'country' => $country,
+            'state' => $state,
+        );
     }
 
     protected function fillAddressField($destination, $fieldName)
