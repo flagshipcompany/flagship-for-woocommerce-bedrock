@@ -9,6 +9,11 @@ abstract class Abstract_Flagship_Api_Request {
 
 	private $apiUrl;
 
+    public function setApiUrl($url)
+    {
+        $this->apiUrl = $url;
+    }
+
     // address field in request => field in woocommerce address
     private $addressFieldMap = array(
         'postal_code' => 'postcode',
