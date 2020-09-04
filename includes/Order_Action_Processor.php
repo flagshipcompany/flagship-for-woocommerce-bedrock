@@ -136,7 +136,6 @@ class Order_Action_Processor {
 
         if(isset($request[self::$confirmShipmentActionName])&& stripos($request[self::$confirmShipmentActionName],"confirm") == 0)
         {
-
             $shipmentId = $this->getShipmentIdFromOrder($this->order->get_id());
             $token = get_array_value($this->pluginSettings,'token');
             $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
