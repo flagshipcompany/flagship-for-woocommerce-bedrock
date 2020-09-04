@@ -12,7 +12,7 @@
  * Requires at least: 4.6
  * Tested up to: 5.3
  * WC requires at least: 3.0.0
- * WC tested up to: 3.8.1
+ * WC tested up to: 5.5.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -45,7 +45,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 
 	$GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerce\FlagshipWoocommerceShipping::instance();
 
-	if (!class_exists('Flagship\Shipping\Flagship')) {
+	if (class_exists('Flagship\Shipping\Flagship')) {
 		include_once dirname(__FILE__). '/vendor/autoload.php';
 	}
 
