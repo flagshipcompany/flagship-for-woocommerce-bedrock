@@ -28,6 +28,57 @@ class Zones_Command {
         });
     }
 
+    /**
+    * Create a shipping zone with location (without specifying a user as required in WooCommerce-cli).
+    *
+    * ## OPTIONS
+    *
+    * [<name>]
+    * : The zone name. If there needs to be space, use underscore instead. Example: to set the name to 'United States', enter 'United_States'
+    *
+    * [<location_code>]
+    * : The location code. If it is a country, it is like 'CA'. If it is a region, it is like 'CA:QC'
+    *
+    * [<location_type>]
+    * : The location type. It could be country, state, or continent
+    *
+    * [--<enable_flagship]
+    * : Add FlagShip shipping method.
+    *
+    * ## EXAMPLES
+    *
+    *     # Add a zone called United States for United States 
+    *     $ wp fcs zones create United_States US --enable_flagship
+    */
+    public function create($args, $assoc_args) {
+        $zoneName = isset($args[0]) ? str_replace('_', ' ', $args[0]) : null;
+        $locationCode = isset($args[1]) ? $args[1] : null;
+        $locationType = isset($args[2]) ? $args[2] : null;
+
+        if (!$zoneName || !$locationCode || !$locationType) {
+            \WP_CLI::error('Invalid arguments!');
+        }
+
+        $zone = new \WC_Shipping_Zone();
+        $zone->set_zone_name($zoneName);
+        $location = array(
+            'code' => $locationCode,
+            'type' => $locationType,
+        );
+        $zone->set_locations(array($location));
+
+        $msg = sprintf('Shipping zone %s has been saved for location: %s.', $zoneName, $locationCode);
+
+        if (isset($assoc_args['enable_flagship'])) {
+            $zone->add_shipping_method(FlagshipWoocommerceShipping::$methodId);
+            $msg .= ' FlagShip shipping is enabled';            
+        }
+
+        $zone->save();
+
+        \WP_CLI::success($msg);
+    }
+
     protected function getShippingZones($enabledOnly = false) {
         $flagshipMethod = FlagshipWoocommerceShipping::$methodId;
         $shippingZones = array_map(function($zone) {

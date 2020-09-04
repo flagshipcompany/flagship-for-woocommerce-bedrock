@@ -18,7 +18,7 @@ class Settings_Command {
     * : The value of setting.
     *
     * [--<field>=<value>]
-    * : Associative args for shipping zone.
+    * : Associative args for settings.
     *
     * ## EXAMPLES
     *
