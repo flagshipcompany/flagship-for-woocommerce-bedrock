@@ -143,7 +143,7 @@ abstract class Abstract_Flagship_Api_Request {
         return $shippingOptions;
     }
 
-    protected function getOrderShippingAddress($order)
+    protected function getOrderShippingAddressForRates($order)
     {
         $shippingAddress = [];
 
@@ -151,11 +151,6 @@ abstract class Abstract_Flagship_Api_Request {
         $shippingAddress['country'] = $order->get_shipping_country();
         $shippingAddress['state'] = $order->get_shipping_state();
         $shippingAddress['city'] = $order->get_shipping_city();
-        $shippingAddress['address'] = substr($order->get_shipping_address_1(),0,30);
-        $shippingAddress['suite'] = substr($order->get_shipping_address_2(),0,18);
-        $shippingAddress['name'] = substr($order->get_shipping_first_name().' '.$order->get_shipping_last_name(),0,30);
-        $shippingAddress['attn'] = substr($order->get_shipping_first_name(),0,21);
-        $shippingAddress['phone'] = $order->get_billing_phone();
 
         return $shippingAddress;
     }

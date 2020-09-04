@@ -5,6 +5,7 @@ use FlagshipWoocommerce\Requests\Export_Order_Request;
 use FlagshipWoocommerce\Requests\Get_Shipment_Request;
 use FlagshipWoocommerce\Requests\Rates_Request;
 use FlagshipWoocommerce\Helpers\Menu_Helper;
+use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
 
 class Order_Action_Processor {
 
@@ -59,6 +60,14 @@ class Order_Action_Processor {
             echo sprintf("<p>%s</p>", __($boxesUsed));
             return;
         }
+
+        $boxes_data = Package_Box_Controller::get_boxes();
+        if($boxes_data == null)
+        {
+            echo sprintf("<p>%s</p>",__("No package boxes available"));
+            return;
+        }
+
         $boxes = reset($boxes);
         $boxesUsed = implode("<br/>", $boxes);
         echo sprintf('<p>%s</p>',__($boxesUsed));
@@ -128,12 +137,6 @@ class Order_Action_Processor {
         if(isset($request[self::$confirmShipmentActionName])&& stripos($request[self::$confirmShipmentActionName],"confirm") == 0)
         {
 
-            if(!isset($request['flagship_service'])) //verify
-            {
-                $this->setErrorMessages(__('Please select a service from dropdown'));
-                return;
-            }
-
             $shipmentId = $this->getShipmentIdFromOrder($this->order->get_id());
             $token = get_array_value($this->pluginSettings,'token');
             $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
@@ -154,10 +157,8 @@ class Order_Action_Processor {
                 $this->exportOrder();
             }
             catch(\Exception $e){
-                if (in_array($e->getCode(), $this->errorCodes)) {
-                    $this->setErrorMessages(__('Order not exported to FlagShip').': '.$e->getMessage());
-                    add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
-                }
+                $this->setErrorMessages(__('Order not exported to FlagShip').': '.$e->getMessage());
+                add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             }
         }
     }
@@ -250,25 +251,30 @@ class Order_Action_Processor {
 
         $ratesRequest = new Rates_Request($token,false,$testEnv);
 
-        $rates = $ratesRequest->getRates([], $this->pluginSettings,1,$this->order)->sortByPrice();
+        $rates = $ratesRequest->getRates([], $this->pluginSettings,1,$this->order);
 
+        if(is_string($rates))
+        {
+            $this->setErrorMessages(__('Unable to get rates from FlagShip').$rates);
+            add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
+            return;
+        }
+
+        $rates = $rates->sortByPrice();
         $percentageMarkup = get_array_value($this->pluginSettings, 'shipping_cost_markup_percentage');
         $flatFeeMarkup = get_array_value($this->pluginSettings, 'shipping_cost_markup_flat');
+        $ratesDropDown = [];
+        foreach ($rates as $rate) {
+            $courierName = strcasecmp($rate->getCourierName(),'FedEx') === 0 ? 'FedEx '.$rate->getCourierDescription() : $rate->getCourierDescription();
+            $price = $rate->getTotal();
 
-        if(count($rates) > 0)
-        {
-            $ratesDropDown = [];
-            foreach ($rates as $rate) {
-                $courierName = strcasecmp($rate->getCourierName(),'FedEx') === 0 ? 'FedEx '.$rate->getCourierDescription() : $rate->getCourierDescription();
-                $price = $rate->getTotal();
-
-                $ratesDropDown[] = [
-                    "option_value" => $rate->getServiceCode().'-'.$rate->getCourierName(),
-                    "option_name" => $price. ' - '.$courierName
-                ];
-            }
-            update_post_meta($this->order->get_id(),'rates',$ratesDropDown);
+            $ratesDropDown[] = [
+                "option_value" => $rate->getServiceCode().'-'.$rate->getCourierName(),
+                "option_name" => $price. ' - '.$courierName
+            ];
         }
+        update_post_meta($this->order->get_id(),'rates',$ratesDropDown);
+        return;
     }
 
     protected function set_settings($settings) {
@@ -349,9 +355,12 @@ class Order_Action_Processor {
         $apiRequest = new Export_Order_Request($token, $testEnv);
         $exportedShipment = $apiRequest->exportOrder($this->order, $this->pluginSettings);
 
-        if ($exportedShipment) {
-            update_post_meta($this->order->get_id(), self::$shipmentIdField, $exportedShipment->getId());
+        if (is_string($exportedShipment)) {
+            $this->setErrorMessages(__('Order not exported to FlagShip').': '.$exportedShipment);
+            add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
+            return;
         }
+        update_post_meta($this->order->get_id(), self::$shipmentIdField, $exportedShipment->getId());
     }
 
     protected function eCommerceShippingChosen($shippingMethods)

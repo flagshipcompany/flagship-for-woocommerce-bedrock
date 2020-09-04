@@ -25,7 +25,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
             $packages = $this->getPackages($orderItems,$options);
             $sourceAddress = $this->getStoreAddress();
 
-            $shippingAddress = $this->getOrderShippingAddress($order);
+            $shippingAddress = $this->getOrderShippingAddressForRates($order);
             $apiRequest = $this->getRequest($sourceAddress,$shippingAddress,$packages, $options);
         }
         if($admin==0)
@@ -37,12 +37,11 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     	try{
 		    $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
+            return $rates;
 		}
 		catch(\Exception $e){
-			$rates = new RatesCollection();
+			return $e->getMessage();
 		}
-
-		return $rates;
     }
 
     public function getOrderItems($order)
