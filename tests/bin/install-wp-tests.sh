@@ -40,6 +40,10 @@ fi
 
 set -ex
 
+install_dependencies() {
+    sudo apt-get install subversion;
+}
+
 install_wp() {
 
     if [ -d $WP_CORE_DIR ]; then
@@ -113,6 +117,7 @@ install_db() {
     mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
 }
 
+install_dependencies
 install_wp
 install_test_suite
 install_db

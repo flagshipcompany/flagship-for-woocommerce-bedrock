@@ -31,7 +31,7 @@ if (!defined('FLAGSHIP_PLUGIN_NAME')){
 	define("FLAGSHIP_PLUGIN_NAME", plugin_basename( __FILE__ ));
 }
 
-if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option('active_plugins')))) {
+// if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option('active_plugins')))) {
 
 	spl_autoload_register(function ($class) {
 		$nameSpace = 'FlagshipWoocommerce\\';
@@ -45,7 +45,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 
 	$GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerce\FlagshipWoocommerceShipping::instance();
 
-	if (class_exists('Flagship\Shipping\Flagship')) {
+	if (!class_exists('Flagship\\Shipping\\Flagship')) {
 		include_once dirname(__FILE__). '/vendor/autoload.php';
 	}
 
@@ -58,4 +58,4 @@ if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get
 	if (defined( 'WP_CLI' ) && WP_CLI) {
 		(new FlagshipWoocommerce\Commands\Console())->add_commands();
 	}
-}
+// }
