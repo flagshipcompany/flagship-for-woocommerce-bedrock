@@ -7,8 +7,13 @@ branches:
     - master
 
 services:
+<<<<<<< HEAD
     -mysql
 
+=======
+  -mysql
+  
+>>>>>>> f31ff587748d814dd17eace42234f928369500f9
 php:
   - 7.1
   - 7.2
