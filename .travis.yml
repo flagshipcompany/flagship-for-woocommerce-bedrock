@@ -6,6 +6,9 @@ branches:
   only:
     - master
 
+services:
+    -mysql
+
 php:
   - 7.1
   - 7.2
@@ -31,5 +34,6 @@ before_script:
   # - git clone https://github.com/woothemes/woocommerce ../woocommerce
   - wget https://github.com/woocommerce/woocommerce/archive/4.5.1.tar.gz && tar xf 4.5.1.tar.gz && cp -R woocommerce-4.5.1 ../woocommerce && rm -R woocommerce-4.5.1
   - bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - composer require phpunit/phpunit:">=5.7 <=7.5.20"
   - composer update
-script: phpunit
+script: vendor/bin/phpunit
