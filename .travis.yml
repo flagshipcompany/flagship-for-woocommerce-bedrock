@@ -6,6 +6,9 @@ branches:
   only:
     - master
 
+services:
+  -mysql
+  
 php:
   - 7.1
   - 7.2
