@@ -34,6 +34,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $storeAddress = $this->getStoreAddress(true, false, $options);
         $prepareRequest = $this->makePrepareRequest($order, $options);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
+
         try
         {
             $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);

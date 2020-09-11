@@ -30,7 +30,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         }
         if($admin==0)
         {
-            $apiRequest = $this->makeApiRequest($package, $options);         
+            $apiRequest = $this->makeApiRequest($package, $options);
         }
 
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);

@@ -23,7 +23,7 @@ class Package_Box_Controller extends \WP_REST_Controller {
 				'callback' => array($this, 'get_package_boxes'),
 				'args' => array(
 				),
-				'permissions_callback' => array($this, 'box_permissions'),
+				'permissions_callback' => '__return_true',  //array($this, 'box_permissions'),
 	      	),
    		);
 
@@ -32,7 +32,7 @@ class Package_Box_Controller extends \WP_REST_Controller {
 				'callback' => array($this, 'save_package_boxes'),
 				'args' => array(
 				),
-				'permissions_callback' => array($this, 'box_permissions'),
+				'permissions_callback' => '__return_true', //array($this, 'box_permissions'),
 	      	),
    		);
 	}
@@ -62,12 +62,12 @@ class Package_Box_Controller extends \WP_REST_Controller {
 		$boxes = json_decode($boxes, true);
 
 		$validBoxes = array_filter($boxes, function($box) {
-			return $box['model'] 
+			return $box['model']
 				&& $box['length'] && floatval($box['length']) == $box['length'] && $box['length'] > 0
 				&& $box['width'] && floatval($box['width']) == $box['width'] && $box['width'] > 0
 				&& $box['height'] && floatval($box['height']) == $box['height'] && $box['height'] > 0
 				&& $box['max_weight'] && floatval($box['max_weight']) == $box['max_weight'] && $box['max_weight'] > 0
-				&& (empty($box['extra_charge']) || floatval($box['extra_charge']) == $box['extra_charge']);	
+				&& (empty($box['extra_charge']) || floatval($box['extra_charge']) == $box['extra_charge']);
 		});
 
 		return count($validBoxes) == count($boxes);

@@ -8,9 +8,9 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
 
     protected $debugMode = false;
 
-    public function __construct($token, $debugMode = false, $apiUrl) {
-        $this->token = $token;
-        $this->apiUrl = $apiUrl;
+    public function __construct($token, $debugMode = false) {
+    	$this->token = $token;
+    	$this->apiUrl = $this->getApiUrl();
         $this->debugMode = $debugMode;
     }
 
@@ -52,14 +52,11 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
         if(count($shipping_classes) == 0)
         {
             $boxes = $this->make_boxes_request($boxes);
-            return [
-                    "no_shipping_class" =>[
-                    'items' => $items,
-                    'boxes' => $boxes,
-                    'units' => 'imperial',
-                    ]
-                ];
-
+            return array(
+                'items' => $items,
+                'boxes' => $boxes,
+                'units' => 'imperial',
+            );
         }
 
         foreach ($items as $item) {
@@ -71,7 +68,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
             $packages['no_shipping_class']['items'][] = $this->getShippingClassItem($item);
         }
         foreach ($boxes as $box) {
-            if($box['shipping_class'] != null)
+            if(array_key_exists('shipping_class',$box) && $box['shipping_class'] != null)
             {
                 $packages[$box['shipping_class']]['boxes'][] = $this->getShippingClassBox($box);
 
@@ -105,7 +102,6 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
     }
 
     protected function getShippingClassBox($box){
-
             $box['box_model'] = $box['model'];
             $box['weight'] = 0;
             unset($box['id']);

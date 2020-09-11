@@ -45,7 +45,7 @@ abstract class Abstract_Flagship_Api_Request {
     {
         $storeAddress = array();
 
-        if(isset($options['dropshipping_address_city']))
+        if(!empty($options['dropshipping_address_city']))
         {
             $dropShipAddress['postal_code'] = trim($options['dropshipping_address_postal_code']);
             $dropShipAddress['country'] = 'CA';
