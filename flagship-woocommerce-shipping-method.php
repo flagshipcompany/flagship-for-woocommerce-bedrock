@@ -31,31 +31,28 @@ if (!defined('FLAGSHIP_PLUGIN_NAME')){
 	define("FLAGSHIP_PLUGIN_NAME", plugin_basename( __FILE__ ));
 }
 
-// if (in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option('active_plugins')))) {
+spl_autoload_register(function ($class) {
+	$nameSpace = 'FlagshipWoocommerce\\';
 
-	spl_autoload_register(function ($class) {
-		$nameSpace = 'FlagshipWoocommerce\\';
-
-		if (strncmp($nameSpace, $class, strlen($nameSpace)) === 0) {
-			$relativeClass = substr($class, strlen($nameSpace));
-			$filePath = str_replace('\\', '/', $relativeClass);
-			include_once('includes/' . $filePath . '.php');
-		}
-	});
-
-	$GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerce\FlagshipWoocommerceShipping::instance();
-
-	if (!class_exists('Flagship\\Shipping\\Flagship')) {
-		include_once dirname(__FILE__). '/vendor/autoload.php';
+	if (strncmp($nameSpace, $class, strlen($nameSpace)) === 0) {
+		$relativeClass = substr($class, strlen($nameSpace));
+		$filePath = str_replace('\\', '/', $relativeClass);
+		include_once('includes/' . $filePath . '.php');
 	}
+});
 
-	if (dirname(dirname( __FILE__ )) == WPMU_PLUGIN_DIR) {
-		load_muplugin_textdomain( 'flagship-woocommerce-extension', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-	}  else {
-		load_plugin_textdomain( 'flagship-woocommerce-extension', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-	}
+$GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerce\FlagshipWoocommerceShipping::instance();
 
-	if (defined( 'WP_CLI' ) && WP_CLI) {
-		(new FlagshipWoocommerce\Commands\Console())->add_commands();
-	}
-// }
+if (!class_exists('Flagship\\Shipping\\Flagship')) {
+	include_once dirname(__FILE__). '/vendor/autoload.php';
+}
+
+if (dirname(dirname( __FILE__ )) == WPMU_PLUGIN_DIR) {
+	load_muplugin_textdomain( 'flagship-woocommerce-extension', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}  else {
+	load_plugin_textdomain( 'flagship-woocommerce-extension', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+
+if (defined( 'WP_CLI' ) && WP_CLI) {
+	(new FlagshipWoocommerce\Commands\Console())->add_commands();
+}
