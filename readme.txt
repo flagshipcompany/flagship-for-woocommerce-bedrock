@@ -7,8 +7,8 @@ WC requires at least: 3.0.0
 WC tested up to: 3.8.1
 Stable tag: 1.0.0
 Requires PHP: 7.1
-License: Apache License 2.0
-License URI: https://www.apache.org/licenses/LICENSE-2.0
+License: General Public License v3
+License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 FlagShip WooCommerce Extension obtains FlagShip shipping rates for orders and exports order to FlagShip to dispatch shipment.
 
