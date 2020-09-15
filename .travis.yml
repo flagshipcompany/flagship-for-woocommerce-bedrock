@@ -10,6 +10,7 @@ services:
     -mysql
 
 php:
+  - 7.2
   - 7.3
   - 7.4
 
@@ -27,8 +28,18 @@ matrix:
   exclude:
     - php: 7.4
       env: WP_VERSION=4.9
+    - php: 7.4
+      env: WP_VERSION=5.0
+    - php: 7.4
+      env: WP_VERSION=5.1
+    - php: 7.4
+      env: WP_VERSION=5.2
+    - php: 7.4
+      env: WP_VERSION=5.3
     - php: 7.3
       env: WP_VERSION=4.9
+    - php: 7.3
+      env: WP_VERSION=5.0
 
 before_script:
   - wget https://github.com/woocommerce/woocommerce/archive/4.5.1.tar.gz && tar xf 4.5.1.tar.gz && cp -R woocommerce-4.5.1 ../woocommerce && rm -R woocommerce-4.5.1
