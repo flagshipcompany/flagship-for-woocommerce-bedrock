@@ -40,7 +40,9 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
             return $rates;
         }
         catch(\Exception $e){
-            return $e->getMessage();
+            $this->debug($e->getMessage());
+            $rates = new RatesCollection();
+            return $rates;
         }
     }
 
