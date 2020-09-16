@@ -59,7 +59,7 @@ class FlagshipWoocommerceShipping {
 
 	public function __construct() {
 		$this->handleThirdPartyLibraries();
-
+		$this->showTestEnvNotification();
 		$this->hooks();
 	}
 
@@ -67,9 +67,17 @@ class FlagshipWoocommerceShipping {
 	public function handleThirdPartyLibraries() {
 		if (!class_exists('Flagship\Shipping\Flagship')) {
 			$this->showSdkNotice();
-
 		    return;
 		}
+	}
+
+	public function showTestEnvNotification() {
+		$settings = get_option(self::getSettingsOptionKey());
+		$testEnv = $settings["test_env"] == 'no' ? 0 : 1;
+		if($testEnv){
+			add_action( 'admin_notices', array((new Notification_Helper()), 'add_test_env_notice'));
+		}
+		return;
 	}
 
 	public function hooks() {
