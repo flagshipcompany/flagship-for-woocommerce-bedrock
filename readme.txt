@@ -14,7 +14,7 @@ FlagShip WooCommerce Extension obtains FlagShip shipping rates for orders and ex
 
 == Description ==
 
-FlagShip WooCommerce Extension plugin adds a convenient shipping method to WordPress websites that run on Bedrock. Shipping rates from FlagShip will be displayed in the checkout of the online store. Orders can be exported to the FlagShip account of the business by one click.
+    FlagShip WooCommerce Extension plugin adds a convenient shipping method to WordPress websites that run on Bedrock. Shipping rates from FlagShip will be displayed in the checkout of the online store. Orders can be exported to the FlagShip account of the business by one click.
 
 == Installation ==
 
