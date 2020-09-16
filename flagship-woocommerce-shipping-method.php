@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: FlagShip WooCommerce Extension
+ * Plugin Name: FlagShip Shipping Extension For WooCommerce
  * Plugin URI: https://github.com/flagshipcompany/flagship-for-woocommerce-bedrock.git
  * Description: Obtain FlagShip shipping rates for orders and export order to FlagShip to dispatch shipment.
  * Version: 1.0.2
