@@ -1,6 +1,6 @@
 <?php
 
-use FlagshipWoocommerce\Requests\Confirm_Shipment_Request;
+use FlagshipWoocommerceBedrock\Requests\Confirm_Shipment_Request;
 
 class ConfirmShipmentTest extends FlagshipShippingUnitTestCase{
 

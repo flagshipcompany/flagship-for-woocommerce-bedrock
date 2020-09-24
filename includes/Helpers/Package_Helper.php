@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
-use FlagshipWoocommerce\Requests\Packing_Request;
-use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
+use FlagshipWoocommerceBedrock\Requests\Packing_Request;
+use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
 
 class Package_Helper {
 

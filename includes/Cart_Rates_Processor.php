@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce;
+namespace FlagshipWoocommerceBedrock;
 
-use FlagshipWoocommerce\Requests\Rates_Request;
-use FlagshipWoocommerce\Requests\ECommerce_Request;
+use FlagshipWoocommerceBedrock\Requests\Rates_Request;
+use FlagshipWoocommerceBedrock\Requests\ECommerce_Request;
 
 class Cart_Rates_Processor {
     private $methodId;
@@ -195,13 +195,13 @@ class Cart_Rates_Processor {
     protected function filterRateByCourier($rate)
     {
         $included = true;
-        $couriers = FlagshipWoocommerceShipping::$couriers;
+        $couriers = FlagshipWoocommerceBedrockShipping::$couriers;
 
         while ($included && $courier = array_shift($couriers)) {
             $setting = 'disable_courier_'.$courier;
 
             if ($this->isSettingChecked($setting, 'yes')) {
-                $included = $rate->getCourierName() != array_flip(FlagshipWoocommerceShipping::$couriers)[$courier];
+                $included = $rate->getCourierName() != array_flip(FlagshipWoocommerceBedrockShipping::$couriers)[$courier];
             }
         }
 
@@ -274,6 +274,6 @@ class Cart_Rates_Processor {
 
         $transitTime = ceil((strtotime($deliveryDate) - strtotime(date('Y-m-d')))/(24*60*60));
 
-        return sprintf(' - (%s: %s %s)', __('Time in transit', 'flagship-woocommerce-extension'), $transitTime, _n("day", __("days", 'flagship-woocommerce-extension'), $transitTime, 'flagship-woocommerce-extension'));
+        return sprintf(' - (%s: %s %s)', esc_html(__('Time in transit', 'flagship-shipping-extension-for-woocommerce')), $transitTime, _n("day", __("days", 'flagship-shipping-extension-for-woocommerce'), $transitTime, 'flagship-shipping-extension-for-woocommerce'));
     }
 }

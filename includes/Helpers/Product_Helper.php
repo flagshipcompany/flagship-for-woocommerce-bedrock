@@ -1,5 +1,5 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
 class Product_Helper {
 
@@ -12,7 +12,7 @@ class Product_Helper {
 
     public function add_export_to_product_tabs($tabs) {  
         $tabs['export'] = array(
-            'label'    => __('Export', 'flagship-woocommerce-extension'),
+            'label'    => __('Export', 'flagship-shipping-extension-for-woocommerce'),
             'target'   => $this->exportTabName,
             'class'    => array(),
             'priority' => 21,
@@ -36,7 +36,7 @@ class Product_Helper {
         woocommerce_wp_select(array(
             'id' => self::$fields['country'],
             'value' => $countryOfOrigin,
-            'label' => __('Country of origin', 'flagship-woocommerce-extension'),
+            'label' => __('Country of origin', 'flagship-shipping-extension-for-woocommerce'),
             'options' => $countries,
         ));
 
@@ -45,7 +45,7 @@ class Product_Helper {
             'value' => get_post_meta(get_the_ID(), self::$fields['hs'], true),
             'label' => __('HS code'),
             'desc_tip'    => true,
-            'description' => __('The HS (Harmonized Commodity Description and Coding System) Code is a 6–10 digit number for international shipments', 'flagship-woocommerce-extension'),
+            'description' => __('The HS (Harmonized Commodity Description and Coding System) Code is a 6–10 digit number for international shipments', 'flagship-shipping-extension-for-woocommerce'),
         ));
      
         echo '</div>';   
@@ -53,7 +53,7 @@ class Product_Helper {
 
     public function save_product_export_data($post_id) {
         foreach (self::$fields as $key => $field) {
-            $value = $_POST[$field];
+            $value = ($_POST[$field]);
 
             if(!empty($value)) {
                 update_post_meta($post_id, $field, esc_attr($value));

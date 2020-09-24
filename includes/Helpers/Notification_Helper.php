@@ -1,5 +1,5 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
 class Notification_Helper {
 
@@ -10,7 +10,7 @@ class Notification_Helper {
             return;
         }
 
-        $message = trim($_REQUEST['flagship_warning']);
+        $message = trim(sanitize_text_field($_REQUEST['flagship_warning']));
 
         echo '<div class="notice notice-error is-dismissible"><p><strong>'
         .$message.
@@ -20,21 +20,21 @@ class Notification_Helper {
     public function add_flagship_sdk_missing_notice()
     {
         echo '<div class="update-nag notice">
-              <p>'.__( 'To ensure the FlagShip WooCommerce Shipping plugin function properly, please run "composer require flagshipcompany/flagship-api-sdk" to install the required classes', 'flagship-woocommerce-extension').'</p>
+              <p>'.esc_html(__( 'To ensure the FlagShip WooCommerce Shipping plugin function properly, please run "composer require flagshipcompany/flagship-api-sdk" to install the required classes', 'flagship-shipping-extension-for-woocommerce')).'</p>
             </div>';
     }
 
     public function add_tracking_email_invalid_notice()
     {
         echo '<div class="updated notice error">
-              <p>'.__( 'Email addresses for tracking are invalid.', 'flagship-woocommerce-extension').'</p>
+              <p>'.esc_html(__( 'Email addresses for tracking are invalid.', 'flagship-shipping-extension-for-woocommerce')).'</p>
             </div>';
     }
 
     public function add_token_invalid_notice()
     {
         echo '<div class="updated notice error">
-              <p>'.__( 'Invalid FlagShip Token', 'flagship-woocommerce-extension').'</p>
+              <p>'.esc_html(__( 'Invalid FlagShip Token', 'flagship-shipping-extension-for-woocommerce')).'</p>
             </div>';
     }
 }

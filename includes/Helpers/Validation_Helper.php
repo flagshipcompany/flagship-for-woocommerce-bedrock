@@ -1,6 +1,6 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
-use FlagshipWoocommerce\Requests\Validate_Token_Request;
+namespace FlagshipWoocommerceBedrock\Helpers;
+use FlagshipWoocommerceBedrock\Requests\Validate_Token_Request;
 
 class Validation_Helper {
 

@@ -1,5 +1,5 @@
 <?php
-use FlagshipWoocommerce\Requests\Validate_Token_Request;
+use FlagshipWoocommerceBedrock\Requests\Validate_Token_Request;
 
 class ValidateTokenTest extends FlagshipShippingUnitTestCase{
 

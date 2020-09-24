@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce\Requests;
+namespace FlagshipWoocommerceBedrock\Requests;
 
 use Flagship\Shipping\Flagship;
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Packing_Request extends Abstract_Flagship_Api_Request {
 
@@ -17,8 +17,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
     public function pack_boxes($items, $boxes) {
         $packageBoxes = [];
         $apiRequests = $this->make_api_request($items, $boxes);
-        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
-
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         try{
             foreach ($apiRequests as $apiRequest) {
                 $packing_results = $apiClient->packingRequest($apiRequest)->execute();
@@ -52,11 +51,16 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
         if(count($shipping_classes) == 0)
         {
             $boxes = $this->make_boxes_request($boxes);
-            return array(
+            $items = array_map(function($item) {
+                unset($item['shipping_class']);
+                return $item;
+            }, $items);
+
+            return [[
                 'items' => $items,
                 'boxes' => $boxes,
                 'units' => 'imperial',
-            );
+            ]];
         }
 
         foreach ($items as $item) {
@@ -71,7 +75,6 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
             if(array_key_exists('shipping_class',$box) && $box['shipping_class'] != null)
             {
                 $packages[$box['shipping_class']]['boxes'][] = $this->getShippingClassBox($box);
-
                 continue;
             }
             $packages['no_shipping_class']['boxes'][] = $this->getShippingClassBox($box);

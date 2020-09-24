@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce\Requests;
+namespace FlagshipWoocommerceBedrock\Requests;
 
 use Flagship\Shipping\Flagship;
-use FlagshipWoocommerce\Helpers\Product_Helper;
+use FlagshipWoocommerceBedrock\Helpers\Product_Helper;
 
 class Commercial_Inv_Request_Helper {
 

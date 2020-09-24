@@ -1,10 +1,10 @@
 <?php
-namespace FlagshipWoocommerce\Requests;
+namespace FlagshipWoocommerceBedrock\Requests;
 
 use Flagship\Shipping\Flagship;
 use Flagship\Shipping\Collections\RatesCollection;
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
-use FlagshipWoocommerce\Helpers\Package_Helper;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
+use FlagshipWoocommerceBedrock\Helpers\Package_Helper;
 
 class Rates_Request extends Abstract_Flagship_Api_Request {
 
@@ -33,7 +33,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
             $apiRequest = $this->makeApiRequest($package, $options);
         }
 
-        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
         try{
             $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
@@ -111,7 +111,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     protected function debug($message, $type = 'notice')
     {
-        if (FlagshipWoocommerceShipping::isDebugMode() || $this->debugMode) {
+        if (FlagshipWoocommerceBedrockShipping::isDebugMode() || $this->debugMode) {
             wc_add_notice($message, $type);
         }
     }

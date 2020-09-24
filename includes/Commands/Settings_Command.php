@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce\Commands;
+namespace FlagshipWoocommerceBedrock\Commands;
 
-use FlagshipWoocommerce\WC_Flagship_Shipping_Method;
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerceBedrock\WC_Flagship_Shipping_Method;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Settings_Command {
 
@@ -96,7 +96,7 @@ class Settings_Command {
             return;
         }
 
-        $optionName = 'woocommerce_'.FlagshipWoocommerceShipping::$methodId.'_settings';
+        $optionName = 'woocommerce_'.FlagshipWoocommerceBedrockShipping::$methodId.'_settings';
         $this->updateInstanceOption($optionName, $args[0], $args[1]);
 
         \WP_CLI::success('Setting saved!');
@@ -119,7 +119,7 @@ class Settings_Command {
             return;
         }
 
-        $instanceOptionName = 'woocommerce_'.FlagshipWoocommerceShipping::$methodId.'_'.$instanceId.'_settings';
+        $instanceOptionName = 'woocommerce_'.FlagshipWoocommerceBedrockShipping::$methodId.'_'.$instanceId.'_settings';
         $this->updateInstanceOption($instanceOptionName, $args[0], $args[1]);
 
         \WP_CLI::success('Setting saved!');
@@ -145,7 +145,7 @@ class Settings_Command {
         while (is_null($instanceId) && count($shipmentMethods) > 0) {
             $method = array_shift($shipmentMethods);
 
-            if ($method->id == FlagshipWoocommerceShipping::$methodId) {
+            if ($method->id == FlagshipWoocommerceBedrockShipping::$methodId) {
                 $instanceId = $method->get_instance_id();
             }
         }

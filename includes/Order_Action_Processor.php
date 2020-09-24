@@ -1,11 +1,11 @@
 <?php
-namespace FlagshipWoocommerce;
+namespace FlagshipWoocommerceBedrock;
 
-use FlagshipWoocommerce\Requests\Export_Order_Request;
-use FlagshipWoocommerce\Requests\Get_Shipment_Request;
-use FlagshipWoocommerce\Requests\Rates_Request;
-use FlagshipWoocommerce\Helpers\Menu_Helper;
-use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
+use FlagshipWoocommerceBedrock\Requests\Export_Order_Request;
+use FlagshipWoocommerceBedrock\Requests\Get_Shipment_Request;
+use FlagshipWoocommerceBedrock\Requests\Rates_Request;
+use FlagshipWoocommerceBedrock\Helpers\Menu_Helper;
+use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
 
 class Order_Action_Processor {
 
@@ -35,20 +35,20 @@ class Order_Action_Processor {
         $shipmentId = $this->getShipmentIdFromOrder($this->order->get_id());
 
         if (!$shipmentId && $this->eCommerceShippingChosen($this->order->get_shipping_methods())) {
-            add_meta_box( 'flagship_ecommerce_shipping', __('FlagShip eCommerce Shipping','flagship-woocommerce-extension'), array($this, 'addECommerceBox'), 'shop_order', 'side', 'default');
+            add_meta_box( 'flagship_ecommerce_shipping', esc_html(__('FlagShip eCommerce Shipping','flagship-shipping-extension-for-woocommerce')), array($this, 'addECommerceBox'), 'shop_order', 'side', 'default');
         }
 
         if ($shipmentId || (new Export_Order_Request(null))->isOrderShippingAddressValid($this->order)) {
-            add_meta_box( 'flagship_shipping', __('FlagShip Shipping','flagship-woocommerce-extension'), array($this, 'addFlagshipMetaBox'), 'shop_order', 'side', 'default', array($shipmentId));
+            add_meta_box( 'flagship_shipping', esc_html(__('FlagShip Shipping','flagship-shipping-extension-for-woocommerce')), array($this, 'addFlagshipMetaBox'), 'shop_order', 'side', 'default', array($shipmentId));
         }
 
-        add_meta_box( 'flagship_shipping_boxes_used', __('FlagShip Shipping Boxes Used','flagship-woocommerce-extension'), array($this, 'addFlagshipBoxesMetaBox'), 'shop_order', 'side', 'default');
+        add_meta_box( 'flagship_shipping_boxes_used', esc_html(__('FlagShip Shipping Boxes Used','flagship-shipping-extension-for-woocommerce')), array($this, 'addFlagshipBoxesMetaBox'), 'shop_order', 'side', 'default');
     }
 
     public function addECommerceBox($post)
     {
         echo sprintf('<p>%s.<br>%s, <a href="%s" target="_blank">%s</a>.
-        </p>', __('This order was fulfilled with our DHL Ecommerce service. This order will need to be bundled together in a bundled shipment in order to be fulfilled by the courier', 'flagship-woocommerce-extension'), __('For more information about our DHL Ecommerce service', 'flagship-woocommerce-extension'), 'https://www.flagshipcompany.com/dhl-international-ecommerce/', __('Click here', 'flagship-woocommerce-extension'));
+        </p>', esc_html(__('This order was fulfilled with our DHL Ecommerce service. This order will need to be bundled together in a bundled shipment in order to be fulfilled by the courier', 'flagship-shipping-extension-for-woocommerce')), esc_html(__('For more information about our DHL Ecommerce service', 'flagship-shipping-extension-for-woocommerce')), 'https://www.flagshipcompany.com/dhl-international-ecommerce/', esc_html(__('Click here', 'flagship-shipping-extension-for-woocommerce')));
     }
 
     public function addFlagshipBoxesMetaBox($post)
@@ -56,21 +56,21 @@ class Order_Action_Processor {
         $boxes = get_post_meta($this->order->get_id(),'boxes');
         if(count($boxes) == 0)
         {
-            $boxesUsed = "Send shipment to FlagShip to see which shipping boxes will be used";
-            echo sprintf("<p>%s</p>", __($boxesUsed));
+            $boxesUsed = "Get a Quote from FlagShip to see which shipping boxes will be used";
+            echo sprintf("<p>%s</p>", esc_html(__($boxesUsed)));
             return;
         }
 
         $boxes_data = Package_Box_Controller::get_boxes();
         if($boxes_data == null)
         {
-            echo sprintf("<p>%s</p>",__("No package boxes available"));
+            echo sprintf("<p>%s</p>",esc_html(__("No package boxes available")));
             return;
         }
 
         $boxes = reset($boxes);
         $boxesUsed = implode("<br/>", $boxes);
-        echo sprintf('<p>%s</p>',__($boxesUsed));
+        echo sprintf('<p>%s</p>',esc_html(__($boxesUsed)));
     }
 
     public function addFlagshipMetaBox($post, $box)
@@ -88,7 +88,7 @@ class Order_Action_Processor {
 
         if (!empty($shipmentUrl)) {
 
-            echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a> <strong>[%s]</strong></p>', __('FlagShip Shipment', 'flagship-woocommerce-extension'), $shipmentUrl, $shipmentId, $statusDescription);
+            echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a> <strong>[%s]</strong></p>', esc_html(__('FlagShip Shipment', 'flagship-shipping-extension-for-woocommerce')), $shipmentUrl, $shipmentId, $statusDescription);
 
             $this->getFlagshipShippingMetaBoxContent($statusDescription,$flagshipUrl,$shipmentId);
 
@@ -97,13 +97,13 @@ class Order_Action_Processor {
 
 
         if ($shipmentId && empty($shipmentUrl)) {
-            echo sprintf('<p>%s.</p>', __('Please check the FlagShip token', 'flagship-woocommerce-extension'));
+            echo sprintf('<p>%s.</p>', esc_html(__('Please check the FlagShip token', 'flagship-shipping-extension-for-woocommerce')));
             return;
         }
 
         if($rates == null)
         {
-            echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export">%s </button>', self::$exportOrderActionName, __('Send to FlagShip', 'flagship-woocommerce-extension'));
+            echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export">%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
         }
     }
 
@@ -145,7 +145,7 @@ class Order_Action_Processor {
                 $this->exportOrder();
             }
             catch(\Exception $e){
-                $this->setErrorMessages(__('Order not exported to FlagShip').': '.$e->getMessage());
+                $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$e->getMessage());
                 add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             }
         }
@@ -161,7 +161,7 @@ class Order_Action_Processor {
 
            $this->createGetQuoteButton($ratesDropdownHtml);
 
-            echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" value="%s">%s</button>',self::$confirmShipmentActionName,self::$confirmShipmentActionName,__('Confirm Shipment','flagship-woocommerce-extension'));
+            echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" value="%s">%s</button>',self::$confirmShipmentActionName,self::$confirmShipmentActionName,esc_html(__('Confirm Shipment','flagship-shipping-extension-for-woocommerce')));
         }
 
         if($statusDescription == 'Dispatched')
@@ -174,11 +174,11 @@ class Order_Action_Processor {
     protected function createGetQuoteButton($ratesDropdownHtml)
     {
         if(empty($ratesDropdownHtml)){
-            echo sprintf('&nbsp;&nbsp;<button type="submit" class="button save_order button-primary" name="%s" value="quote">%s </button>', self::$getAQuoteActionName, __('Get a Quote', 'flagship-woocommerce-extension'));
+            echo sprintf('&nbsp;&nbsp;<button type="submit" class="button save_order button-primary" name="%s" value="quote">%s </button>', self::$getAQuoteActionName, esc_html(__('Get a Quote', 'flagship-shipping-extension-for-woocommerce')));
             return;
         }
 
-        echo sprintf('&nbsp;&nbsp;<button type="submit" class="button save_order button-primary" name="%s" value="quote">%s </button>', self::$getAQuoteActionName, __('Requote', 'flagship-woocommerce-extension'));
+        echo sprintf('&nbsp;&nbsp;<button type="submit" class="button save_order button-primary" name="%s" value="quote">%s </button>', self::$getAQuoteActionName, esc_html(__('Requote', 'flagship-shipping-extension-for-woocommerce')));
         return;
     }
 
@@ -207,7 +207,7 @@ class Order_Action_Processor {
     {
         $confirmedShipment = $exportOrder->confirmShipment($shipmentId);
         if(is_string($confirmedShipment)){
-            $this->setErrorMessages(__($confirmedShipment));
+            $this->setErrorMessages(esc_html(__($confirmedShipment)));
             add_filter('redirect_post_location',array($this,'order_custom_warning_filter'));
         }
         return $confirmedShipment;
@@ -228,7 +228,7 @@ class Order_Action_Processor {
         $updatedShipment = $exportOrder->editShipment($this->order,$flagshipShipment,$prepareRequest,$updateRequest,$this->pluginSettings);
 
         if(is_string($updatedShipment)){
-            $this->setErrorMessages(__($updatedShipment));
+            $this->setErrorMessages(esc_html(__($updatedShipment)));
             add_filter('redirect_post_location',array($this,'order_custom_warning_filter'));
         }
         return $updatedShipment;
@@ -241,7 +241,7 @@ class Order_Action_Processor {
         $request = new Get_Shipment_Request($token,$testEnv);
         $shipment = $request->getShipmentById($shipmentId);
         if(is_string($shipment)){
-            $this->setErrorMessages(__($shipment));
+            $this->setErrorMessages(esc_html(__($shipment)));
             add_filter('redirect_post_location',array($this,'order_custom_warning_filter'));
         }
         return $shipment;
@@ -287,7 +287,7 @@ class Order_Action_Processor {
 
         if(is_string($rates))
         {
-            $this->setErrorMessages(__('Unable to get rates from FlagShip').$rates);
+            $this->setErrorMessages(esc_html(__('Unable to get rates from FlagShip')).$rates);
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }
@@ -313,7 +313,7 @@ class Order_Action_Processor {
         $instance_id = $this->get_instance_id($this->order->get_address('shipping'));
 
         if ($instance_id) {
-            $instance_option_key = 'woocommerce_'.FlagshipWoocommerceShipping::$methodId.'_'.$instance_id.'_settings';
+            $instance_option_key = 'woocommerce_'.FlagshipWoocommerceBedrockShipping::$methodId.'_'.$instance_id.'_settings';
             $instance_settings = get_option($instance_option_key);
             $settings = array_merge($settings, $instance_settings);
         }
@@ -334,7 +334,7 @@ class Order_Action_Processor {
         $zone_id = $data_store->get_zone_id_from_package($fake_package);
         $shipping_methods = (new \WC_Shipping_Zone($zone_id))->get_shipping_methods();
         $filtered_methods = array_filter($shipping_methods, function($method) {
-            return $method->id == FlagshipWoocommerceShipping::$methodId && $method->is_enabled();
+            return $method->id == FlagshipWoocommerceBedrockShipping::$methodId && $method->is_enabled();
         });
 
         if (count($filtered_methods) == 0) {
@@ -367,20 +367,20 @@ class Order_Action_Processor {
     protected function exportOrder()
     {
         if ($this->getShipmentIdFromOrder($this->order->get_id())) {
-            throw new \Exception(__('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $this->errorCodes['shipment_exists']);
+            throw new \Exception(esc_html(__('This order has already been exported to FlagShip', 'flagship-shipping-extension-for-woocommerce')), $this->errorCodes['shipment_exists']);
         }
 
         $token = get_array_value($this->pluginSettings, 'token');
 
         if (!$token) {
-            throw new \Exception(__('FlagShip API token is missing', 'flagship-woocommerce-extension'), $this->errorCodes['token_missing']);
+            throw new \Exception(esc_html(__('FlagShip API token is missing', 'flagship-shipping-extension-for-woocommerce')), $this->errorCodes['token_missing']);
         }
         $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
         $apiRequest = new Export_Order_Request($token, $testEnv);
         $exportedShipment = $apiRequest->exportOrder($this->order, $this->pluginSettings);
 
         if (is_string($exportedShipment)) {
-            $this->setErrorMessages(__('Order not exported to FlagShip').': '.$exportedShipment);
+            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$exportedShipment);
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }
@@ -433,14 +433,14 @@ class Order_Action_Processor {
     {
         if (in_array($status, array('dispatched',
             'manifested'))) {
-            return __('Dispatched', 'flagship-woocommerce-extension');
+            return esc_html(__('Dispatched', 'flagship-shipping-extension-for-woocommerce'));
         }
 
         if (in_array($status, array('prequoted',
             'quoted'))) {
-            return __('NOT dispatched', 'flagship-woocommerce-extension');
+            return esc_html(__('NOT dispatched', 'flagship-shipping-extension-for-woocommerce'));
         }
 
-        return __($status, 'flagship-woocommerce-extension');
+        return esc_html(__($status, 'flagship-shipping-extension-for-woocommerce'));
     }
 }

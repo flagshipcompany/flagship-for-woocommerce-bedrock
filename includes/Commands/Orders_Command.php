@@ -1,16 +1,16 @@
 <?php
-namespace FlagshipWoocommerce\Commands;
+namespace FlagshipWoocommerceBedrock\Commands;
 
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
-use FlagshipWoocommerce\Helpers\Export_Order_Helper;
-use FlagshipWoocommerce\Requests\Export_Order_Request;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
+use FlagshipWoocommerceBedrock\Helpers\Export_Order_Helper;
+use FlagshipWoocommerceBedrock\Requests\Export_Order_Request;
 
 class Orders_Command {
 
     protected $export_helper;
 
     public function __construct() {
-        $plugin_settings = get_option(FlagshipWoocommerceShipping::getSettingsOptionKey());
+        $plugin_settings = get_option(FlagshipWoocommerceBedrockShipping::getSettingsOptionKey());
         $this->export_helper = new Export_Order_Helper($plugin_settings);
     }
 

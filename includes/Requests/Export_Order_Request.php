@@ -1,10 +1,10 @@
 <?php
-namespace FlagshipWoocommerce\Requests;
+namespace FlagshipWoocommerceBedrock\Requests;
 
 use Flagship\Shipping\Flagship;
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
-use FlagshipWoocommerce\Helpers\Package_Helper;
-use FlagshipWoocommerce\Requests\Confirm_Shipment_Request;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
+use FlagshipWoocommerceBedrock\Helpers\Package_Helper;
+use FlagshipWoocommerceBedrock\Requests\Confirm_Shipment_Request;
 
 class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
@@ -33,7 +33,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     {
         $storeAddress = $this->getStoreAddress(true, false, $options);
         $prepareRequest = $this->makePrepareRequest($order, $options);
-        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
         try
         {
@@ -58,7 +58,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     public function editShipment($order, $flagshipShipment, $preparePayload, $editShipmentData, $options)
     {
         $storeAddress = $this->getStoreAddress(true, false, $options);
-        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         $editRequest = array_merge($preparePayload, $editShipmentData);
         $editRequestObj = $apiClient->editShipmentRequest($editRequest, $flagshipShipment->getId());
         $editRequestObj = $this->addHeaders($editRequestObj, $storeAddress['name'], $order->get_id());

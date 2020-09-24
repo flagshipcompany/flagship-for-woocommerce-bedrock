@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
-use FlagshipWoocommerce\Routes\Get_Package_Boxes;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
+use FlagshipWoocommerceBedrock\Routes\Get_Package_Boxes;
 
 class Script_Helper {
 
@@ -11,7 +11,7 @@ class Script_Helper {
 			return;
 		}
 
-		$vuejsFileName = FlagshipWoocommerceShipping::isDebugMode() ? 'vue.js' : 'vue.prod.js';
+		$vuejsFileName = FlagshipWoocommerceBedrockShipping::isDebugMode() ? 'vue.js' : 'vue.prod.js';
 
 	    wp_register_script('axios', $this->get_file_path('axios.min.js'));
 	    wp_register_script('vuejs', $this->get_file_path($vuejsFileName));

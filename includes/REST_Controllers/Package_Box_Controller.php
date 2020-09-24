@@ -1,16 +1,16 @@
 <?php
-namespace FlagshipWoocommerce\REST_Controllers;
+namespace FlagshipWoocommerceBedrock\REST_Controllers;
 
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Package_Box_Controller extends \WP_REST_Controller {
 
 	public static function getSettingsOptionKey() {
-		return 'woocommerce_'.FlagshipWoocommerceShipping::$methodId.'_boxes';
+		return 'woocommerce_'.FlagshipWoocommerceBedrockShipping::$methodId.'_boxes';
 	}
 
 	public static function get_namespace() {
-		return sprintf('flagship/%s', FlagshipWoocommerceShipping::$version);
+		return sprintf('flagship/%s', FlagshipWoocommerceBedrockShipping::$version);
 	}
 
 	public static function get_boxes() {
@@ -23,7 +23,7 @@ class Package_Box_Controller extends \WP_REST_Controller {
 				'callback' => array($this, 'get_package_boxes'),
 				'args' => array(
 				),
-				'permissions_callback' => '__return_true',  //array($this, 'box_permissions'),
+				'permission_callback' => '__return_true',  //array($this, 'box_permissions'),
 	      	),
    		);
 
@@ -32,7 +32,7 @@ class Package_Box_Controller extends \WP_REST_Controller {
 				'callback' => array($this, 'save_package_boxes'),
 				'args' => array(
 				),
-				'permissions_callback' => '__return_true', //array($this, 'box_permissions'),
+				'permission_callback' => '__return_true', //array($this, 'box_permissions'),
 	      	),
    		);
 	}

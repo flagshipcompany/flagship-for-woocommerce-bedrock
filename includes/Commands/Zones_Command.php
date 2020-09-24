@@ -1,7 +1,7 @@
 <?php
-namespace FlagshipWoocommerce\Commands;
+namespace FlagshipWoocommerceBedrock\Commands;
 
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Zones_Command {
 
@@ -70,7 +70,7 @@ class Zones_Command {
         $msg = sprintf('Shipping zone %s has been saved for location: %s.', $zoneName, $locationCode);
 
         if (isset($assoc_args['enable_flagship'])) {
-            $zone->add_shipping_method(FlagshipWoocommerceShipping::$methodId);
+            $zone->add_shipping_method(FlagshipWoocommerceBedrockShipping::$methodId);
             $msg .= ' FlagShip shipping is enabled';            
         }
 
@@ -80,7 +80,7 @@ class Zones_Command {
     }
 
     protected function getShippingZones($enabledOnly = false) {
-        $flagshipMethod = FlagshipWoocommerceShipping::$methodId;
+        $flagshipMethod = FlagshipWoocommerceBedrockShipping::$methodId;
         $shippingZones = array_map(function($zone) {
             return new \WC_Shipping_Zone($zone);
         }, \WC_Data_Store::load( 'shipping-zone' )->get_zones());

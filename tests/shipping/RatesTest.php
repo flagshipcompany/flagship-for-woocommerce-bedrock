@@ -1,5 +1,5 @@
 <?php
-use FlagshipWoocommerce\Requests\Rates_Request;
+use FlagshipWoocommerceBedrock\Requests\Rates_Request;
 
 class RatesTest extends FlagshipShippingUnitTestCase
 {

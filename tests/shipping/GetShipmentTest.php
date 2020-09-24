@@ -1,6 +1,6 @@
 <?php
 
-use FlagshipWoocommerce\Requests\Get_Shipment_Request;
+use FlagshipWoocommerceBedrock\Requests\Get_Shipment_Request;
 
 class GetShipmentTest extends FlagshipShippingUnitTestCase{
 

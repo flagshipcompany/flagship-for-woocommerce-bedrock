@@ -1,5 +1,5 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
 class Store_Address_Helper {
 
@@ -43,24 +43,24 @@ class Store_Address_Helper {
     {
         return array(
             'store_name' => array(
-                "title" => __('Store name', 'flagship-woocommerce-extension'),
-                "desc" => __('The store name will be used for FlagShip shipments', 'flagship-woocommerce-extension'),
+                "title" => __('Store name', 'flagship-shipping-extension-for-woocommerce'),
+                "desc" => __('The store name will be used for FlagShip shipments', 'flagship-shipping-extension-for-woocommerce'),
                 "id" => "woocommerce_store_name",
                 "default" => "",
                 "type" => "text",
                 "desc_tip" => true,
             ),
             'attn' => array(
-                "title" => __('Attention', 'flagship-woocommerce-extension'),
-                "desc" => __('Attention will be the sender of FlagShip shipments', 'flagship-woocommerce-extension'),
+                "title" => __('Attention', 'flagship-shipping-extension-for-woocommerce'),
+                "desc" => __('Attention will be the sender of FlagShip shipments', 'flagship-shipping-extension-for-woocommerce'),
                 "id" => "woocommerce_store_attn",
                 "default" => "",
                 "type" => "text",
                 "desc_tip" => true,
             ),
             'phone' => array(
-                "title" => __('Phone', 'flagship-woocommerce-extension'),
-                "desc" => __('This phone number will be used for FlagShip shipments', 'flagship-woocommerce-extension'),
+                "title" => __('Phone', 'flagship-shipping-extension-for-woocommerce'),
+                "desc" => __('This phone number will be used for FlagShip shipments', 'flagship-shipping-extension-for-woocommerce'),
                 "id" => "woocommerce_store_phone",
                 "default" => "",
                 "type" => "text",

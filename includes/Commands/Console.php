@@ -1,5 +1,5 @@
 <?php
-namespace FlagshipWoocommerce\Commands;
+namespace FlagshipWoocommerceBedrock\Commands;
 
 class Console {
 

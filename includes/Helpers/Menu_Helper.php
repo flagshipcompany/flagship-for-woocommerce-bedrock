@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
-use FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
+use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
 
 class Menu_Helper {
 
@@ -19,9 +19,9 @@ class Menu_Helper {
     {
         add_menu_page( 'FlagShip', 'FlagShip', 'manage_options', self::$menuItemUri, '', plugin_dir_url(FLAGSHIP_PLUGIN_FILE).'assets/images/flagship_logo.svg', 56.6);
 
-        add_submenu_page(self::$menuItemUri, __( 'Shipment', 'flagship-woocommerce-extension'), __( 'Shipment', 'flagship-woocommerce-extension'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
-        add_submenu_page(self::$menuItemUri, __( 'Manage shipment', 'flagship-woocommerce-extension'), __( 'Manage shipment', 'flagship-woocommerce-extension'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
-        add_submenu_page(self::$menuItemUri, __( 'Package boxes', 'flagship-woocommerce-extension'), __( 'Package boxes', 'flagship-woocommerce-extension'), 'manage_options', self::$package_boxes_uri, array($this, 'list_boxes'));
+        add_submenu_page(self::$menuItemUri, __( 'Shipment', 'flagship-shipping-extension-for-woocommerce'), __( 'Shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
+        add_submenu_page(self::$menuItemUri, __( 'Manage shipment', 'flagship-shipping-extension-for-woocommerce'), __( 'Manage shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
+        add_submenu_page(self::$menuItemUri, __( 'Package boxes', 'flagship-shipping-extension-for-woocommerce'), __( 'Package boxes', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$package_boxes_uri, array($this, 'list_boxes'));
 
         $this->add_settings_link();
         $this->add_flagship_link();
@@ -42,8 +42,8 @@ class Menu_Helper {
 
     public function load_page($pageName)
     {
-        $flagshipUrl = FlagshipWoocommerceShipping::getFlagshipUrl();
-        $pageUri =!empty($_GET['flagship_uri']) ? $_GET['flagship_uri'] : $this->flagshipUrlMap[$pageName];
+        $flagshipUrl = FlagshipWoocommerceBedrockShipping::getFlagshipUrl();
+        $pageUri =!empty($_GET['flagship_uri']) ? sanitize_text_field($_GET['flagship_uri']) : $this->flagshipUrlMap[$pageName];
         $iframePageUrl = $flagshipUrl.'/'.$pageUri.'?ex-iframe=true';
 
         Template_Helper::render_html('flagship_page.html', array(
@@ -58,8 +58,8 @@ class Menu_Helper {
         $submenu[self::$menuItemUri][] = array(
             sprintf(
                 '<a href="%s" target="_blank">%s <span class="dashicons dashicons-external"></span></a>',
-                FlagshipWoocommerceShipping::getFlagshipUrl().'?ex-iframe=false',
-                __('Visit FlagShip site', 'flagship-woocommerce-extension'),
+                FlagshipWoocommerceBedrockShipping::getFlagshipUrl().'?ex-iframe=false',
+                __('Visit FlagShip site', 'flagship-shipping-extension-for-woocommerce'),
             ),
             "manage_options",
             "flagship\/site",
@@ -71,13 +71,13 @@ class Menu_Helper {
     {
         global $submenu;
 
-        $settingsUrl = 'admin.php?page=wc-settings&tab=shipping&section='.FlagshipWoocommerceShipping::$methodId;
+        $settingsUrl = 'admin.php?page=wc-settings&tab=shipping&section='.FlagshipWoocommerceBedrockShipping::$methodId;
 
         $submenu[self::$menuItemUri][] = array(
             sprintf(
                 '<a href="%s">%s </a>',
                 $settingsUrl,
-                __('Settings', 'flagship-woocommerce-extension'),
+                __('Settings', 'flagship-shipping-extension-for-woocommerce'),
             ),
             "manage_options",
             "flagship\/settings",

@@ -1,7 +1,7 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
-use  FlagshipWoocommerce\REST_Controllers\Package_Box_Controller;
+use  FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
 
 class Compatibility_Helper {
 

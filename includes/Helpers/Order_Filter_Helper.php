@@ -1,7 +1,7 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
-use FlagshipWoocommerce\Order_Action_Processor;
+use FlagshipWoocommerceBedrock\Order_Action_Processor;
 
 class Order_Filter_Helper {
 
@@ -12,7 +12,7 @@ class Order_Filter_Helper {
 
     	if ('shop_order' === $typenow) {
             Template_Helper::render_php('_order_filter.php', array(
-                'value' => isset($_GET['_exported_flagship']) ? $_GET['_exported_flagship'] : '',
+                'value' => isset($_GET['_exported_flagship']) ? sanitize_text_field($_GET['_exported_flagship']) : '',
                 'fieldName' => $this->filter_name,
             ));
     	}

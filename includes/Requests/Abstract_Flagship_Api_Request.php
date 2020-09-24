@@ -1,7 +1,7 @@
 <?php
-namespace FlagshipWoocommerce\Requests;
+namespace FlagshipWoocommerceBedrock\Requests;
 
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 abstract class Abstract_Flagship_Api_Request {
 

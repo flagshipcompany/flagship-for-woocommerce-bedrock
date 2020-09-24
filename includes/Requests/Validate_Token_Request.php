@@ -1,8 +1,8 @@
 <?php
-namespace FlagshipWoocommerce\Requests;
+namespace FlagshipWoocommerceBedrock\Requests;
 
 use Flagship\Shipping\Flagship;
-use FlagshipWoocommerce\FlagshipWoocommerceShipping;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Validate_Token_Request extends Abstract_Flagship_Api_Request {
 
@@ -14,7 +14,7 @@ class Validate_Token_Request extends Abstract_Flagship_Api_Request {
 
     public function validateToken()
     {
-        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceShipping::$version);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         try{
             $httpCode = $apiClient->validateTokenRequest($this->token)->execute();
             return $httpCode;

@@ -1,7 +1,7 @@
 <?php
-namespace FlagshipWoocommerce\Helpers;
+namespace FlagshipWoocommerceBedrock\Helpers;
 
-use FlagshipWoocommerce\Requests\Export_Order_Request;
+use FlagshipWoocommerceBedrock\Requests\Export_Order_Request;
 
 class Export_Order_Helper {
 
@@ -44,13 +44,13 @@ class Export_Order_Helper {
 
     public function exportOrder() {
         if ($this->getShipmentIdFromOrder($this->order->get_id())) {
-            throw new \Exception(__('This order has already been exported to FlagShip', 'flagship-woocommerce-extension'), $this->errorCodes['shipment_exists']);
+            throw new \Exception(__('This order has already been exported to FlagShip', 'flagship-shipping-extension-for-woocommerce'), $this->errorCodes['shipment_exists']);
         }
 
         $token = get_array_value($this->pluginSettings, 'token');
 
         if (!$token) {
-            throw new \Exception(__('FlagShip API token is missing', 'flagship-woocommerce-extension'), $this->errorCodes['token_missing']);
+            throw new \Exception(__('FlagShip API token is missing', 'flagship-shipping-extension-for-woocommerce'), $this->errorCodes['token_missing']);
         }
 
         $apiRequest = new Export_Order_Request($token);
