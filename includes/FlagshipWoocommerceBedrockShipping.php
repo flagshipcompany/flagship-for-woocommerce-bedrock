@@ -12,14 +12,14 @@ class FlagshipWoocommerceBedrockShipping {
 
 	public static $methodId = 'flagship_shipping_method';
 
-	public static $version = '1.0.0';
+	public static $version = '1.0.2';
 
 	public static $couriers = array(
 		'UPS' => 'ups',
-        'DHL' => 'dhl',
-        'FedEx' => 'fedex',
-        'Purolator' => 'purolator',
-        'Canpar' => 'canpar',
+	        'DHL' => 'dhl',
+        	'FedEx' => 'fedex',
+	        'Purolator' => 'purolator',
+        	'Canpar' => 'canpar',
 		'Dicom' => 'dicom',
 	);
 
@@ -73,7 +73,7 @@ class FlagshipWoocommerceBedrockShipping {
 	}
 
 	public function hooks() {
-		add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
+	    add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
 	    add_filter( 'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ) );
 	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
 	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box'));
@@ -105,7 +105,7 @@ class FlagshipWoocommerceBedrockShipping {
 	public function save_meta_box($orderId) {
 		$orderActionProcessor = $this->init_order_action_processor(wc_get_order($orderId));
 
-        return $orderActionProcessor->processOrderActions($_POST);
+	        return $orderActionProcessor->processOrderActions($_POST);
 	}
 
 	public function add_flagship_shipping_method($methods) {
@@ -114,23 +114,23 @@ class FlagshipWoocommerceBedrockShipping {
 		return $methods;
 	}
 
-    public function add_custom_meta_box() {
-    	global $post;
+    	public function add_custom_meta_box() {
+    		global $post;
 
-    	$order = wc_get_order($post->ID);
+    		$order = wc_get_order($post->ID);
 
-    	if (!$order) {
-    		return;
+	    	if (!$order) {
+    			return;
+    		}
+
+	    	$orderActionProcessor = $this->init_order_action_processor($order);
+    		$orderActionProcessor->addMetaBoxes($order);
     	}
-
-    	$orderActionProcessor = $this->init_order_action_processor($order);
-    	$orderActionProcessor->addMetaBoxes($order);
-    }
 
 	protected function init_order_action_processor($order)
 	{
-        $settings = get_option(self::getSettingsOptionKey());
+        	$settings = get_option(self::getSettingsOptionKey());
 
-        return new Order_Action_Processor($order, $settings);
+	        return new Order_Action_Processor($order, $settings);
 	}
 }
