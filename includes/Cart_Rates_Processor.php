@@ -33,7 +33,7 @@ class Cart_Rates_Processor {
         $testEnv = get_array_value($this->instanceSettings,'test_env') == 'no' ? 0 : 1;
         $ratesRequest = new Rates_Request($this->token, $debugMode, $testEnv);
         $rates = $ratesRequest->getRates($package, $this->rateOptions);
-        if(!is_string($rates)){
+        if(count($rates) == 0){
             $rates = $rates->all();
         }
 

@@ -37,4 +37,11 @@ class Notification_Helper {
               <p>'.esc_html(__( 'Invalid FlagShip Token', 'flagship-shipping-extension-for-woocommerce')).'</p>
             </div>';
     }
+
+    public function add_test_env_notice()
+    {
+        echo '<div class="updated notice error">
+              <p>'.__( 'You are using FlagShip in test mode. Any shipments made in the test environment will not be processed', 'flagship-for-woocommerce').'</p>
+            </div>';
+    }
 }
