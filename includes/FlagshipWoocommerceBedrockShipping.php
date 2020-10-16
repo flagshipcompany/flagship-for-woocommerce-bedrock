@@ -12,7 +12,7 @@ class FlagshipWoocommerceBedrockShipping {
 
 	public static $methodId = 'flagship_shipping_method';
 
-	public static $version = '1.0.2';
+	public static $version = '1.0.3';
 
 	public static $couriers = array(
 		'UPS' => 'ups',
