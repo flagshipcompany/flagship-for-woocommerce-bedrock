@@ -85,7 +85,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         $cartSubTotal = $this->functionCallFromAdmin ? $order->get_subtotal() : WC()->cart->subtotal;
         $cartItems = $this->functionCallFromAdmin ? $order->get_items() : WC()->cart->get_cart();
 
-        if (get_array_value($options, 'flagship_insurance', false) && $cartSubTotal > 100) {
+        if (get_array_value($options, 'flagship_insurance', false) && $cartSubTotal >= 101) {
             $shippingOptions['insurance'] = [
                 "value" => $cartSubTotal,
                 "description" => $this->getInsuranceDescription($cartItems)
