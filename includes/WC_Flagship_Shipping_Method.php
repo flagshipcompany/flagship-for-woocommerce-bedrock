@@ -141,6 +141,12 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'type' => 'text',
                 'description' => esc_html(__('The emails (separated by ;) to receive tracking information of shipments.', 'flagship-shipping-extension-for-woocommerce')),
             ),
+            'flagship_insurance' => array(
+                'title' => esc_html(__('Insurance', 'flagship-shipping-extension-for-woocommerce')),
+                'label' => esc_html(__( 'Add Insurance', 'flagship-shipping-extension-for-woocommerce')),
+                'type' => 'checkbox',
+                'default' => 'no',
+            ),
             'box_split' => array(
                 'title' => esc_html(__('Box split', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'radio',

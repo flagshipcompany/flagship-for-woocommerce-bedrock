@@ -17,6 +17,7 @@ class Cart_Rates_Processor {
       'signature_required',
       'residential_receiver_address',
       'send_tracking_emails',
+      'flagship_insurance'
     );
 
     public function __construct($methodId, $token, $instanceSettings) {
@@ -33,10 +34,9 @@ class Cart_Rates_Processor {
         $testEnv = get_array_value($this->instanceSettings,'test_env') == 'no' ? 0 : 1;
         $ratesRequest = new Rates_Request($this->token, $debugMode, $testEnv);
         $rates = $ratesRequest->getRates($package, $this->rateOptions);
-        if(count($rates) == 0){
+        if(!is_string($rates)){
             $rates = $rates->all();
         }
-
         if (get_array_value($this->instanceSettings, 'offer_dhl_ecommerce_rates', null) == 'yes') {
             $eCommerceRequest = new ECommerce_Request($this->token, $debugMode);
             $eCommerceRates = $eCommerceRequest->getRates($package)->all();

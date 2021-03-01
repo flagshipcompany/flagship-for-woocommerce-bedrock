@@ -40,7 +40,6 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
             $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);
             $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
             $exportedShipment = $prepareRequestObj->execute();
-
             $editShipmentData = $this->makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options);
 
             if($editShipmentData)
@@ -115,7 +114,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $packages = $packageHelper->make_packages($this->extractOrderItems($orderItems), $options);
         $trackingEmails = $this->makeTrackingEmails($destinationAddress, $options, $orderOptions);
         unset($destinationAddress['email']);
-
+        $orderSubtotal = $order->get_subtotal();
         $shippingOptions = array();
 
         if ($trackingEmails) {
@@ -135,6 +134,13 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
         if (get_array_value($orderOptions, 'signature_required', false)) {
             $request['options']['signature_required'] = true;
+        }
+
+        if (get_array_value($options, 'flagship_insurance', false) && $orderSubtotal >= 101) {
+            $request['options']['insurance'] = [
+                "value" => $orderSubtotal,
+                "description" => $this->getInsuranceDescription($orderItems)
+            ];
         }
 
         return $request;
@@ -199,6 +205,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
             'send_tracking_emails',
             'residential_receiver_address',
             'signature_required',
+            'flagship_insurance'
         );
         $options = array();
 
@@ -247,5 +254,16 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         });
 
         return $missingFields;
+    }
+
+    protected function getInsuranceDescription($orderItems)
+    {
+        $insuranceDescription = '';
+
+        foreach ( $orderItems as $item) {
+            $insuranceDescription .= $item->get_name().',';
+        }
+
+        return rtrim($insuranceDescription,',');
     }
 }

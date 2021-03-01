@@ -185,6 +185,14 @@ msgstr "Configurez les cases sous "FlagShip/Boîtes d'emballage" dans le menu"
 msgid "Maximum weight in each box (only used when 'Split by weight' is chosen for box split."
 msgstr "Poids maximum dans chaque boîte (uniquement utilisé lorsque «Diviser en poids» est choisi pour la division de la boîte."
 
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Insurance"
+msgstr "Assurance"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Add Insurance"
+msgstr "Ajouter une assurance"
+
 #: includes/Order_Action_Processor.php
 msgid "FlagShip eCommerce Shipping"
 msgstr "Expédition FlagShip pour eCommerce"

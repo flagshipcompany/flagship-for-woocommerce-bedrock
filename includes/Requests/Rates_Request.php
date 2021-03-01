@@ -19,6 +19,8 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
 
     public function getRates($package, $options = array(), $admin=0, $order=null)
     {
+        $this->functionCallFromAdmin = (bool) $admin;
+
         if($admin==1)
         {
             $orderItems = $this->getOrderItems($order);
@@ -26,11 +28,11 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
             $sourceAddress = $this->getStoreAddress();
 
             $shippingAddress = $this->getOrderShippingAddressForRates($order);
-            $apiRequest = $this->getRequest($sourceAddress,$shippingAddress,$packages, $options);
+            $apiRequest = $this->getRequest($sourceAddress,$shippingAddress,$packages, $options, $order);
         }
         if($admin==0)
         {
-            $apiRequest = $this->makeApiRequest($package, $options);
+            $apiRequest = $this->makeApiRequest($package, $options, $order);
         }
 
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
@@ -59,18 +61,18 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         return $orderItems;
     }
 
-    protected function makeApiRequest($package, $options = array())
+    protected function makeApiRequest($package, $options = array(), $order)
     {
         $storeAddress = $this->getStoreAddress();
         $destinationAddress = $this->getDestinationAddress($package['destination'], $this->requiredAddressFields, $options);
 
         $packages = $this->getPackages($this->extractOrderItems($package),$options);
 
-        $request = $this->getRequest($storeAddress,$destinationAddress,$packages, $options);
+        $request = $this->getRequest($storeAddress,$destinationAddress,$packages, $options, $order);
         return $request;
     }
 
-    protected function getRequest($sourceAddress, $destinationAddress, $packages, $options)
+    protected function getRequest($sourceAddress, $destinationAddress, $packages, $options, $order)
     {
         $shippingOptions = $this->makeShippingOptions($options);
 
@@ -79,6 +81,16 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
             'to' => $destinationAddress,
             'packages' => $packages
         );
+
+        $cartSubTotal = $this->functionCallFromAdmin ? $order->get_subtotal() : WC()->cart->subtotal;
+        $cartItems = $this->functionCallFromAdmin ? $order->get_items() : WC()->cart->get_cart();
+
+        if (get_array_value($options, 'flagship_insurance', false) && $cartSubTotal > 100) {
+            $shippingOptions['insurance'] = [
+                "value" => $cartSubTotal,
+                "description" => $this->getInsuranceDescription($cartItems)
+            ];
+        }
 
         if ($shippingOptions) {
             $request['options'] = $shippingOptions;
@@ -114,5 +126,15 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         if (FlagshipWoocommerceBedrockShipping::isDebugMode() || $this->debugMode) {
             wc_add_notice($message, $type);
         }
+    }
+
+    protected function getInsuranceDescription($items)
+    {
+        $insuranceDescription = '';
+        foreach ( $items as $item) {
+            $insuranceDescription .= ($this->functionCallFromAdmin ? $item->get_name() : $item['data']->get_title()).',';
+
+        }
+        return rtrim($insuranceDescription,',');
     }
 }
