@@ -76,7 +76,7 @@ class FlagshipWoocommerceBedrockShipping {
 	    add_filter( 'woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
 	    add_filter( 'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ) );
 	    add_action( 'add_meta_boxes', array($this, 'add_custom_meta_box'));
-	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box'));
+	    add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_meta_box'), 100, 2);
 	    add_action('admin_notices', array((new Notification_Helper()), 'flagship_warning_in_notice'));
 	    add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
 	    add_filter('woocommerce_general_settings', array((new Store_Address_Helper()), 'add_extra_address_fields'));
@@ -105,7 +105,7 @@ class FlagshipWoocommerceBedrockShipping {
 	public function save_meta_box($orderId) {
 		$orderActionProcessor = $this->init_order_action_processor(wc_get_order($orderId));
 
-	        return $orderActionProcessor->processOrderActions($_POST);
+	    return $orderActionProcessor->processOrderActions($_POST);
 	}
 
 	public function add_flagship_shipping_method($methods) {

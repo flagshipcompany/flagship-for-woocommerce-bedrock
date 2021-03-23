@@ -194,6 +194,13 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'description' => esc_html(__('If enabled, errors will be displayed in the pages showing shipping rates', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
+            'autocomplete_order' => array(
+                'title' => esc_html(__('Auto Complete "Processing" Orders', 'flagship-shipping-extension-for-woocommerce')),
+                'label' => esc_html(__( 'Auto complete "Processing" orders when Flagship shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
+                'type' => 'checkbox',
+                'description' => esc_html(__('If enabled, "Processing" order will be automatically set to "Completed" when Flagship Shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
+                'default' => 'no'
+            ),
         );
     }
 

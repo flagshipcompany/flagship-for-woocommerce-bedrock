@@ -210,6 +210,14 @@ class Order_Action_Processor {
             $this->setErrorMessages(esc_html(__($confirmedShipment)));
             add_filter('redirect_post_location',array($this,'order_custom_warning_filter'));
         }
+
+        if (!is_string($confirmedShipment)
+            && !is_null($confirmedShipment->getTrackingNumber())
+            && $this->order->get_status() == 'processing'
+            && get_array_value($this->pluginSettings,'autocomplete_order') == 'yes') {
+                $this->order->update_status('completed');
+        }
+
         return $confirmedShipment;
     }
 

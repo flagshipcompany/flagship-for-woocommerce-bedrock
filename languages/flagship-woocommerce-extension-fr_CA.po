@@ -38,6 +38,18 @@ msgid "If enabled, errors will be displayed in the pages showing shipping rates"
 msgstr "Si cette option est activée, des erreurs seront affichées dans les pages indiquant les tarifs d'expédition"
 
 #: includes/WC_Flagship_Shipping_Method.php
+msgid "Auto Complete \"Processing\" Orders"
+msgstr "Compléter les commandes de \"Processing\" automatiquement"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "Auto complete \"Processing\" orders when Flagship shipment is confirmed"
+msgstr "Compléter les commandes de \"Processing\" automatiquement lorsque l'expédition Flagship est confirmée"
+
+#: includes/WC_Flagship_Shipping_Method.php
+msgid "If enabled, "Processing" order will be automatically set to "Completed" when Flagship Shipment is confirmed"
+msgstr "Si cette option est activée, les commandes de \"Processing\" sera définie sur \"Completed\" automatiquement lorsque l'expédition Flagship est confirmée"
+
+#: includes/WC_Flagship_Shipping_Method.php
 msgid "After <a href="%s">signup </a>, <a target="_blank" href="%s">get an access token here </a>."
 msgstr "Après vous être <a href="%s">incrit </a>, <a target="_blank" href="%s">générez une clé FlagShip ici </a>."
 
