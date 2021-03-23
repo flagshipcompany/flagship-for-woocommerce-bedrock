@@ -42,8 +42,8 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
 
         add_action( 'woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
         add_filter('woocommerce_settings_api_sanitized_fields_' . $this->id,  array($this, 'validate_admin_options'));
+        add_filter('woocommerce_shipping_' . $this->id . '_instance_settings_values', array($this, 'validate_shipping_zone_options'));
     }
-
     /**
      * @return void
      */
@@ -51,6 +51,19 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
 
         $this->form_fields = $this->makeGeneralFields();
         $this->instance_form_fields = $this->makeInstanceFields();
+    }
+
+    // remove redundant/ old shipping zone settings in case the option is removed or moved to the general settings.
+    // only return values of options that match options on the shipping zone form.
+    public function validate_shipping_zone_options($shippingZoneOptions) {
+        $currentFormFields = array_keys($this->instance_form_fields);
+        $formattedOptions = [];
+
+        foreach (array_keys($this->instance_form_fields) as $formField) {
+            $formattedOptions[$formField] = $shippingZoneOptions[$formField];
+        }
+
+        return $formattedOptions;
     }
 
     /**
@@ -140,6 +153,12 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'title' => esc_html(__('Tracking emails', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'text',
                 'description' => esc_html(__('The emails (separated by ;) to receive tracking information of shipments.', 'flagship-shipping-extension-for-woocommerce')),
+            ),
+            'send_tracking_emails' => array(
+                'title' => esc_html(__('Send tracking emails', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('If checked, customers will receive the tracking emails of a shipment.', 'flagship-shipping-extension-for-woocommerce')),
+                'type' => 'checkbox',
+                'default' => 'no',
             ),
             'flagship_insurance' => array(
                 'title' => esc_html(__('Insurance', 'flagship-shipping-extension-for-woocommerce')),
@@ -248,12 +267,6 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'residential_receiver_address' => array(
                 'title' => esc_html(__('Residential receiver address', 'flagship-shipping-extension-for-woocommerce')),
                 'description' => esc_html(__('If checked, all the receiver addresses in this shipping zone will be considered residential', 'flagship-shipping-extension-for-woocommerce')),
-                'type' => 'checkbox',
-                'default' => 'no',
-            ),
-            'send_tracking_emails' => array(
-                'title' => esc_html(__('Send tracking emails', 'flagship-shipping-extension-for-woocommerce')),
-                'description' => esc_html(__('If checked, customers will receive the tracking emails of a shipment.', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
                 'default' => 'no',
             ),
