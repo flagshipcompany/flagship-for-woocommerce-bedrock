@@ -55,7 +55,7 @@ class Package_Helper {
             $length = $product->get_length() ? round(wc_get_dimension($product->get_length(), $output_dimension_unit, $dimension_unit)) : 1;
             $width = $product->get_width() ? round(wc_get_dimension($product->get_width(), $output_dimension_unit, $dimension_unit)) : 1;
             $height = $product->get_height() ? round(wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit)) : 1;
-           	$description = $product->get_name();
+            $description = $product->get_sku() ? $product->get_sku() : $product->get_name();
             $shippingClass = $product->get_shipping_class();
 
            	$item = array(
