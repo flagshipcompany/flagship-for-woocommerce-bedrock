@@ -317,7 +317,7 @@ class Order_Action_Processor {
                 "option_name" => $price. ' - '.$courierName
             ];
         }
-        update_post_meta($this->order->get_id(),'rates', apply_filter('fwb_get_rates_admin_dropdown', $ratesDropDown));
+        update_post_meta($this->order->get_id(),'rates', apply_filters('fwb_get_rates_admin_dropdown', $ratesDropDown));
         return;
     }
 

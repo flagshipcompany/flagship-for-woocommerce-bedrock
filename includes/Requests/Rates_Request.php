@@ -105,7 +105,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         $packageHelper = new Package_Helper($this->debugMode,$this->apiUrl);
         $packages = $packageHelper->make_packages($orderItems,$options);
 
-        return apply_filters( 'fwb_get_packages', $orderItems);
+        return apply_filters( 'fwb_get_packages', $packages);
     }
 
     protected function extractOrderItems($items)
