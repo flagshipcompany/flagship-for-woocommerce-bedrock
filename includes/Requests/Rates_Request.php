@@ -38,14 +38,13 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
         try{
-            $rates = $apiClient->createQuoteRequest($apiRequest)->execute();
-            return $rates;
+            $rates = $apiClient->createQuoteRequest(apply_filters( 'fwb_get_rates_request', $apiRequest))->execute();
         }
         catch(\Exception $e){
             $this->debug($e->getMessage());
             $rates = new RatesCollection();
-            return $rates;
         }
+        return apply_filters( 'fwb_get_rates', $rates, $admin);
     }
 
     public function getOrderItems($order)
@@ -58,7 +57,8 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
             $item["quantity"] = $value->get_quantity();
             $orderItems[] = $item;
         }
-        return $orderItems;
+
+        return apply_filters( 'fwb_get_order_items', $orderItems);
     }
 
     protected function makeApiRequest($package, $options = array(), $order)
@@ -104,7 +104,8 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
     {
         $packageHelper = new Package_Helper($this->debugMode,$this->apiUrl);
         $packages = $packageHelper->make_packages($orderItems,$options);
-        return $packages;
+
+        return apply_filters( 'fwb_get_packages', $packages);
     }
 
     protected function extractOrderItems($items)

@@ -136,13 +136,17 @@ class Order_Action_Processor {
             $flagshipShipment = $this->updateShipmentWithCourierDetails($exportOrder,$flagshipShipment,$courierDetails);
 
             $confirmedShipment = $this->confirmFlagshipShipment($exportOrder,$shipmentId);
+
+            do_action( 'fwb_shipment_is_confirmed', $confirmedShipment);
             return;
         }
 
         if (!isset($request[self::$exportOrderActionName]) || $request[self::$exportOrderActionName] == 'export') {
 
             try{
-                $this->exportOrder();
+                $exportedShipment = $this->exportOrder();
+                do_action( 'fwb_shipment_is_exported', $exportedShipment);
+
             }
             catch(\Exception $e){
                 $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$e->getMessage());
@@ -217,7 +221,6 @@ class Order_Action_Processor {
             && get_array_value($this->pluginSettings,'autocomplete_order') == 'yes') {
                 $this->order->update_status('completed');
         }
-
         return $confirmedShipment;
     }
 
@@ -239,6 +242,7 @@ class Order_Action_Processor {
             $this->setErrorMessages(esc_html(__($updatedShipment)));
             add_filter('redirect_post_location',array($this,'order_custom_warning_filter'));
         }
+
         return $updatedShipment;
     }
 
@@ -313,7 +317,7 @@ class Order_Action_Processor {
                 "option_name" => $price. ' - '.$courierName
             ];
         }
-        update_post_meta($this->order->get_id(),'rates',$ratesDropDown);
+        update_post_meta($this->order->get_id(),'rates', apply_filters('fwb_get_rates_admin_dropdown', $ratesDropDown));
         return;
     }
 
@@ -392,7 +396,10 @@ class Order_Action_Processor {
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }
+
         update_post_meta($this->order->get_id(), self::$shipmentIdField, $exportedShipment->getId());
+
+        return $exportedShipment;
     }
 
     protected function eCommerceShippingChosen($shippingMethods)

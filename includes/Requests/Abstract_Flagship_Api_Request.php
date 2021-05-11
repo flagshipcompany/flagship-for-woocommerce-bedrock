@@ -60,7 +60,7 @@ abstract class Abstract_Flagship_Api_Request {
                 $dropShipAddress['attn'] = substr(trim($options['dropshipping_address_name']),0,21);
                 $dropShipAddress['phone'] = trim($options['dropshipping_address_phone']);
             }
-            return $dropShipAddress;
+            return apply_filters( 'fwb_get_dropship_address', $dropShipAddress);
         }
 
         $storeAddress['postal_code'] = trim(get_option('woocommerce_store_postcode', ''));
@@ -81,7 +81,7 @@ abstract class Abstract_Flagship_Api_Request {
             $storeAddress['email'] = trim(WC()->mailer()->get_emails()['WC_Email_New_Order']->recipient);
         }
 
-        return $storeAddress;
+        return apply_filters( 'fwb_get_store_address', $storeAddress);
     }
 
     protected function getCountryState()
