@@ -128,15 +128,15 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
             'options' => $shippingOptions,
         );
 
-        if (get_array_value($orderOptions, 'residential_receiver_address', false)) {
+        if (get_array_value($options, 'residential_receiver_address', false) === 'yes') {
             $request['to']['is_commercial'] = false;
         }
 
-        if (get_array_value($orderOptions, 'signature_required', false)) {
+        if (get_array_value($options, 'signature_required', false) === 'yes') {
             $request['options']['signature_required'] = true;
         }
 
-        if (get_array_value($options, 'flagship_insurance', false) && $orderSubtotal >= 101) {
+        if (get_array_value($options, 'flagship_insurance', false) === 'yes' && $orderSubtotal >= 101) {
             $request['options']['insurance'] = [
                 "value" => $orderSubtotal,
                 "description" => $this->getInsuranceDescription($orderItems)
@@ -205,7 +205,6 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
             'send_tracking_emails',
             'residential_receiver_address',
             'signature_required',
-            'flagship_insurance'
         );
         $options = array();
 

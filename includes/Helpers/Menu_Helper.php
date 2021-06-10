@@ -68,7 +68,7 @@ class Menu_Helper {
             sprintf(
                 '<a href="%s" target="_blank">%s <span class="dashicons dashicons-external"></span></a>',
                 FlagshipWoocommerceBedrockShipping::getFlagshipUrl().'?ex-iframe=false',
-                __('Visit FlagShip site', 'flagship-shipping-extension-for-woocommerce'),
+                __('Visit FlagShip site', 'flagship-shipping-extension-for-woocommerce')
             ),
             "manage_options",
             "flagship\/site",
@@ -86,7 +86,7 @@ class Menu_Helper {
             sprintf(
                 '<a href="%s">%s </a>',
                 $settingsUrl,
-                __('Settings', 'flagship-shipping-extension-for-woocommerce'),
+                __('Settings', 'flagship-shipping-extension-for-woocommerce')
             ),
             "manage_options",
             "flagship\/settings",

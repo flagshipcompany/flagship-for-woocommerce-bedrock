@@ -24,7 +24,7 @@ class Package_Box_Controller extends \WP_REST_Controller {
 				'args' => array(
 				),
 				'permission_callback' => '__return_true',  //array($this, 'box_permissions'),
-	      	),
+	      	)
    		);
 
    		register_rest_route(self::get_namespace(), '/package_boxes/save', array(
@@ -33,7 +33,7 @@ class Package_Box_Controller extends \WP_REST_Controller {
 				'args' => array(
 				),
 				'permission_callback' => '__return_true', //array($this, 'box_permissions'),
-	      	),
+	      	)
    		);
 	}
 
