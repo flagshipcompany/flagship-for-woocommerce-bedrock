@@ -78,7 +78,8 @@ class Order_Action_Processor {
         $shipmentId = $box['args'][0];
         $rates = null;
         if ($shipmentId) {
-            $shipmentStatus = $this->getShipmentStatus($shipmentId);
+            $shipment = $this->getShipmentFromFlagship($shipmentId);
+            $shipmentStatus = $shipment->getStatus();
             $shipmentUrl = $shipmentStatus ? $this->makeShipmentUrl($shipmentId, $shipmentStatus) : null;
             $statusDescription = $this->getShipmentStatusDesc($shipmentStatus);
             $flagshipUrl = $this->getFlagshipUrl();
@@ -90,7 +91,7 @@ class Order_Action_Processor {
 
             echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a> <strong>[%s]</strong></p>', esc_html(__('FlagShip Shipment', 'flagship-shipping-extension-for-woocommerce')), $shipmentUrl, $shipmentId, $statusDescription);
 
-            $this->getFlagshipShippingMetaBoxContent($statusDescription,$flagshipUrl,$shipmentId);
+            $this->getFlagshipShippingMetaBoxContent($statusDescription, $flagshipUrl, $shipment);
 
             return;
         }
@@ -125,7 +126,9 @@ class Order_Action_Processor {
 
         if(isset($request[self::$confirmShipmentActionName])&& stripos($request[self::$confirmShipmentActionName],"confirm") == 0)
         {
-            $shipmentId = $this->getShipmentIdFromOrder($this->order->get_id());
+            // wordpress order ID
+            $orderId = $this->order->get_id();
+            $shipmentId = $this->getShipmentIdFromOrder($orderId);
             $token = get_array_value($this->pluginSettings,'token');
             $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
             $exportOrder = new Export_Order_Request($token, $testEnv);
@@ -138,6 +141,10 @@ class Order_Action_Processor {
             $confirmedShipment = $this->confirmFlagshipShipment($exportOrder,$shipmentId);
 
             do_action( 'fwb_shipment_is_confirmed', $confirmedShipment);
+            update_post_meta($orderId, 'flagship_shipping_shipment_tracking_number', $confirmedShipment->getTrackingNumber());
+            update_post_meta($orderId, 'flagship_shipping_courier_name', $confirmedShipment->getCourierName());
+            update_post_meta($orderId, 'flagship_shipping_courier_service_code', $confirmedShipment->getCourierCode());
+
             return;
         }
 
@@ -156,9 +163,9 @@ class Order_Action_Processor {
     }
 
 
-    protected function getFlagshipShippingMetaBoxContent($statusDescription,$flagshipUrl,$shipmentId)
+    protected function getFlagshipShippingMetaBoxContent($statusDescription, $flagshipUrl, $shipment)
     {
-        if($statusDescription != 'Dispatched'){
+        if ($statusDescription != 'Dispatched') {
             $rates = get_post_meta($this->order->get_id(),'rates');
 
             $ratesDropdownHtml = $this->getRatesDropDownHtml($rates);
@@ -168,9 +175,10 @@ class Order_Action_Processor {
             echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" value="%s">%s</button>',self::$confirmShipmentActionName,self::$confirmShipmentActionName,esc_html(__('Confirm Shipment','flagship-shipping-extension-for-woocommerce')));
         }
 
-        if($statusDescription == 'Dispatched')
-        {
-            echo sprintf('<a href="'.$flagshipUrl.'/shipping/'.$shipmentId.'/overview" class="button button-primary" target="_blank"> View Shipment on FlagShip</a>');
+        if ($statusDescription == 'Dispatched') {
+            echo sprintf('<a href="'.$flagshipUrl.'/shipping/'.$shipment->getId().'/overview" class="button button-primary" target="_blank"> View Shipment on FlagShip</a>');
+            echo sprintf('<br/><br/><a href="'.$shipment->getThermalLabel().'" class="button button-primary" target="_blank"> Get Shipment Label</a>');
+
             return;
         }
     }
