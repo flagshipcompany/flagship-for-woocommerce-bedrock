@@ -146,7 +146,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             ),
             'token' => array(
                 'title' => esc_html(__('FlagShip access token', 'flagship-shipping-extension-for-woocommerce')),
-                'type' => 'text',
+                'type' => 'password',
                 'description' => sprintf(__('After <a href="%s" target="_blank">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-shipping-extension-for-woocommerce'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
             ),
             'tracking_emails' => array(

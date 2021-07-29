@@ -118,6 +118,13 @@ class Order_Action_Processor {
 
     public function processOrderActions($request)
     {
+        global $post;
+        $order_id = $post->ID;
+        $flagship_shipment_id = get_post_meta($order_id, 'flagship_shipping_shipment_id');
+        if(isset($flagship_shipment_id)){
+            return;
+        }
+
         if(isset($request[self::$getAQuoteActionName]) && $request[self::$getAQuoteActionName] == 'quote'){
            $this->getPackages();
            $this->getRates();

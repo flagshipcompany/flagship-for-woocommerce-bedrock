@@ -51,6 +51,11 @@ class Package_Helper {
         foreach ( $order_items as $item_id => $product_item ) {
             $product = $product_item['product'];
 
+            if(is_bool($product)){
+                $this->show_notice("Product not available", 'error');
+                continue;
+            }
+
             $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), $output_weight_unit, $weight_unit)) : 1;
             $length = $product->get_length() ? round(wc_get_dimension($product->get_length(), $output_dimension_unit, $dimension_unit)) : 1;
             $width = $product->get_width() ? round(wc_get_dimension($product->get_width(), $output_dimension_unit, $dimension_unit)) : 1;
