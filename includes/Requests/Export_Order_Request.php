@@ -100,7 +100,10 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     {
         $address = $this->getDestinationAddress($order->get_address('shipping'), $this->requiredAddressFields);
 
-        return count(array_filter($address)) == count($address);
+        $postcode = $order->get_address('shipping')['postcode'];
+        $count = count(array_filter($address)) == count($address);
+        $postcodeValidation = preg_match('/^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i', $postcode);
+        return $count && $postcodeValidation;
     }
 
     public function makePrepareRequest($order, $options)

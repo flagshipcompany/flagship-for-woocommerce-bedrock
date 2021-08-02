@@ -38,9 +38,7 @@ class Order_Action_Processor {
             add_meta_box( 'flagship_ecommerce_shipping', esc_html(__('FlagShip eCommerce Shipping','flagship-shipping-extension-for-woocommerce')), array($this, 'addECommerceBox'), 'shop_order', 'side', 'default');
         }
 
-        if ($shipmentId || (new Export_Order_Request(null))->isOrderShippingAddressValid($this->order)) {
-            add_meta_box( 'flagship_shipping', esc_html(__('FlagShip Shipping','flagship-shipping-extension-for-woocommerce')), array($this, 'addFlagshipMetaBox'), 'shop_order', 'side', 'default', array($shipmentId));
-        }
+        add_meta_box( 'flagship_shipping', esc_html(__('FlagShip Shipping','flagship-shipping-extension-for-woocommerce')), array($this, 'addFlagshipMetaBox'), 'shop_order', 'side', 'default', array($shipmentId));
 
         add_meta_box( 'flagship_shipping_boxes_used', esc_html(__('FlagShip Shipping Boxes Used','flagship-shipping-extension-for-woocommerce')), array($this, 'addFlagshipBoxesMetaBox'), 'shop_order', 'side', 'default');
     }
@@ -104,7 +102,8 @@ class Order_Action_Processor {
 
         if($rates == null)
         {
-            echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export">%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
+            $buttonDisabled = (new Export_Order_Request(null))->isOrderShippingAddressValid($this->order) ? '' : 'disabled';
+            echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export" '.$buttonDisabled.'>%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
         }
     }
 
