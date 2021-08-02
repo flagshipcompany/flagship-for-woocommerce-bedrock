@@ -121,7 +121,8 @@ class Order_Action_Processor {
         global $post;
         $order_id = $post->ID;
         $flagship_shipment_id = get_post_meta($order_id, 'flagship_shipping_shipment_id');
-        if(isset($flagship_shipment_id)){
+        
+        if(count($flagship_shipment_id) > 0 && isset($request[self::$exportOrderActionName])){
             return;
         }
 
