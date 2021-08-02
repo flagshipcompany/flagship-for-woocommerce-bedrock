@@ -33,12 +33,13 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
     protected function prepareBoxesFromPackages($packages)
     {
         foreach ($packages as $key => $package) {
+            $weight = json_decode(json_encode($package), true)["packing"]["weight"];
             $temp = [
                 "description" => $package->getBoxModel(),
                 "length" => $package->getLength(),
                 "width" => $package->getWidth(),
                 "height" => $package->getHeight(),
-                "weight" => $package->getWeight(),
+                "weight" =>  $weight < 1 ? 1 : $weight,
             ];
         }
         return $temp;
@@ -122,7 +123,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
     protected function make_boxes_request($boxes) {
         return array_map(function($box) {
             $box['box_model'] = $box['model'];
-            $box['weight'] = 0;
+            $box['weight'] = array_key_exists("weight", $box) ? $box['weight'] : 0;
             unset($box['id']);
             unset($box['model']);
             unset($box['extra_charge']);

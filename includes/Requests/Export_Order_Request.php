@@ -145,7 +145,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
                 "description" => $this->getInsuranceDescription($orderItems)
             ];
         }
-
+error_log(json_encode($request));
         return $request;
     }
 
