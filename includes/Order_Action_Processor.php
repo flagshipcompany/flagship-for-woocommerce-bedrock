@@ -121,8 +121,8 @@ class Order_Action_Processor {
         $order_id = $post->ID;
         $flagship_shipment_id = get_post_meta($order_id, 'flagship_shipping_shipment_id');
         
-        if(count($flagship_shipment_id) > 0 || !isset($request[self::$exportOrderActionName])){
-            return;
+        if ($request[self::$exportOrderActionName] == 'export') {
+            $this->prepareFlagshipShipment();
         }
 
         if(isset($request[self::$getAQuoteActionName]) && $request[self::$getAQuoteActionName] == 'quote'){
@@ -147,17 +147,21 @@ class Order_Action_Processor {
 
             $confirmedShipment = $this->confirmFlagshipShipment($exportOrder,$shipmentId);
 
-            do_action( 'fwb_shipment_is_confirmed', $confirmedShipment);
-            update_post_meta($orderId, 'flagship_shipping_shipment_tracking_number', $confirmedShipment->getTrackingNumber());
-            update_post_meta($orderId, 'flagship_shipping_courier_name', $confirmedShipment->getCourierName());
-            update_post_meta($orderId, 'flagship_shipping_courier_service_code', $confirmedShipment->getCourierCode());
+            if(!is_string($confirmedShipment)){
+                do_action( 'fwb_shipment_is_confirmed', $confirmedShipment);
+                update_post_meta($orderId, 'flagship_shipping_shipment_tracking_number', $confirmedShipment->getTrackingNumber());
+                update_post_meta($orderId, 'flagship_shipping_courier_name', $confirmedShipment->getCourierName());
+                update_post_meta($orderId, 'flagship_shipping_courier_service_code', $confirmedShipment->getCourierCode());    
+            }
 
             return;
         }
 
-        if (!isset($request[self::$exportOrderActionName]) || $request[self::$exportOrderActionName] == 'export') {
+        
+    }
 
-            try{
+    protected function prepareFlagshipShipment() {
+        try{
                 $exportedShipment = $this->exportOrder();
                 do_action( 'fwb_shipment_is_exported', $exportedShipment);
 
@@ -166,9 +170,7 @@ class Order_Action_Processor {
                 $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$e->getMessage());
                 add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             }
-        }
     }
-
 
     protected function getFlagshipShippingMetaBoxContent($statusDescription, $flagshipUrl, $shipment)
     {
