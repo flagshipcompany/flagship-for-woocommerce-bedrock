@@ -56,10 +56,10 @@ class Package_Helper {
                 continue;
             }
 
-            $weight = $product->get_weight() ? round(wc_get_weight($product->get_weight(), $output_weight_unit, $weight_unit)) : 1;
-            $length = $product->get_length() ? round(wc_get_dimension($product->get_length(), $output_dimension_unit, $dimension_unit)) : 1;
-            $width = $product->get_width() ? round(wc_get_dimension($product->get_width(), $output_dimension_unit, $dimension_unit)) : 1;
-            $height = $product->get_height() ? round(wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit)) : 1;
+            $weight = $product->get_weight() ? wc_get_weight($product->get_weight(), $output_weight_unit, $weight_unit) : 1;
+            $length = $product->get_length() ? wc_get_dimension($product->get_length(), $output_dimension_unit, $dimension_unit) : 1;
+            $width = $product->get_width() ? wc_get_dimension($product->get_width(), $output_dimension_unit, $dimension_unit) : 1;
+            $height = $product->get_height() ? wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit) : 1;
             $description = $product->get_sku() ? $product->get_sku() : $product->get_name();
             $shippingClass = $product->get_shipping_class();
 

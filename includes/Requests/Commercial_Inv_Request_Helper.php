@@ -50,7 +50,7 @@ class Commercial_Inv_Request_Helper {
             $description = $product->get_short_description() ? $product->get_short_description() : $product->get_description();
             $ciItem['description'] = substr($description, 0, 50);
             $ciItem['unit_price'] = $product->get_price();
-            $ciItem['unit_weight'] = $product->get_weight() ? round(wc_get_weight($product->get_weight(), 'lbs', $unit)) : 1;
+            $ciItem['unit_weight'] = $product->get_weight() ? wc_get_weight($product->get_weight(), 'lbs', $unit) : 1;
             $ciItem['unit_of_measurement'] = 'imperial';
             $ciItem['quantity'] = $item_data->get_quantity();
             $ciItem['country_of_origin'] = get_post_meta($product->get_id(), Product_Helper::$fields['country'], true);
