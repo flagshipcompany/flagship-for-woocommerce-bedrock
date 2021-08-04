@@ -251,7 +251,10 @@ class Order_Action_Processor {
             "courier_code" => $courierCode,
             "courier_name" => $courierName
         ];
-
+        
+        //making sure we adapt the date in case it was quoted/exported the day before.
+        $updateRequest["options"]['shipping_date'] = date('Y-m-d');
+        
         $updateRequest["service"] = $service;
         $updatedShipment = $exportOrder->editShipment($this->order,$flagshipShipment,$prepareRequest,$updateRequest,$this->pluginSettings);
 
