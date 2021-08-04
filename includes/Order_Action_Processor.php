@@ -84,7 +84,6 @@ class Order_Action_Processor {
 
         }
 
-
         if (!empty($shipmentUrl)) {
 
             echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a> <strong>[%s]</strong></p>', esc_html(__('FlagShip Shipment', 'flagship-shipping-extension-for-woocommerce')), $shipmentUrl, $shipmentId, $statusDescription);
