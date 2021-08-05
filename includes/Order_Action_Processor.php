@@ -101,7 +101,14 @@ class Order_Action_Processor {
 
         if($rates == null)
         {
-            $buttonDisabled = (new Export_Order_Request(null))->isOrderShippingAddressValid($this->order) ? '' : 'disabled';
+			$is_address_valid = (new Export_Order_Request(null))->isOrderShippingAddressValid($this->order);
+
+            $buttonDisabled = ( $is_address_valid  ? '' : 'disabled');
+			
+            if(!$is_address_valid){
+				echo sprintf("<p><em>%s</em></p>",esc_html(__("To send to FlagShip, ensure the address is complete, including the phone number of the receiver.")));
+			}
+            
             echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export" '.$buttonDisabled.'>%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
         }
     }
