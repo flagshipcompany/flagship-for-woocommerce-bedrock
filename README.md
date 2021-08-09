@@ -23,3 +23,4 @@ Wordpress Admin > Plugins >  Add New > Upload plugin > Upload the plugin zip fil
 Navigate to wp-content > plugins > flagship-for-woocommerce-bedrock on command line.
 
 `composer install`
+
