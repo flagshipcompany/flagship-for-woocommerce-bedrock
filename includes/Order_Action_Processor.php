@@ -130,7 +130,7 @@ class Order_Action_Processor {
         if ($request[self::$exportOrderActionName] == 'export') {
             $this->prepareFlagshipShipment();
         }
-
+//Add fucntionality for pickup
         if(isset($request[self::$getAQuoteActionName]) && $request[self::$getAQuoteActionName] == 'quote'){
            $this->getPackages();
            $this->getRates();
