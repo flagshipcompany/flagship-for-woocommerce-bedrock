@@ -4,6 +4,7 @@ namespace FlagshipWoocommerceBedrock;
 use FlagshipWoocommerceBedrock\Requests\Export_Order_Request;
 use FlagshipWoocommerceBedrock\Requests\Get_Shipment_Request;
 use FlagshipWoocommerceBedrock\Requests\Rates_Request;
+use FlagshipWoocommerceBedrock\Requests\Pickup_Request;
 use FlagshipWoocommerceBedrock\Helpers\Menu_Helper;
 use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
 
@@ -14,6 +15,7 @@ class Order_Action_Processor {
     public static $getAQuoteActionName = 'get_a_quote';
     public static $confirmShipmentActionName = 'confirm_shipment';
     public static $updateShipmentActionName = 'update_shipment';
+    public static $createPickupActionName = 'create_pickup';
 
     private $order;
     private $pluginSettings;
@@ -127,10 +129,18 @@ class Order_Action_Processor {
         $order_id = $post->ID;
         $flagship_shipment_id = get_post_meta($order_id, 'flagship_shipping_shipment_id');
         
-        if ($request[self::$exportOrderActionName] == 'export') {
+        if (isset($request[self::$exportOrderActionName]) && $request[self::$exportOrderActionName] == 'export') {        
             $this->prepareFlagshipShipment();
         }
-//Add fucntionality for pickup
+
+        if( isset($request[self::$createPickupActionName]) && $request[self::$createPickupActionName] == 'create_pickup' ) {      
+            $date = $request["date"];
+            $from_time = $request["from_time"];
+            $until_time = $request["until_time"];
+            $this->create_pickup($flagship_shipment_id, $date, $from_time, $until_time);
+            return;
+        }
+
         if(isset($request[self::$getAQuoteActionName]) && $request[self::$getAQuoteActionName] == 'quote'){
            $this->getPackages();
            $this->getRates();
@@ -166,16 +176,23 @@ class Order_Action_Processor {
         
     }
 
+    protected function create_pickup($flagship_shipment_id, $date, $from_time, $until_time) {
+
+        $token = get_array_value($this->pluginSettings,'token');
+        $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
+        $pickupRequest = new Pickup_Request($token, false, $testEnv);
+        $pickupRequest->create_pickup_request($flagship_shipment_id, $date, $from_time, $until_time);
+        
+    }
+
     protected function prepareFlagshipShipment() {
         try{
-                $exportedShipment = $this->exportOrder();
-                do_action( 'fwb_shipment_is_exported', $exportedShipment);
-
-            }
-            catch(\Exception $e){
-                $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$e->getMessage());
-                add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
-            }
+            $exportedShipment = $this->exportOrder();
+            do_action( 'fwb_shipment_is_exported', $exportedShipment);
+        }catch(\Exception $e){
+            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$e->getMessage());
+            add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
+        }
     }
 
     protected function getFlagshipShippingMetaBoxContent($statusDescription, $flagshipUrl, $shipment)
@@ -193,9 +210,21 @@ class Order_Action_Processor {
         if ($statusDescription == 'Dispatched') {
             echo sprintf('<a href="'.$flagshipUrl.'/shipping/'.$shipment->getId().'/overview" class="button button-primary" target="_blank"> View Shipment on FlagShip</a>');
             echo sprintf('<br/><br/><a href="'.$shipment->getThermalLabel().'" class="button button-primary" target="_blank"> Get Shipment Label</a>');
-	    echo sprintf('<p>Tracking number: %s<br>Courier: %s</p>', $shipment->getTrackingNumber(), $shipment->getCourierName() . ' ' . $shipment->getCourierDescription());
+            $this->createPickupForm();
+            echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" value="%s">%s</button>',self::$createPickupActionName,self::$createPickupActionName,esc_html(__('Create Pickup','flagship-shipping-extension-for-woocommerce')));
+	        echo sprintf('<p>Tracking number: %s<br>Courier: %s</p>', $shipment->getTrackingNumber(), $shipment->getCourierName() . ' ' . $shipment->getCourierDescription());
             return;
         }
+    }
+
+    protected function createPickupForm() {
+        $form = '';
+
+        $form .= '<input type="text" class="form-control" id="date" name="date" placeholder="Date" value="2021-08-24"/>';
+        $form .= '<input type="text" class="form-control" id="date" name="from_time" value="09:30" placeholder="from_time" />';
+        $form .= '<input type="text" class="form-control" id="date" name="until_time" value="17:35" placeholder="until_time" />';
+
+        echo $form;
     }
 
     protected function createGetQuoteButton($ratesDropdownHtml)
