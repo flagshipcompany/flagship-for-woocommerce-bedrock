@@ -137,7 +137,7 @@ class Order_Action_Processor {
             $date = $request["date"];
             $from_time = $request["from_time"];
             $until_time = $request["until_time"];
-            $this->create_pickup($flagship_shipment_id, $date, $from_time, $until_time);
+            $pickup_created = $this->create_pickup($flagship_shipment_id, $date, $from_time, $until_time);
             return;
         }
 
@@ -183,6 +183,10 @@ class Order_Action_Processor {
         $pickupRequest = new Pickup_Request($token, false, $testEnv);
         $pickupRequest->create_pickup_request($flagship_shipment_id, $date, $from_time, $until_time);
         
+        if(is_string($pickupRequest)){ //exception caught
+            return 0;
+        }
+        return 1;
     }
 
     protected function prepareFlagshipShipment() {
@@ -218,14 +222,53 @@ class Order_Action_Processor {
     }
 
     protected function createPickupForm() {
-        $form = '';
-
-        $form .= '<input type="text" class="form-control" id="date" name="date" placeholder="Date" value="2021-08-24"/>';
-        $form .= '<input type="text" class="form-control" id="date" name="from_time" value="09:30" placeholder="from_time" />';
-        $form .= '<input type="text" class="form-control" id="date" name="until_time" value="17:35" placeholder="until_time" />';
-
+        $date = date('Y-m-d');
+        $until_date = date('Y-m-d', strtotime($date. ' + 5 days'));
+        $form = '<br/><br/><div>
+                    <label for="date">Date: </label>
+                    <input type="date" max="'.$until_date.'" min="'.$date.'" class="form-control datepicker" id="date" name="date" placeholder="Date (YYYY-MM-DD)"/>
+                </div><br/>';
+        $form .= '<div>
+                    <label for="date">From Time: </label>
+                    <select class="form-control" id="from_time" name="from_time">
+                        '.$this->pickupTimeDropdownOptions().'
+                    </select>
+                </div><br/>
+                <div>
+                    <label for="date">Until Time: </label>
+                    <select class="form-control" id="until_time" name="until_time">
+                        '.$this->pickupTimeDropdownOptions().'
+                    </select>
+                </div>
+                ';
         echo $form;
     }
+
+    protected function pickupTimeDropdownOptions()
+    {
+        $options = '
+            <option value="09:00">9:00am</option>
+            <option value="09:30">9:30am</option>
+            <option value="10:00">10:00am</option>
+            <option value="10:30">10:30am</option>
+            <option value="11:00">11:00am</option>
+            <option value="11:30">11:30am</option>
+            <option value="12:00">12:00pm</option>
+            <option value="12:30">12:30pm</option>
+            <option value="13:00">1:00pm</option>
+            <option value="13:30">1:30pm</option>
+            <option value="14:00">2:00pm</option>
+            <option value="14:30">2:30pm</option>
+            <option value="15:00">3:00pm</option>
+            <option value="15:30">3:30pm</option>
+            <option value="16:00">4:00pm</option>
+            <option value="16:30">4:30pm</option>
+            <option value="17:00">5:00pm</option>
+            <option value="17:30">5:30pm</option>
+        ';
+        return $options;
+    }
+
 
     protected function createGetQuoteButton($ratesDropdownHtml)
     {
