@@ -20,8 +20,8 @@ class Pickup_Request extends Abstract_Flagship_Api_Request {
         $payload = $this->create_pickup_payload($flagship_shipment_id, $date, $from_time, $until_time);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         try{
-            $pickupRequest = $apiClient->createPickupRequest($payload)->execute();
-            return $pickupRequest;  
+            $pickup = $apiClient->createPickupRequest($payload)->execute();
+            return $pickup;  
         } catch(\Exception $e) {
             return $e->getMessage();
         }  
