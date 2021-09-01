@@ -137,12 +137,8 @@ class Order_Action_Processor {
             $date = $request["date"];
             $from_time = $request["from_time"];
             $until_time = $request["until_time"];
-            $pickup_created = $this->create_pickup($flagship_shipment_id, $date, $from_time, $until_time);
+            $pickup_created = $this->create_pickup($order_id,$flagship_shipment_id, $date, $from_time, $until_time);
 
-            if(!is_string($pickup_created)) {
-                do_action( 'fwb_shipment_pickup_is_confirmed', $pickup_created);
-                update_post_meta($order_id, 'flagship_shipping_pickup_confirmation', $pickup_created->getConfirmation());
-            }
             return;
         }
 
@@ -167,21 +163,23 @@ class Order_Action_Processor {
             $flagshipShipment = $this->updateShipmentWithCourierDetails($exportOrder,$flagshipShipment,$courierDetails);
 
             $confirmedShipment = $this->confirmFlagshipShipment($exportOrder,$shipmentId);
-
-            if(!is_string($confirmedShipment)){
-                do_action( 'fwb_shipment_is_confirmed', $confirmedShipment);
-                update_post_meta($orderId, 'flagship_shipping_shipment_tracking_number', $confirmedShipment->getTrackingNumber());
-                update_post_meta($orderId, 'flagship_shipping_courier_name', $confirmedShipment->getCourierName());
-                update_post_meta($orderId, 'flagship_shipping_courier_service_code', $confirmedShipment->getCourierCode());    
-            }
-
+            $this->update_post_meta_for_confirmed_shipment($orderId, $confirmedShipment);
+            
             return;
         }
-
-        
     }
 
-    protected function create_pickup($flagship_shipment_id, $date, $from_time, $until_time) {
+    protected function update_post_meta_for_confirmed_shipment($orderId, $confirmedShipment) {
+        if(!is_string($confirmedShipment)){
+            do_action( 'fwb_shipment_is_confirmed', $confirmedShipment);
+            update_post_meta($orderId, 'flagship_shipping_shipment_tracking_number', $confirmedShipment->getTrackingNumber());
+            update_post_meta($orderId, 'flagship_shipping_courier_name', $confirmedShipment->getCourierName());
+            update_post_meta($orderId, 'flagship_shipping_courier_service_code', $confirmedShipment->getCourierCode());    
+        }
+        return;
+    }
+
+    protected function create_pickup($order_id,$flagship_shipment_id, $date, $from_time, $until_time) {
 
         $token = get_array_value($this->pluginSettings,'token');
         $testEnv = get_array_value($this->pluginSettings,'test_env') == 'no' ? 0 : 1;
@@ -189,9 +187,14 @@ class Order_Action_Processor {
         $pickup = $pickupRequest->create_pickup_request($flagship_shipment_id, $date, $from_time, $until_time);
 
         if(is_string($pickup)){ //exception caught
-            return $pickup;
+            $this->setErrorMessages(esc_html(__('Pickup could not be created')).': '.$e->getMessage());
+            return 1;
         }
-        return $pickup;
+ 
+        do_action( 'fwb_shipment_pickup_is_confirmed', $pickup);
+        update_post_meta($order_id, 'flagship_shipping_pickup_confirmation', $pickup->getConfirmation()); 
+        return 0;
+
     }
 
     protected function prepareFlagshipShipment() {
