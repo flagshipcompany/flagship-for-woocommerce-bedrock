@@ -187,8 +187,9 @@ class Order_Action_Processor {
         $pickup = $pickupRequest->create_pickup_request($flagship_shipment_id, $date, $from_time, $until_time);
 
         if(is_string($pickup)){ //exception caught
-            $this->setErrorMessages(esc_html(__('Pickup could not be created')).': '.$e->getMessage());
-            return 1;
+            $this->setErrorMessages(esc_html(__('Pickup could not be created')).': '.$pickup);
+            add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
+            return;
         }
  
         do_action( 'fwb_shipment_pickup_is_confirmed', $pickup);
@@ -215,9 +216,11 @@ class Order_Action_Processor {
 
             $ratesDropdownHtml = $this->getRatesDropDownHtml($rates);
 
-           $this->createGetQuoteButton($ratesDropdownHtml);
+            $this->createGetQuoteButton($ratesDropdownHtml);
 
-            echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" value="%s">%s</button>',self::$confirmShipmentActionName,self::$confirmShipmentActionName,esc_html(__('Confirm Shipment','flagship-shipping-extension-for-woocommerce')));
+            $buttonDisabled = empty($ratesDropdownHtml) ? 'disabled' : '';
+
+            echo sprintf('<br/><br/><button type="submit" class="button save_order button-primary" name="%s" %s value="%s">%s</button>',self::$confirmShipmentActionName, $buttonDisabled, self::$confirmShipmentActionName,esc_html(__('Confirm Shipment','flagship-shipping-extension-for-woocommerce')));
             return;
         }
 
