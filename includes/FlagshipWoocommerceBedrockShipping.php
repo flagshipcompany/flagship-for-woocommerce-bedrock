@@ -16,10 +16,10 @@ class FlagshipWoocommerceBedrockShipping {
 
 	public static $couriers = array(
 		'UPS' => 'ups',
-	        'DHL' => 'dhl',
-        	'FedEx' => 'fedex',
-	        'Purolator' => 'purolator',
-        	'Canpar' => 'canpar',
+		'DHL' => 'dhl',
+		'FedEx' => 'fedex',
+		'Purolator' => 'purolator',
+		'Canpar' => 'canpar',
 		'Dicom' => 'dicom',
 	);
 
@@ -59,7 +59,6 @@ class FlagshipWoocommerceBedrockShipping {
 
 	public function __construct() {
 		$this->handleThirdPartyLibraries();
-
 		$this->hooks();
 	}
 
@@ -114,23 +113,23 @@ class FlagshipWoocommerceBedrockShipping {
 		return $methods;
 	}
 
-    	public function add_custom_meta_box() {
-    		global $post;
+	public function add_custom_meta_box() {
+		global $post;
 
-    		$order = wc_get_order($post->ID);
+		$order = wc_get_order($post->ID);
 
-	    	if (!$order) {
-    			return;
-    		}
+		if (!$order) {
+			return;
+		}
 
-	    	$orderActionProcessor = $this->init_order_action_processor($order);
-    		$orderActionProcessor->addMetaBoxes($order);
-    	}
+		$orderActionProcessor = $this->init_order_action_processor($order);
+		$orderActionProcessor->addMetaBoxes($order);
+	}
 
 	protected function init_order_action_processor($order)
 	{
-        	$settings = get_option(self::getSettingsOptionKey());
+		$settings = get_option(self::getSettingsOptionKey());
 
-	        return new Order_Action_Processor($order, $settings);
+		return new Order_Action_Processor($order, $settings);
 	}
 }
