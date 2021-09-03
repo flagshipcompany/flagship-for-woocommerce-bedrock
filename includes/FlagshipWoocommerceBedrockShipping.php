@@ -12,7 +12,7 @@ class FlagshipWoocommerceBedrockShipping {
 
 	public static $methodId = 'flagship_shipping_method';
 
-	public static $version = '1.0.8';
+	public static $version = '1.0.11';
 
 	public static $couriers = array(
 		'UPS' => 'ups',
@@ -41,7 +41,6 @@ class FlagshipWoocommerceBedrockShipping {
 		if (is_null( self::$_instance )) {
 			self::$_instance = new self();
 		}
-
 		return self::$_instance;
 	}
 
@@ -58,7 +57,7 @@ class FlagshipWoocommerceBedrockShipping {
 	}
 
 	public function __construct() {
-		$this->handleThirdPartyLibraries();
+		// $this->handleThirdPartyLibraries();
 		$this->hooks();
 	}
 
@@ -66,7 +65,6 @@ class FlagshipWoocommerceBedrockShipping {
 	public function handleThirdPartyLibraries() {
 		if (!class_exists('Flagship\Shipping\Flagship')) {
 			$this->showSdkNotice();
-
 		    return;
 		}
 	}
@@ -103,19 +101,16 @@ class FlagshipWoocommerceBedrockShipping {
 
 	public function save_meta_box($orderId) {
 		$orderActionProcessor = $this->init_order_action_processor(wc_get_order($orderId));
-
 	    return $orderActionProcessor->processOrderActions($_POST);
 	}
 
 	public function add_flagship_shipping_method($methods) {
 		$methods[self::$methodId] = new WC_Flagship_Shipping_Method();
-
 		return $methods;
 	}
 
 	public function add_custom_meta_box() {
 		global $post;
-
 		$order = wc_get_order($post->ID);
 
 		if (!$order) {
@@ -129,7 +124,6 @@ class FlagshipWoocommerceBedrockShipping {
 	protected function init_order_action_processor($order)
 	{
 		$settings = get_option(self::getSettingsOptionKey());
-
 		return new Order_Action_Processor($order, $settings);
 	}
 }
