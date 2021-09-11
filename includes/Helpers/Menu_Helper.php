@@ -9,6 +9,7 @@ class Menu_Helper {
     public static $menuItemUri = 'flagship/ship';
 
     public static $package_boxes_uri = 'flagship/boxes';
+    public static $logs_uri = 'flagship/logs';
 
     protected $flagshipUrlMap = array(
         'flagship_shipment' => 'shipping/ship',
@@ -31,6 +32,8 @@ class Menu_Helper {
         add_submenu_page(self::$menuItemUri, __( 'Shipment', 'flagship-shipping-extension-for-woocommerce'), __( 'Shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
         add_submenu_page(self::$menuItemUri, __( 'Manage shipment', 'flagship-shipping-extension-for-woocommerce'), __( 'Manage shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
         add_submenu_page(self::$menuItemUri, __( 'Package boxes', 'flagship-shipping-extension-for-woocommerce'), __( 'Package boxes', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$package_boxes_uri, array($this, 'list_boxes'));
+        add_submenu_page(self::$menuItemUri, __( 'FlagShip Logs', 'flagship-shipping-extension-for-woocommerce'), __( 'FlagShip Logs', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$logs_uri, array($this, 'display_logs'));
+
 
         $this->add_settings_link();
         $this->add_flagship_link();
@@ -94,6 +97,20 @@ class Menu_Helper {
         );
     }
 
+    public function display_logs() {
+        $uploads  = wp_upload_dir( null, false );
+        $logs_dir = $uploads['basedir'] . '/flagship-logs';
+
+        if(!is_dir($logs_dir)){
+            return;
+        }
+        $file = file_exists($logs_dir . '/' . 'fs-woocomm-bedrock.log') ? fopen( $logs_dir . '/' . 'fs-woocomm-bedrock.log', 'r' ) : NULL;
+
+        $fileContents = !is_null($file) ?  fread($file, filesize($logs_dir . '/' . 'fs-woocomm-bedrock.log')) : "No logs to display";
+
+        echo $fileContents;
+    }
+
     public function list_boxes()
     {
         Template_Helper::render_php('list_boxes.php', array(
@@ -101,4 +118,5 @@ class Menu_Helper {
             'save_boxes_url' => rest_url(Package_Box_Controller::get_namespace().'/package_boxes/save'),
         ));
     }
+
 }

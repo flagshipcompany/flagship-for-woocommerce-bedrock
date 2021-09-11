@@ -20,9 +20,13 @@ class Pickup_Request extends Abstract_Flagship_Api_Request {
         $payload = $this->create_pickup_payload($flagship_shipment_id, $date, $from_time, $until_time);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         try{
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Pickup Request payload: </b>". json_encode($payload));
+        
             $pickup = $apiClient->createPickupRequest($payload)->execute();
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Pickup Response : </b>". json_encode($pickup));
             return $pickup;  
         } catch(\Exception $e) {
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : </b>". $e->getMessage());
             return $e->getMessage();
         }  
     }

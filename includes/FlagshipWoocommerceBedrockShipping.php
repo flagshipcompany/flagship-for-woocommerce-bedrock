@@ -56,6 +56,20 @@ class FlagshipWoocommerceBedrockShipping {
 		return 'https://smartship-ng.flagshipcompany.com';
 	}
 
+	public static function add_log(string $log_msg) {
+		$uploads  = wp_upload_dir( null, false );
+        $logs_dir = $uploads['basedir'] . '/flagship-logs';
+
+        if ( ! is_dir( $logs_dir ) ) {
+            mkdir( $logs_dir, 0755, true );
+        }
+
+		$file = fopen( $logs_dir . '/' . 'fs-woocomm-bedrock.log', 'a' );
+
+        fwrite($file, $log_msg);
+        fclose($file);
+	}
+
 	public function __construct() {
 		// $this->handleThirdPartyLibraries();
 		$this->hooks();

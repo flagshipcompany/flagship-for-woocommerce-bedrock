@@ -7,6 +7,7 @@ use FlagshipWoocommerceBedrock\Requests\Rates_Request;
 use FlagshipWoocommerceBedrock\Requests\Pickup_Request;
 use FlagshipWoocommerceBedrock\Helpers\Menu_Helper;
 use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Order_Action_Processor {
 
@@ -94,7 +95,6 @@ class Order_Action_Processor {
 
             return;
         }
-
 
         if ($shipmentId && empty($shipmentUrl)) {
             echo sprintf('<p>%s.</p>', esc_html(__('Please check the FlagShip token', 'flagship-shipping-extension-for-woocommerce')));

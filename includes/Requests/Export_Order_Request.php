@@ -37,9 +37,11 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
         try
         {
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Prepare Shipment Request payload: </b>". json_encode($prepareRequest));
             $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);
             $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
             $exportedShipment = $prepareRequestObj->execute();
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Prepare Shipment Response : </b>". json_encode($exportedShipment));
             $editShipmentData = $this->makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options);
 
             if($editShipmentData)
@@ -50,6 +52,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         }
         catch(\Exception $e)
         {
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : </b>". $e->getMessage());
             return $e->getMessage();
         }
     }
@@ -59,12 +62,16 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $storeAddress = $this->getStoreAddress(true, false, $options);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         $editRequest = array_merge($preparePayload, $editShipmentData);
+        FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Edit Shipment Request payload: </b>". json_encode($editRequest));
+            
         $editRequestObj = $apiClient->editShipmentRequest($editRequest, $flagshipShipment->getId());
         $editRequestObj = $this->addHeaders($editRequestObj, $storeAddress['name'], $order->get_id());
         try{
             $exportedShipment = $editRequestObj->execute();
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Edit Shipment Response : </b>". json_encode($exportedShipment));
             return $exportedShipment;
         } catch(\Exception $e){
+            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : </b>". $e->getMessage());
             return $e->getMessage();
         }
     }
