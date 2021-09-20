@@ -35,6 +35,7 @@ class Order_Action_Processor {
 
     public function addMetaBoxes()
     {
+
         $shipmentId = $this->getShipmentIdFromOrder($this->order->get_id());
 
         if (!$shipmentId && $this->eCommerceShippingChosen($this->order->get_shipping_methods())) {

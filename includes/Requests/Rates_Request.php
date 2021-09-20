@@ -38,14 +38,14 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
         try{
-            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Rates Request payload:</b> ". json_encode($apiRequest));
+            FlagshipWoocommerceBedrockShipping::add_log("Rates Request payload: ". json_encode($apiRequest));
         
             $rates = $apiClient->createQuoteRequest(apply_filters( 'fwb_get_rates_request', $apiRequest))->execute();
-            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Rates Response :</b> ". json_encode($rates));
+            FlagshipWoocommerceBedrockShipping::add_log("Rates Response : ". json_encode($rates));
         }
         catch(\Exception $e){
             $this->debug($e->getMessage());
-            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : </b>". $e->getMessage());
+            FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
             $rates = new RatesCollection();
         }
         return apply_filters( 'fwb_get_rates', $rates, $admin);

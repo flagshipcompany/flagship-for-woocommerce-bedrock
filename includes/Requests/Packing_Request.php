@@ -20,16 +20,16 @@ class Packing_Request extends Abstract_Flagship_Api_Request {
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         try{
             foreach ($apiRequests as $apiRequest) {
-                FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Packing Request payload:</b> ". json_encode($apiRequest));
+                FlagshipWoocommerceBedrockShipping::add_log("Packing Request payload: ". json_encode($apiRequest));
         
                 $packing_results = $apiClient->packingRequest($apiRequest)->execute();
-                FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : ". "Packing Response : </b>". json_encode($packing_results));
+                FlagshipWoocommerceBedrockShipping::add_log("Packing Response : ". json_encode($packing_results));
                 $packageBoxes[] = $this->prepareBoxesFromPackages($packing_results);
             }
             return $packageBoxes;
         }
         catch(\Exception $e){
-            FlagshipWoocommerceBedrockShipping::add_log("<br><b>".date('Y-m-d H:i:s')." : </b>". $e->getMessage());
+            FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
             return $e->getMessage();
         }
     }
