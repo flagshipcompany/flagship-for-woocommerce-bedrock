@@ -21,6 +21,7 @@ class FlagshipWoocommerceBedrockShipping {
 		'Purolator' => 'purolator',
 		'Canpar' => 'canpar',
 		'Dicom' => 'dicom',
+		'Nationex' => 'nationex',
 	);
 
 	public static $dropShippingAddressFields = array(
