@@ -6,8 +6,8 @@ use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 use FlagshipWoocommerceBedrock\Helpers\Package_Helper;
 use FlagshipWoocommerceBedrock\Requests\Confirm_Shipment_Request;
 
-class Export_Order_Request extends Abstract_Flagship_Api_Request {
-
+class Export_Order_Request extends Abstract_Flagship_Api_Request
+{
     private $fullAddressFields = array();
 
     private $editShipmentAddressFields = array(
@@ -35,8 +35,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $prepareRequest = $this->makePrepareRequest($order, $options);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
-        try
-        {
+        try {
             FlagshipWoocommerceBedrockShipping::add_log("Prepare Shipment Request payload:". json_encode($prepareRequest));
             $prepareRequestObj = $apiClient->prepareShipmentRequest($prepareRequest);
             $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
@@ -44,14 +43,11 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
             FlagshipWoocommerceBedrockShipping::add_log("Prepare Shipment Response : ". json_encode($exportedShipment));
             $editShipmentData = $this->makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options);
 
-            if($editShipmentData)
-            {
-                $exportedShipment = $this->editShipment($order,$exportedShipment,$prepareRequest,$editShipmentData, $options);
+            if ($editShipmentData) {
+                $exportedShipment = $this->editShipment($order, $exportedShipment, $prepareRequest, $editShipmentData, $options);
             }
             return $exportedShipment;
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
             return $e->getMessage();
         }
@@ -66,11 +62,11 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
             
         $editRequestObj = $apiClient->editShipmentRequest($editRequest, $flagshipShipment->getId());
         $editRequestObj = $this->addHeaders($editRequestObj, $storeAddress['name'], $order->get_id());
-        try{
+        try {
             $exportedShipment = $editRequestObj->execute();
             FlagshipWoocommerceBedrockShipping::add_log("Edit Shipment Response : ". json_encode($exportedShipment));
             return $exportedShipment;
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
             return $e->getMessage();
         }
@@ -79,7 +75,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     public function makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options)
     {
         $extraFields = array();
-        $storeAddress = $this->getStoreAddress(true,false,$options);
+        $storeAddress = $this->getStoreAddress(true, false, $options);
         $selectedService = $this->findShippingServiceInOrder($order);
         $nbrOfMissingFields = count($this->findMissingAddressFieldsForEdit($storeAddress));
         $shipmentId = $exportedShipment->getId();
@@ -119,7 +115,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $orderOptions = $this->getOrderOptions($order);
 
         $destinationAddress = $this->getFullDestinationAddress($order);
-        $packageHelper = new Package_Helper(false,$this->apiUrl);
+        $packageHelper = new Package_Helper(false, $this->apiUrl);
         $orderItems = $order->get_items();
         $packages = $packageHelper->make_packages($this->extractOrderItems($orderItems), $options);
         $trackingEmails = $this->makeTrackingEmails($destinationAddress, $options, $orderOptions);
@@ -163,7 +159,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
     public function confirmShipment($shipmentId)
     {
-        $confirmShipmentRequest = new Confirm_Shipment_Request($this->token,$this->apiUrl);
+        $confirmShipmentRequest = new Confirm_Shipment_Request($this->token, $this->apiUrl);
         $confirmedShipment = $confirmShipmentRequest->confirmShipmentById($shipmentId);
         return $confirmedShipment;
     }
@@ -177,7 +173,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     {
         $orderItems = array();
 
-        foreach ( $items as $items_key => $item_data ) {
+        foreach ($items as $items_key => $item_data) {
             $item = array();
             $item['product'] = $item_data->get_product();
             $item['quantity'] = $item_data->get_quantity();
@@ -193,14 +189,14 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
         $billingAddress = $order->get_address('billing');
 
         $fullAddress = $this->getDestinationAddress($shippingAddress, $this->fullAddressFields);
-        $fullAddress['attn'] = substr(trim($fullAddress['first_name'].' '.$fullAddress['last_name']),0,21);
+        $fullAddress['attn'] = substr(trim($fullAddress['first_name'].' '.$fullAddress['last_name']), 0, 21);
         unset($fullAddress['first_name']);
         unset($fullAddress['last_name']);
-        $fullAddress['name'] = substr($fullAddress['attn'],0,30);
+        $fullAddress['name'] = substr($fullAddress['attn'], 0, 30);
         $fullAddress['phone'] = trim($billingAddress['phone']);
         $fullAddress['email'] = trim($billingAddress['email']);
 
-        $fullAddress['address'] = substr($fullAddress['address'],0,30);
+        $fullAddress['address'] = substr($fullAddress['address'], 0, 30);
 
         if ($this->getOrderShippingMeta($order, 'residential_receiver_address') == 'yes') {
             $fullAddress['is_commercial'] = false;
@@ -258,7 +254,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
 
     protected function findMissingAddressFieldsForEdit($storeAddress)
     {
-        $missingFields = array_filter($this->editShipmentAddressFields, function($val) use ($storeAddress) {
+        $missingFields = array_filter($this->editShipmentAddressFields, function ($val) use ($storeAddress) {
             return !isset($storeAddress[$val]) || empty(trim($storeAddress[$val]));
         });
 
@@ -269,10 +265,10 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request {
     {
         $insuranceDescription = '';
 
-        foreach ( $orderItems as $item) {
+        foreach ($orderItems as $item) {
             $insuranceDescription .= $item->get_name().',';
         }
 
-        return rtrim($insuranceDescription,',');
+        return rtrim($insuranceDescription, ',');
     }
 }

@@ -1,8 +1,8 @@
 <?php
 namespace FlagshipWoocommerceBedrock\Helpers;
 
-class Store_Address_Helper {
-
+class Store_Address_Helper
+{
     public function add_extra_address_fields($settings)
     {
         $addressSectionStartEnd = $this->getAddressStartEndPos($settings);
@@ -24,7 +24,7 @@ class Store_Address_Helper {
         $startPosition = null;
         $endPosition = null;
 
-        array_walk($settings, function($val, $key) use (&$startPosition, &$endPosition) {
+        array_walk($settings, function ($val, $key) use (&$startPosition, &$endPosition) {
             if ($val['id'] == 'store_address' && $val['type'] == 'sectionend') {
                 $endPosition = $key;
             } elseif ($val['id'] == 'store_address' && $val['type'] == 'title') {
@@ -68,5 +68,4 @@ class Store_Address_Helper {
             ),
         );
     }
-
 }

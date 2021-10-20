@@ -1,11 +1,11 @@
 <?php
 namespace FlagshipWoocommerceBedrock\Commands;
 
-class Console {
+class Console
+{
+    protected $namespace = 'fcs';
 
-	protected $namespace = 'fcs';
-
-    public function add_commands() 
+    public function add_commands()
     {
         \WP_CLI::add_command("{$this->namespace} settings", (new Settings_Command()));
         \WP_CLI::add_command("{$this->namespace} zones", (new Zones_Command()));

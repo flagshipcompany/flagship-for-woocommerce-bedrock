@@ -5,7 +5,8 @@ use Flagship\Shipping\Flagship;
 use Flagship\Shipping\Collections\RatesCollection;
 use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
-class ECommerce_Request extends Rates_Request {
+class ECommerce_Request extends Rates_Request
+{
     public static $maxWeight = 2000; // in gram
 
     public function getRates($package, $options = array())
@@ -16,17 +17,16 @@ class ECommerce_Request extends Rates_Request {
             return new RatesCollection();
         }
 
-    	$apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
+        $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
-    	try{
-		    $rates = $apiClient->getDhlEcommRatesRequest($apiRequest)->execute();
-		}
-		catch(Exception $e){
-			$this->debug($e->getMessage(), 'error');
-			$rates = new RatesCollection();
-		}
+        try {
+            $rates = $apiClient->getDhlEcommRatesRequest($apiRequest)->execute();
+        } catch (Exception $e) {
+            $this->debug($e->getMessage(), 'error');
+            $rates = new RatesCollection();
+        }
 
-		return $rates;
+        return $rates;
     }
 
     protected function makeApiRequest($package, $options = array())

@@ -3,25 +3,27 @@ namespace FlagshipWoocommerceBedrock\Helpers;
 
 use FlagshipWoocommerceBedrock\Order_Action_Processor;
 
-class Order_Filter_Helper {
-
+class Order_Filter_Helper
+{
     protected $filter_name = '_exported_flagship';
 
-    public function filter_orders_by_coupon_used() {
+    public function filter_orders_by_coupon_used()
+    {
         global $typenow;
 
-    	if ('shop_order' === $typenow) {
+        if ('shop_order' === $typenow) {
             Template_Helper::render_php('_order_filter.php', array(
                 'value' => isset($_GET['_exported_flagship']) ? sanitize_text_field($_GET['_exported_flagship']) : '',
                 'fieldName' => $this->filter_name,
             ));
-    	}
+        }
     }
 
-    public function add_filterable_where($where) {
+    public function add_filterable_where($where)
+    {
         global $typenow, $wpdb;
 
-        if ('shop_order' === $typenow && isset($_GET[$this->filter_name] ) && ! empty( $_GET[$this->filter_name])) {
+        if ('shop_order' === $typenow && isset($_GET[$this->filter_name]) && ! empty($_GET[$this->filter_name])) {
             $templ = " AND (
                 SELECT COUNT(*)
                 FROM {$wpdb->prefix}postmeta

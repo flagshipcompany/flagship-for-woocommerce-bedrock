@@ -4,7 +4,7 @@
     wp_enqueue_script('package_boxes');
     wp_enqueue_style('flagship_style');
 
-    $shipping_classes = get_terms( array('taxonomy' => 'product_shipping_class', 'hide_empty' => false ) );
+    $shipping_classes = get_terms(array('taxonomy' => 'product_shipping_class', 'hide_empty' => false ));
 ?>
 
 <div id="flagship_package_boxes">
@@ -15,32 +15,32 @@
             <h1 class="woocommerce-layout__header-breadcrumbs"></h1>
         </div>
         <div class="wrap">
-            <h1 class="wp-heading-inline"><?php _e('Package boxes','flagship-shipping-extension-for-woocommerce'); ?></h1>
-            <div v-show="data_saved" id="saved_message" class="notice notice-success"><p><strong><?php _e('Boxes have been saved.','flagship-shipping-extension-for-woocommerce'); ?></strong></p></div>
+            <h1 class="wp-heading-inline"><?php _e('Package boxes', 'flagship-shipping-extension-for-woocommerce'); ?></h1>
+            <div v-show="data_saved" id="saved_message" class="notice notice-success"><p><strong><?php _e('Boxes have been saved.', 'flagship-shipping-extension-for-woocommerce'); ?></strong></p></div>
             <div v-show="invalid_data" id="error_message" class="notice notice-error"><p><strong><?php _e('Invalid submission. Please check all the fields.', 'flagship-shipping-extension-for-woocommerce'); ?></strong></p></div>
             <div v-show="save_error" id="error_message" class="notice notice-error"><p><strong><?php _e('Saving failed.', 'flagship-shipping-extension-for-woocommerce'); ?></strong></p></div>
             <table class="wp-list-table widefat fixed striped posts packing_boxes_table">
                 <thead>
                   <tr>
-                      <th colspan="2"><strong><?php _e('Model name','flagship-shipping-extension-for-woocommerce'); ?></strong></th>
-                      <th colspan="2"><strong><?php _e('Length (in)','flagship-shipping-extension-for-woocommerce'); ?></strong></th>
-                      <th colspan="2"><strong><?php _e('Width (in)','flagship-shipping-extension-for-woocommerce'); ?></strong></th>
-                      <th colspan="2"><strong><?php _e('Height (in)','flagship-shipping-extension-for-woocommerce'); ?></strong></th>
-                      <th colspan="2"><strong><?php _e('Weight (LB)','flagship-shipping-extension-for-woocommerce'); ?></strong></th>
-                      <th colspan="2"><strong><?php _e('Extra charge ($) (optional)','flagship-shipping-extension-for-woocommerce'); ?></strong></th>
-                      <th colspan="2"><strong><?php _e('Shipping Class (optional)','flagship-shipping-extension-for-woocommerce'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Model name', 'flagship-shipping-extension-for-woocommerce'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Length (in)', 'flagship-shipping-extension-for-woocommerce'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Width (in)', 'flagship-shipping-extension-for-woocommerce'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Height (in)', 'flagship-shipping-extension-for-woocommerce'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Weight (LB)', 'flagship-shipping-extension-for-woocommerce'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Extra charge ($) (optional)', 'flagship-shipping-extension-for-woocommerce'); ?></strong></th>
+                      <th colspan="2"><strong><?php _e('Shipping Class (optional)', 'flagship-shipping-extension-for-woocommerce'); ?></strong></th>
                       <th></th>
                   </tr>
                   <tr>
                       <th colspan="2"></th>
-                      <th class="required_header"><?php _e('Outer','flagship-shipping-extension-for-woocommerce'); ?></th>
-                      <th><?php _e('Inner','flagship-shipping-extension-for-woocommerce'); ?></th>
-                      <th class="required_header"><?php _e('Outer','flagship-shipping-extension-for-woocommerce'); ?></th>
-                      <th><?php _e('Inner','flagship-shipping-extension-for-woocommerce'); ?></th>
-                      <th class="required_header"><?php _e('Outer','flagship-shipping-extension-for-woocommerce'); ?></th>
-                      <th><?php _e('Inner','flagship-shipping-extension-for-woocommerce'); ?></th>
-                      <th class="required_header" nowrap><?php _e('Supported','flagship-shipping-extension-for-woocommerce'); ?></th>
-                      <th><?php _e('Empty','flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th class="required_header"><?php _e('Outer', 'flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th><?php _e('Inner', 'flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th class="required_header"><?php _e('Outer', 'flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th><?php _e('Inner', 'flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th class="required_header"><?php _e('Outer', 'flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th><?php _e('Inner', 'flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th class="required_header" nowrap><?php _e('Supported', 'flagship-shipping-extension-for-woocommerce'); ?></th>
+                      <th><?php _e('Empty', 'flagship-shipping-extension-for-woocommerce'); ?></th>
                       <th colspan="2"></th>
                       <th colspan="2"></th>
                       <th></th>
@@ -86,7 +86,7 @@
             </p>
             <div>
               <p>
-                <?php _e('Note: When calculating shipping rates, if no box is set up or no suitable boxes are available for items, all the items will be placed in one single package for the calculation.','flagship-shipping-extension-for-woocommerce'); ?>
+                <?php _e('Note: When calculating shipping rates, if no box is set up or no suitable boxes are available for items, all the items will be placed in one single package for the calculation.', 'flagship-shipping-extension-for-woocommerce'); ?>
               </p>
             </div>
         </div>

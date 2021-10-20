@@ -4,8 +4,8 @@ namespace FlagshipWoocommerceBedrock\Requests;
 use Flagship\Shipping\Flagship;
 use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
-class Confirm_Shipment_Request extends Abstract_Flagship_Api_Request {
-
+class Confirm_Shipment_Request extends Abstract_Flagship_Api_Request
+{
     public function __construct($token, $apiUrl)
     {
         $this->token = $token;
@@ -16,11 +16,10 @@ class Confirm_Shipment_Request extends Abstract_Flagship_Api_Request {
     {
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
-        try{
+        try {
             $shipment = $apiClient->confirmShipmentByIdRequest($id)->execute();
             return $shipment;
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }

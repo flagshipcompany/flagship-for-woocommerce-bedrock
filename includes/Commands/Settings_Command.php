@@ -4,7 +4,8 @@ namespace FlagshipWoocommerceBedrock\Commands;
 use FlagshipWoocommerceBedrock\WC_Flagship_Shipping_Method;
 use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
-class Settings_Command {
+class Settings_Command
+{
 
     /**
     * Update a FlagShip Woocommerce plugin setting.
@@ -26,7 +27,8 @@ class Settings_Command {
     *     $ wp fcs settings update token xxxxxxxxxxxx
     *     Success: Setting saved!
     */
-    public function update($args, $assoc_args) {
+    public function update($args, $assoc_args)
+    {
         $zoneName = isset($assoc_args['zone']) ? $assoc_args['zone'] : null;
 
         if (!$zoneName) {
@@ -49,16 +51,17 @@ class Settings_Command {
     * ## EXAMPLES
     *
     *     # List all the settings.
-    *     $ wp fcs settings list [--zone=<zone-name>] 
+    *     $ wp fcs settings list [--zone=<zone-name>]
     *     allow_standard_rates/disable_courier_ups
     */
-    public function list($args, $assoc_args) {
+    public function list($args, $assoc_args)
+    {
         $zoneName = isset($assoc_args['zone']) ? $assoc_args['zone'] : null;
 
         if (!$zoneName) {
             $fields = $this->getSettingFields();
 
-            array_walk($fields, function($val) {
+            array_walk($fields, function ($val) {
                 \WP_CLI::line($val);
             });
 
@@ -75,12 +78,13 @@ class Settings_Command {
 
         $fields = $this->getSettingFields($instanceId);
 
-        array_walk($fields, function($val) {
+        array_walk($fields, function ($val) {
             \WP_CLI::line($val);
         });
     }
 
-    protected function update_general_setting($args) {
+    protected function update_general_setting($args)
+    {
         if (!isset($args[0]) || !isset($args[1])) {
             \WP_CLI::error('Invalid arguments!');
 
@@ -102,7 +106,8 @@ class Settings_Command {
         \WP_CLI::success('Setting saved!');
     }
 
-    protected function update_zone_setting($zoneName, $args) {
+    protected function update_zone_setting($zoneName, $args)
+    {
         if (!isset($args[0]) || !isset($args[1])) {
             \WP_CLI::error('Invalid arguments!');
 
@@ -125,14 +130,16 @@ class Settings_Command {
         \WP_CLI::success('Setting saved!');
     }
 
-    protected function updateInstanceOption($instanceName, $key, $value) {
+    protected function updateInstanceOption($instanceName, $key, $value)
+    {
         $settings = get_option($instanceName, array());
         $settings[$key] = $value;
 
         return update_option($instanceName, $settings);
     }
 
-    protected function getInstanceIdByZoneName($name) {
+    protected function getInstanceIdByZoneName($name)
+    {
         $shippingZone = $this->getShippingZoneByName($name);
 
         if (!$shippingZone) {
@@ -153,25 +160,27 @@ class Settings_Command {
         return $instanceId;
     }
 
-    protected function getShippingZoneByName($name) {
+    protected function getShippingZoneByName($name)
+    {
         $matchedZone = null;
-        $shippingZones = \WC_Data_Store::load( 'shipping-zone' )->get_zones();
+        $shippingZones = \WC_Data_Store::load('shipping-zone')->get_zones();
 
         while (is_null($matchedZone) && count($shippingZones) > 0) {
             $newZone = new \WC_Shipping_Zone(array_shift($shippingZones));
 
             if (str_replace(' ', '_', $newZone->get_zone_name()) == $name) {
                 $matchedZone = $newZone;
-            }            
+            }
         }
 
         return $matchedZone;
     }
 
-    protected function getSettingFields($zoneId = null) {
+    protected function getSettingFields($zoneId = null)
+    {
         $property = $zoneId ? 'instance_form_fields' : 'form_fields';
         $fields = (new WC_Flagship_Shipping_Method())->{$property};
-        $fields = array_filter($fields, function($val) {
+        $fields = array_filter($fields, function ($val) {
             return $val['type'] != 'title';
         });
 

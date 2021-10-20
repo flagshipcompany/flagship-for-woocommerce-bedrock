@@ -1,18 +1,20 @@
 <?php
 namespace FlagshipWoocommerceBedrock\Helpers;
+
 use FlagshipWoocommerceBedrock\Requests\Validate_Token_Request;
 
-class Validation_Helper {
-
+class Validation_Helper
+{
     public function __construct($testEnv = 0)
     {
         $this->testEnv = $testEnv;
     }
 
-    public static function validateMultiEmails($emails) {
+    public static function validateMultiEmails($emails)
+    {
         $emails = explode(';', trim($emails));
 
-        $invalidEmails = array_filter($emails, function($val) {
+        $invalidEmails = array_filter($emails, function ($val) {
             return is_email(trim($val)) === false;
         });
 

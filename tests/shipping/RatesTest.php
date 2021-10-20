@@ -13,14 +13,15 @@ class RatesTest extends FlagshipShippingUnitTestCase
     public function testGetRates()
     {
         $order = $this->getOrder();
-        $rateRequest = new Rates_Request($this->zoneSettings['token'],false,1);
-        $rates = $rateRequest->getRates($this->package,$this->zoneSettings,1,$order);
+        $rateRequest = new Rates_Request($this->zoneSettings['token'], false, 1);
+        $rates = $rateRequest->getRates($this->package, $this->zoneSettings, 1, $order);
 
-        $this->assertCount(0,$rates);
+        $this->assertCount(0, $rates);
     }
 
 
-    protected function getOrder(){
+    protected function getOrder()
+    {
         $product = $this->generate_simple_product();
 
         $order = new WC_Order();
@@ -39,17 +40,17 @@ class RatesTest extends FlagshipShippingUnitTestCase
         );
 
 
-        $order->add_product( $product, 1 ); //(get_product with id and next is for quantity)
-        $order->set_address( $address, 'billing' );
-        $order->set_address( $address, 'shipping' );
+        $order->add_product($product, 1); //(get_product with id and next is for quantity)
+        $order->set_address($address, 'billing');
+        $order->set_address($address, 'shipping');
 
         $order->calculate_totals();
         $order->save();
         return $order;
-
     }
 
-    protected function generate_simple_product() {
+    protected function generate_simple_product()
+    {
         $name              = 'My Product Name';
         $will_manage_stock = true;
         $is_virtual        = false;
@@ -57,13 +58,13 @@ class RatesTest extends FlagshipShippingUnitTestCase
         $is_on_sale        = true;
         $sale_price        = 999.00;
         $product           = new \WC_Product();
-        $product->set_props( array(
+        $product->set_props(array(
             'name'               => $name,
             'featured'           => false,
             'catalog_visibility' => 'visible',
             'description'        => 'My awesome product description',
             'short_description'  => 'My short description',
-            'sku'                => sanitize_title( $name ) . '-' . rand(0, 100), // Just an example
+            'sku'                => sanitize_title($name) . '-' . rand(0, 100), // Just an example
             'regular_price'      => $price,
             'sale_price'         => $sale_price,
             'date_on_sale_from'  => '',
@@ -91,11 +92,10 @@ class RatesTest extends FlagshipShippingUnitTestCase
             'category_ids'       => [],
             'tag_ids'            => [],
             'shipping_class_id'  => 0,
-        ) );
+        ));
 
         $product->save();
 
         return $product;
     }
-
 }

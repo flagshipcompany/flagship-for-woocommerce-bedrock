@@ -15,44 +15,44 @@
  * WC tested up to: 4.5.2
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
-if (!defined( 'FLAGSHIP_PLUGIN_FILE' )) {
-	define( 'FLAGSHIP_PLUGIN_FILE', __FILE__ );
+if (!defined('FLAGSHIP_PLUGIN_FILE')) {
+    define('FLAGSHIP_PLUGIN_FILE', __FILE__);
 }
 
-if (file_exists(dirname( __FILE__ ) . '/env.php')) {
- 	include_once dirname( __FILE__ ) . '/env.php';
+if (file_exists(dirname(__FILE__) . '/env.php')) {
+    include_once dirname(__FILE__) . '/env.php';
 }
 
-include_once dirname( __FILE__ ) . '/includes/UserFunctions.php';
+include_once dirname(__FILE__) . '/includes/UserFunctions.php';
 
-if (!defined('FLAGSHIP_PLUGIN_NAME')){
-	define("FLAGSHIP_PLUGIN_NAME", plugin_basename( __FILE__ ));
+if (!defined('FLAGSHIP_PLUGIN_NAME')) {
+    define("FLAGSHIP_PLUGIN_NAME", plugin_basename(__FILE__));
 }
 
 spl_autoload_register(function ($class) {
-	$nameSpace = 'FlagshipWoocommerceBedrock\\';
+    $nameSpace = 'FlagshipWoocommerceBedrock\\';
 
-	if (strncmp($nameSpace, $class, strlen($nameSpace)) === 0) {
-		$relativeClass = substr($class, strlen($nameSpace));
-		$filePath = str_replace('\\', '/', $relativeClass);
-		include_once('includes/' . $filePath . '.php');
-	}
+    if (strncmp($nameSpace, $class, strlen($nameSpace)) === 0) {
+        $relativeClass = substr($class, strlen($nameSpace));
+        $filePath = str_replace('\\', '/', $relativeClass);
+        include_once('includes/' . $filePath . '.php');
+    }
 });
 
 $GLOBALS['flagship-woocommerce-shipping'] = FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping::instance();
 
 if (!class_exists('Flagship\\Shipping\\Flagship')) {
-	include_once dirname(__FILE__). '/vendor/autoload.php';
+    include_once dirname(__FILE__). '/vendor/autoload.php';
 }
 
-if (dirname(dirname( __FILE__ )) == WPMU_PLUGIN_DIR) {
-	load_muplugin_textdomain( 'flagship-shipping-extension-for-woocommerce', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-}  else {
-	load_plugin_textdomain( 'flagship-shipping-extension-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+if (dirname(dirname(__FILE__)) == WPMU_PLUGIN_DIR) {
+    load_muplugin_textdomain('flagship-shipping-extension-for-woocommerce', dirname(plugin_basename(__FILE__)) . '/languages/');
+} else {
+    load_plugin_textdomain('flagship-shipping-extension-for-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 }
 
-if (defined( 'WP_CLI' ) && WP_CLI) {
-	(new FlagshipWoocommerceBedrock\Commands\Console())->add_commands();
+if (defined('WP_CLI') && WP_CLI) {
+    (new FlagshipWoocommerceBedrock\Commands\Console())->add_commands();
 }

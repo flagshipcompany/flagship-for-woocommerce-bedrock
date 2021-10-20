@@ -3,11 +3,11 @@ namespace FlagshipWoocommerceBedrock\Helpers;
 
 use FlagshipWoocommerceBedrock\Requests\Export_Order_Request;
 
-class Export_Order_Helper {
+class Export_Order_Helper
+{
+    public static $shipmentIdField = 'flagship_shipping_shipment_id';
 
-	public static $shipmentIdField = 'flagship_shipping_shipment_id';
-
-	protected $order;
+    protected $order;
 
     protected $pluginSettings;
 
@@ -16,11 +16,13 @@ class Export_Order_Helper {
         'token_missing' => 402,
     );
 
-    public function __construct($pluginSettings) {
+    public function __construct($pluginSettings)
+    {
         $this->pluginSettings = $pluginSettings;
     }
 
-    public function __call($method, $arguments) {
+    public function __call($method, $arguments)
+    {
         if (!$this->order) {
             throw new \Exception('Order not set!');
         }
@@ -28,11 +30,13 @@ class Export_Order_Helper {
         return call_user_func_array(array($this, $method), $arguments);
     }
 
-    public function set_order($order) {
+    public function set_order($order)
+    {
         $this->order = $order;
     }
     
-    public function getShipmentIdFromOrder($orderId) {
+    public function getShipmentIdFromOrder($orderId)
+    {
         $orderMeta = get_post_meta($orderId);
 
         if (!isset($orderMeta[self::$shipmentIdField])) {
@@ -42,7 +46,8 @@ class Export_Order_Helper {
         return reset($orderMeta[self::$shipmentIdField]);
     }
 
-    public function exportOrder() {
+    public function exportOrder()
+    {
         if ($this->getShipmentIdFromOrder($this->order->get_id())) {
             throw new \Exception(__('This order has already been exported to FlagShip', 'flagship-shipping-extension-for-woocommerce'), $this->errorCodes['shipment_exists']);
         }

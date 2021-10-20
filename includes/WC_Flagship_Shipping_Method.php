@@ -6,15 +6,16 @@ use FlagshipWoocommerceBedrock\Helpers\Validation_Helper;
 use FlagshipWoocommerceBedrock\Helpers\Template_Helper;
 use FlagshipWoocommerceBedrock\Helpers\Menu_Helper;
 
-class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
-
+class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
+{
     private $token;
 
     /**
      * @access public
      * @return void
      */
-    public function __construct($instance_id = 0) {
+    public function __construct($instance_id = 0)
+    {
         parent::__construct($instance_id);
 
         $this->id = FlagshipWoocommerceBedrockShipping::$methodId;
@@ -36,26 +37,28 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
      * @access public
      * @return void
      */
-    public function init() {
+    public function init()
+    {
         $this->init_form_fields();
         $this->init_settings();
 
-        add_action( 'woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
-        add_filter('woocommerce_settings_api_sanitized_fields_' . $this->id,  array($this, 'validate_admin_options'));
+        add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+        add_filter('woocommerce_settings_api_sanitized_fields_' . $this->id, array($this, 'validate_admin_options'));
         add_filter('woocommerce_shipping_' . $this->id . '_instance_settings_values', array($this, 'validate_shipping_zone_options'));
     }
     /**
      * @return void
      */
-    public function init_form_fields() {
-
+    public function init_form_fields()
+    {
         $this->form_fields = $this->makeGeneralFields();
         $this->instance_form_fields = $this->makeInstanceFields();
     }
 
     // remove redundant/ old shipping zone settings in case the option is removed or moved to the general settings.
     // only return values of options that match options on the shipping zone form.
-    public function validate_shipping_zone_options($shippingZoneOptions) {
+    public function validate_shipping_zone_options($shippingZoneOptions)
+    {
         $currentFormFields = array_keys($this->instance_form_fields);
         $formattedOptions = [];
 
@@ -71,7 +74,8 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
      * @param mixed $package
      * @return void
      */
-    public function calculate_shipping($package = Array()) {
+    public function calculate_shipping($package = array())
+    {
         if (count($package) == 0 || $this->enabled != 'yes') {
             return;
         }
@@ -86,7 +90,8 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         }
     }
 
-    public function get_option($key, $empty_value = null) {
+    public function get_option($key, $empty_value = null)
+    {
         if ($key === 'tracking_emails' && !array_key_exists('tracking_emails', $this->settings)) {
             return trim(WC()->mailer()->get_emails()['WC_Email_New_Order']->recipient);
         }
@@ -94,12 +99,12 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         return parent::get_option($key, $empty_value);
     }
 
-    public function validate_admin_options($settings) {
+    public function validate_admin_options($settings)
+    {
         $testEnv = $settings['test_env'] == 'no' ? 0 : 1;
         $validationHelper = new Validation_Helper($testEnv);
 
-        if(isset($settings['token']) && !empty(trim($settings['token'])) && !$validationHelper->validateToken($settings['token']))
-        {
+        if (isset($settings['token']) && !empty(trim($settings['token'])) && !$validationHelper->validateToken($settings['token'])) {
             $settings['token'] = '';
             add_action('admin_notices', array((new Notification_Helper()),'add_token_invalid_notice'));
         }
@@ -107,9 +112,9 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
 
         if (isset($settings['tracking_emails']) && !empty(trim($settings['tracking_emails'])) && !Validation_Helper::validateMultiEmails($settings['tracking_emails'])) {
             $settings = get_option($this->get_option_key(), array());
-            $settings['tracking_emails'] = get_array_value($settings,'tracking_emails', '');
+            $settings['tracking_emails'] = get_array_value($settings, 'tracking_emails', '');
 
-            add_action( 'admin_notices', array((new Notification_Helper()), 'add_tracking_email_invalid_notice'));
+            add_action('admin_notices', array((new Notification_Helper()), 'add_tracking_email_invalid_notice'));
         }
 
         return $settings;
@@ -123,25 +128,27 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         return Template_Helper::render_embedded_php('_radio_field.php', $data);
     }
 
-    protected function init_method_settings() {
+    protected function init_method_settings()
+    {
         $this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->get_option('title', __('FlagShip Shipping', 'flagship-shipping-extension-for-woocommerce'));
         $this->token = $this->get_option('token', '');
         $this->debugMode = $this->get_option('debug_mode', 'no');
     }
 
-    protected function makeGeneralFields() {
+    protected function makeGeneralFields()
+    {
         return array(
             'enabled' => array(
                 'title' => esc_html(__('Enable', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
-                'description' =>esc_html(__( 'Enable this shipping method', 'flagship-shipping-extension-for-woocommerce')),
+                'description' =>esc_html(__('Enable this shipping method', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
             'test_env' => array(
                 'title' => esc_html(__('Enable Test Environment', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
-                'description' => esc_html(__('Use FlagShip\'s test environment. Any shipments made in the test environment will not be shipped','flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('Use FlagShip\'s test environment. Any shipments made in the test environment will not be shipped', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
             'token' => array(
@@ -162,7 +169,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             ),
             'flagship_insurance' => array(
                 'title' => esc_html(__('Insurance', 'flagship-shipping-extension-for-woocommerce')),
-                'label' => esc_html(__( 'Add Insurance', 'flagship-shipping-extension-for-woocommerce')),
+                'label' => esc_html(__('Add Insurance', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
                 'default' => 'no',
             ),
@@ -178,7 +185,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                     'packing_api' => 'Use FlagShip Packing API to pack items into',
                 ),
                 'extra_note' =>  array(
-                    'packing_api' => sprintf('<a href="%s" target="_blank">%s</a>',admin_url('admin.php?page=flagship/boxes'), __('Boxes','flagship-shipping-extension-for-woocommerce')),
+                    'packing_api' => sprintf('<a href="%s" target="_blank">%s</a>', admin_url('admin.php?page=flagship/boxes'), __('Boxes', 'flagship-shipping-extension-for-woocommerce')),
                 ),
             ),
             'box_split_weight' => array(
@@ -189,14 +196,14 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             ),
             'debug_mode' => array(
                 'title' => esc_html(__('Debug mode', 'flagship-shipping-extension-for-woocommerce')),
-                'label' => esc_html(__( 'Enable debug mode', 'flagship-shipping-extension-for-woocommerce')),
+                'label' => esc_html(__('Enable debug mode', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
                 'description' => esc_html(__('If enabled, errors will be displayed in the pages showing shipping rates', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
             'autocomplete_order' => array(
                 'title' => esc_html(__('Auto Complete "Processing" Orders', 'flagship-shipping-extension-for-woocommerce')),
-                'label' => esc_html(__( 'Auto complete "Processing" orders when Flagship shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
+                'label' => esc_html(__('Auto complete "Processing" orders when Flagship shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
                 'description' => esc_html(__('If enabled, "Processing" order will be automatically set to "Completed" when Flagship Shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
@@ -204,8 +211,9 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         );
     }
 
-    protected function makeInstanceFields() {
-        $ecommerceApplicable = $this->isInstanceForEcommerce(\WC_Shipping_Zones::get_zone_by( 'instance_id', $this->instance_id)->get_zone_locations());
+    protected function makeInstanceFields()
+    {
+        $ecommerceApplicable = $this->isInstanceForEcommerce(\WC_Shipping_Zones::get_zone_by('instance_id', $this->instance_id)->get_zone_locations());
 
         $fields = array(
             'shipping_rates_configs' => array(
@@ -225,7 +233,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'offer_dhl_ecommerce_rates' => array(
                 'title' => esc_html(__('Offer DHL ecommerce rates', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
-                'description' => esc_html(__( 'Available for international destinations when package is less than 2kg', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('Available for international destinations when package is less than 2kg', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
             'only_show_cheapest' => array(
@@ -234,7 +242,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
                 'default' => 'no'
             ),
             'dropshipping_address' => array(
-                'title' => esc_html(__('DropShip Address','flagship-shipping-extension-for-woocommerce')),
+                'title' => esc_html(__('DropShip Address', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'title',
                 'description' => esc_html(__('Store owner may ship from a warehouse')),
             ),
@@ -246,13 +254,13 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
             'shipping_cost_markup_percentage' => array(
                 'title' => esc_html(__('Shipping cost markup (%)', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'decimal',
-                'description' => esc_html(__( 'Shipping cost markup in percentage', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('Shipping cost markup in percentage', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 0
             ),
             'shipping_cost_markup_flat' => array(
                 'title' => esc_html(__('Shipping cost markup in flat fee ($)', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'decimal',
-                'description' => esc_html(__( 'Shipping cost markup in flat fee (this will be applied after the percentage markup)', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('Shipping cost markup in flat fee (this will be applied after the percentage markup)', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 0
             ),
             'shipping_options' => array(
@@ -283,7 +291,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         $disableCourierOptions = $this->makeDisableCourierOptions(FlagshipWoocommerceBedrockShipping::$couriers, $ecommerceApplicable);
         $fields = array_slice($fields, 0, 5, true) +
            $disableCourierOptions +
-            array_slice($fields, 5, NULL, true);
+            array_slice($fields, 5, null, true);
 
         if (!$ecommerceApplicable) {
             unset($fields['offer_dhl_ecommerce_rates']);
@@ -291,7 +299,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
 
         $fields = array_merge($fields, $this->makeShippingClassSettings());
 
-        $fields = array_slice($fields, 0,10,true) + $this->makeDropShippingAddressFields() + array_slice($fields, 10, NULL, true);
+        $fields = array_slice($fields, 0, 10, true) + $this->makeDropShippingAddressFields() + array_slice($fields, 10, null, true);
 
         return $fields;
     }
@@ -306,23 +314,23 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         }
 
         $settings['class_costs'] = array(
-            'title'       => esc_html(__( 'Shipping class costs', 'woocommerce' )),
+            'title'       => esc_html(__('Shipping class costs', 'woocommerce')),
             'type'        => 'title',
             'default'     => '',
-            'description' => sprintf( __( 'These costs can optionally be added based on the <a href="%s">product shipping class</a>.', 'woocommerce' ) . ' ' . __('This cost will be applied only once per shipment, regardless of the number of products belonging to that shipping class.', 'flagship-shipping-extension-for-woocommerce'),  admin_url( 'admin.php?page=wc-settings&tab=shipping&section=classes' ) ),
+            'description' => sprintf(__('These costs can optionally be added based on the <a href="%s">product shipping class</a>.', 'woocommerce') . ' ' . __('This cost will be applied only once per shipment, regardless of the number of products belonging to that shipping class.', 'flagship-shipping-extension-for-woocommerce'), admin_url('admin.php?page=wc-settings&tab=shipping&section=classes')),
         );
 
-        foreach ( $shipping_classes as $shipping_class ) {
-            if (!isset( $shipping_class->term_id)) {
+        foreach ($shipping_classes as $shipping_class) {
+            if (!isset($shipping_class->term_id)) {
                 continue;
             }
 
             $settings[ 'class_cost_' . $shipping_class->term_id ] = array(
-                'title'             => sprintf( __( '"%s" shipping class cost', 'woocommerce' ), esc_html( $shipping_class->name ) ),
+                'title'             => sprintf(__('"%s" shipping class cost', 'woocommerce'), esc_html($shipping_class->name)),
                 'type'              => 'decimal',
-                'placeholder'       => __( 'N/A', 'woocommerce' ),
+                'placeholder'       => __('N/A', 'woocommerce'),
                 'description'       => 'shipping class cost',
-                'default'           => $this->get_option( 'class_cost_' . $shipping_class->slug ),
+                'default'           => $this->get_option('class_cost_' . $shipping_class->slug),
                 'desc_tip'          => true,
                 'sanitize_callback' => array( $this, 'sanitize_cost' ),
             );
@@ -360,7 +368,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method {
         $addressFieldsOptions = [];
         $addressFields = FlagshipWoocommerceBedrockShipping::$dropShippingAddressFields;
         foreach ($addressFields as $key => $addressField) {
-            $label = sprintf(__('Shipper %s','flagship-shipping-extension-for-woocommerce'), $addressField);
+            $label = sprintf(__('Shipper %s', 'flagship-shipping-extension-for-woocommerce'), $addressField);
             $addressFieldsOptions['dropshipping_address_'.$key] = array(
                 'title' => __($label, 'flagship-shipping-extension-for-woocommerce'),
                 'type' => $key == 'state' ? 'select' : 'text',

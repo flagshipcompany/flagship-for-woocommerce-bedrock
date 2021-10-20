@@ -8,12 +8,17 @@
         <fieldset>
             <legend class="screen-reader-text"><span><?php esc_html_e('Box split', 'flagship-shipping-extension-for-woocommerce'); ?></span></legend>
               <?php
-                foreach ( $options as $key => $val ) {
-                   ?>
+                foreach ($options as $key => $val) {
+                    ?>
                       <label for="<?php echo $field_name; ?>">
-                        <input class="" type="radio" name="<?php echo $field_name; ?>" style="" value="<?php echo $key; ?>" <?php if ($key === $value) echo 'checked'; ?> ><?php echo _e($val,'flagship-shipping-extension-for-woocommerce'); if (isset($extra_note[$key])) echo ' '.$extra_note[$key]; ?>
+                        <input class="" type="radio" name="<?php echo $field_name; ?>" style="" value="<?php echo $key; ?>" <?php if ($key === $value) {
+                        echo 'checked';
+                    } ?> ><?php echo _e($val, 'flagship-shipping-extension-for-woocommerce');
+                    if (isset($extra_note[$key])) {
+                        echo ' '.$extra_note[$key];
+                    } ?>
                       </label>
-                   <?php 
+                   <?php
                 }
               ?> 
         </fieldset>

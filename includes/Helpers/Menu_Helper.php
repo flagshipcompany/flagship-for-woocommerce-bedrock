@@ -4,8 +4,8 @@ namespace FlagshipWoocommerceBedrock\Helpers;
 use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
 
-class Menu_Helper {
-
+class Menu_Helper
+{
     public static $menuItemUri = 'flagship/ship';
 
     public static $package_boxes_uri = 'flagship/boxes';
@@ -26,11 +26,11 @@ class Menu_Helper {
             </svg>
         ');
 
-        add_menu_page( 'FlagShip', 'FlagShip', 'manage_options', self::$menuItemUri, '', 'data:image/svg+xml;base64,'.$icon, 56.6);
+        add_menu_page('FlagShip', 'FlagShip', 'manage_options', self::$menuItemUri, '', 'data:image/svg+xml;base64,'.$icon, 56.6);
 
-        add_submenu_page(self::$menuItemUri, __( 'Shipment', 'flagship-shipping-extension-for-woocommerce'), __( 'Shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
-        add_submenu_page(self::$menuItemUri, __( 'Manage shipment', 'flagship-shipping-extension-for-woocommerce'), __( 'Manage shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
-        add_submenu_page(self::$menuItemUri, __( 'Package boxes', 'flagship-shipping-extension-for-woocommerce'), __( 'Package boxes', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$package_boxes_uri, array($this, 'list_boxes'));
+        add_submenu_page(self::$menuItemUri, __('Shipment', 'flagship-shipping-extension-for-woocommerce'), __('Shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$menuItemUri, array($this, 'load_flagship_shipment_page'));
+        add_submenu_page(self::$menuItemUri, __('Manage shipment', 'flagship-shipping-extension-for-woocommerce'), __('Manage shipment', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', 'flagship/manage', array($this, 'load_flagship_manage_shipment_page'));
+        add_submenu_page(self::$menuItemUri, __('Package boxes', 'flagship-shipping-extension-for-woocommerce'), __('Package boxes', 'flagship-shipping-extension-for-woocommerce'), 'manage_options', self::$package_boxes_uri, array($this, 'list_boxes'));
 
         $this->add_settings_link();
         $this->add_flagship_link();
@@ -101,5 +101,4 @@ class Menu_Helper {
             'save_boxes_url' => rest_url(Package_Box_Controller::get_namespace().'/package_boxes/save'),
         ));
     }
-
 }

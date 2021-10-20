@@ -1,8 +1,8 @@
 <?php
 namespace FlagshipWoocommerceBedrock\Helpers;
 
-class Product_Helper {
-
+class Product_Helper
+{
     public static $fields = array(
         'country' => '_country_of_origin',
         'hs' => '_hs_code',
@@ -10,7 +10,8 @@ class Product_Helper {
 
     protected $exportTabName = 'flagship_export';
 
-    public function add_export_to_product_tabs($tabs) {  
+    public function add_export_to_product_tabs($tabs)
+    {
         $tabs['export'] = array(
             'label'    => __('Export', 'flagship-shipping-extension-for-woocommerce'),
             'target'   => $this->exportTabName,
@@ -18,11 +19,11 @@ class Product_Helper {
             'priority' => 21,
         );
 
-        return $tabs;    
+        return $tabs;
     }
 
-    public function display_product_export_tab() {
- 
+    public function display_product_export_tab()
+    {
         echo sprintf('<div id="%s" class="panel woocommerce_options_panel hidden">', $this->exportTabName);
 
         $countries_obj = new \WC_Countries();
@@ -40,7 +41,7 @@ class Product_Helper {
             'options' => $countries,
         ));
 
-        woocommerce_wp_text_input( array(
+        woocommerce_wp_text_input(array(
             'id'  => self::$fields['hs'],
             'value' => get_post_meta(get_the_ID(), self::$fields['hs'], true),
             'label' => __('HS code'),
@@ -48,14 +49,15 @@ class Product_Helper {
             'description' => __('The HS (Harmonized Commodity Description and Coding System) Code is a 6–10 digit number for international shipments', 'flagship-shipping-extension-for-woocommerce'),
         ));
      
-        echo '</div>';   
+        echo '</div>';
     }
 
-    public function save_product_export_data($post_id) {
+    public function save_product_export_data($post_id)
+    {
         foreach (self::$fields as $key => $field) {
             $value = ($_POST[$field]);
 
-            if(!empty($value)) {
+            if (!empty($value)) {
                 update_post_meta($post_id, $field, esc_attr($value));
             }
         }

@@ -5,11 +5,12 @@ use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 use FlagshipWoocommerceBedrock\Helpers\Export_Order_Helper;
 use FlagshipWoocommerceBedrock\Requests\Export_Order_Request;
 
-class Orders_Command {
-
+class Orders_Command
+{
     protected $export_helper;
 
-    public function __construct() {
+    public function __construct()
+    {
         $plugin_settings = get_option(FlagshipWoocommerceBedrockShipping::getSettingsOptionKey());
         $this->export_helper = new Export_Order_Helper($plugin_settings);
     }
@@ -32,7 +33,8 @@ class Orders_Command {
     *     # Export all orders.
     *     $ wp fcs orders export [--all]
     */
-    public function export($args, $assoc_args) {
+    public function export($args, $assoc_args)
+    {
         if (!$this->args_valid($args, $assoc_args)) {
             \WP_CLI::error('Invalid arguments');
 
@@ -48,11 +50,13 @@ class Orders_Command {
         $this->export_all();
     }
 
-    protected function args_valid($args, $assoc_args) {
+    protected function args_valid($args, $assoc_args)
+    {
         return (isset($args[0]) || isset($assoc_args['all'])) && !(isset($args[0]) && isset($assoc_args['all']));
     }
 
-    protected function export_by_id($order_id) {
+    protected function export_by_id($order_id)
+    {
         $order = wc_get_order($order_id);
 
         if (!$order) {
@@ -69,13 +73,12 @@ class Orders_Command {
 
         $this->export_helper->set_order($order);
 
-        try{
+        try {
             $shipmentId = $this->export_helper->exportOrder();
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             \WP_CLI::error($e->getMessage());
 
-            return;    
+            return;
         }
 
         \WP_CLI::success(sprintf('Order has been exported to FlagShip with shipment id %d', $shipmentId));
@@ -83,7 +86,8 @@ class Orders_Command {
         return $shipmentId;
     }
 
-    protected function export_all() {
+    protected function export_all()
+    {
         $unexported_orders = $this->list_eligible_orders('processing');
         \WP_CLI::line(sprintf('%d orders will be exported to FlagShip', count($unexported_orders)));
 
@@ -102,11 +106,12 @@ class Orders_Command {
         \WP_CLI::line(sprintf('%d orders were exported', $number_exported));
     }
 
-    protected function list_eligible_orders($status = null) {
+    protected function list_eligible_orders($status = null)
+    {
         $filters = $status ? array('status' => $status) : array();
         $orders = wc_get_orders($filters);
 
-        $unexported_orders = array_filter($orders, function($order) {
+        $unexported_orders = array_filter($orders, function ($order) {
             if (!$this->validate_shipping_address($order)) {
                 return false;
             }
@@ -119,7 +124,8 @@ class Orders_Command {
         return $unexported_orders;
     }
 
-    protected function validate_shipping_address($order) {
+    protected function validate_shipping_address($order)
+    {
         return (new Export_Order_Request(null))->isOrderShippingAddressValid($order);
     }
 }

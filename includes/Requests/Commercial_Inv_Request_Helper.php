@@ -4,8 +4,8 @@ namespace FlagshipWoocommerceBedrock\Requests;
 use Flagship\Shipping\Flagship;
 use FlagshipWoocommerceBedrock\Helpers\Product_Helper;
 
-class Commercial_Inv_Request_Helper {
-
+class Commercial_Inv_Request_Helper
+{
     public function makeIntShpFields($prepareRequest, $order)
     {
         $currency = get_option('woocommerce_currency');
@@ -43,7 +43,7 @@ class Commercial_Inv_Request_Helper {
         $orderItems = $order->get_items();
         $commercialInvItems = array();
 
-        foreach ( $orderItems as $items_key => $item_data ) {
+        foreach ($orderItems as $items_key => $item_data) {
             $product = $item_data->get_product();
             $ciItem = array();
             $ciItem['product_name'] = $product->get_name();
@@ -58,7 +58,7 @@ class Commercial_Inv_Request_Helper {
             $commercialInvItems[] = $ciItem;
         }
 
-        $itemsWithCountry = array_filter($commercialInvItems, function($val) {
+        $itemsWithCountry = array_filter($commercialInvItems, function ($val) {
             return !empty($val['country_of_origin']) && !empty($val['description']);
         });
 

@@ -3,7 +3,8 @@ namespace FlagshipWoocommerceBedrock\Commands;
 
 use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
-class Zones_Command {
+class Zones_Command
+{
 
     /**
     * List all the shipping zones with FlagShip enabled.
@@ -19,11 +20,12 @@ class Zones_Command {
     *     $ wp fcs zones list [--enabled]
     *     Canada/United States
     */
-    public function list($args, $assoc_args) {
+    public function list($args, $assoc_args)
+    {
         $enabledOnly = isset($assoc_args['enabled']);
         $enabledZones = $this->getShippingZones($enabledOnly);
 
-        array_walk($enabledZones, function($zone) {
+        array_walk($enabledZones, function ($zone) {
             \WP_CLI::line($zone->get_zone_name());
         });
     }
@@ -47,10 +49,11 @@ class Zones_Command {
     *
     * ## EXAMPLES
     *
-    *     # Add a zone called United States for United States 
+    *     # Add a zone called United States for United States
     *     $ wp fcs zones create United_States US --enable_flagship
     */
-    public function create($args, $assoc_args) {
+    public function create($args, $assoc_args)
+    {
         $zoneName = isset($args[0]) ? str_replace('_', ' ', $args[0]) : null;
         $locationCode = isset($args[1]) ? $args[1] : null;
         $locationType = isset($args[2]) ? $args[2] : null;
@@ -71,7 +74,7 @@ class Zones_Command {
 
         if (isset($assoc_args['enable_flagship'])) {
             $zone->add_shipping_method(FlagshipWoocommerceBedrockShipping::$methodId);
-            $msg .= ' FlagShip shipping is enabled';            
+            $msg .= ' FlagShip shipping is enabled';
         }
 
         $zone->save();
@@ -79,22 +82,23 @@ class Zones_Command {
         \WP_CLI::success($msg);
     }
 
-    protected function getShippingZones($enabledOnly = false) {
+    protected function getShippingZones($enabledOnly = false)
+    {
         $flagshipMethod = FlagshipWoocommerceBedrockShipping::$methodId;
-        $shippingZones = array_map(function($zone) {
+        $shippingZones = array_map(function ($zone) {
             return new \WC_Shipping_Zone($zone);
-        }, \WC_Data_Store::load( 'shipping-zone' )->get_zones());
+        }, \WC_Data_Store::load('shipping-zone')->get_zones());
 
         if (!$enabledOnly) {
             return $shippingZones;
         }
 
-        $enabledZones = array_filter($shippingZones, function($zone) use ($flagshipMethod) {
+        $enabledZones = array_filter($shippingZones, function ($zone) use ($flagshipMethod) {
             $methods = $zone->get_shipping_methods();
-            $methods = array_filter($methods, function($val) {
+            $methods = array_filter($methods, function ($val) {
                 return $val->is_enabled();
             });
-            $methodNames = array_map(function($val) {
+            $methodNames = array_map(function ($val) {
                 return $val->id;
             }, $methods);
 

@@ -3,9 +3,10 @@ namespace FlagshipWoocommerceBedrock\Helpers;
 
 use  FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
 
-class Compatibility_Helper {
-
-    public function modify_settings($settings, $option_value) {
+class Compatibility_Helper
+{
+    public function modify_settings($settings, $option_value)
+    {
         $map = array(
             'box_split' => 'default_package_box_split',
             'box_split_weight' => 'default_package_box_split_weight',
@@ -24,16 +25,17 @@ class Compatibility_Helper {
         return $settings;
     }
 
-    protected function convert_to_box_option($boxes_data) {
-    	if (!is_array($boxes_data)) {
-    		return;
-    	}
+    protected function convert_to_box_option($boxes_data)
+    {
+        if (!is_array($boxes_data)) {
+            return;
+        }
 
-    	$id = 0;
+        $id = 0;
 
-        $boxes = array_map(function($box) use (&$id) {
-        	++$id;
-        	$box['id'] = $id;
+        $boxes = array_map(function ($box) use (&$id) {
+            ++$id;
+            $box['id'] = $id;
             $box['model'] = $box['model_name'];
             unset($box['model_name']);
 
@@ -49,8 +51,9 @@ class Compatibility_Helper {
     }
 
 
-    protected function convert_box_split($split_option) {
-    	$map = array(
+    protected function convert_box_split($split_option)
+    {
+        $map = array(
             'no' => 'by_weight',
             'yes' => 'one_box',
             'each' => 'box_per_item',
