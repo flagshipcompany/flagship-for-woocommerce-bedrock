@@ -1,10 +1,11 @@
 <?php
+
 namespace FlagshipWoocommerceBedrock\Requests;
 
 use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
-abstract class Abstract_Flagship_Api_Request {
-
+abstract class Abstract_Flagship_Api_Request
+{
     private $token;
 
     private $apiUrl;
@@ -45,22 +46,21 @@ abstract class Abstract_Flagship_Api_Request {
     {
         $storeAddress = array();
 
-        if(!empty($options['dropshipping_address_city']))
-        {
+        if (!empty($options['dropshipping_address_city'])) {
             $dropShipAddress['postal_code'] = trim($options['dropshipping_address_postal_code']);
             $dropShipAddress['country'] = 'CA';
             $dropShipAddress['state'] = $options['dropshipping_address_state'];
             $dropShipAddress['city'] = trim($options['dropshipping_address_city']);
-            if($fullAddress){
+            if ($fullAddress) {
                 $address = trim($options['dropshipping_address_street_address']);
-                $dropShipAddress['address'] = substr($address,0,30);
-                $dropShipAddress['suite'] = substr(trim($options['dropshipping_address_suite']),0,18);
+                $dropShipAddress['address'] = substr($address, 0, 30);
+                $dropShipAddress['suite'] = substr(trim($options['dropshipping_address_suite']), 0, 18);
                 $company = $options['dropshipping_address_company'];
-                $dropShipAddress['name'] = substr((empty($company) ? trim($options['dropshipping_address_name']) : $company),0,30);
-                $dropShipAddress['attn'] = substr(trim($options['dropshipping_address_name']),0,21);
+                $dropShipAddress['name'] = substr((empty($company) ? trim($options['dropshipping_address_name']) : $company), 0, 30);
+                $dropShipAddress['attn'] = substr(trim($options['dropshipping_address_name']), 0, 21);
                 $dropShipAddress['phone'] = trim($options['dropshipping_address_phone']);
             }
-            return apply_filters( 'fwb_get_dropship_address', $dropShipAddress);
+            return apply_filters('fwb_get_dropship_address', $dropShipAddress);
         }
 
         $storeAddress['postal_code'] = trim(get_option('woocommerce_store_postcode', ''));
@@ -70,10 +70,10 @@ abstract class Abstract_Flagship_Api_Request {
         $storeAddress['city'] = trim(get_option('woocommerce_store_city', ''));
 
         if ($fullAddress) {
-            $storeAddress['address'] = substr(trim(get_option('woocommerce_store_address', '')),0,30);
-            $storeAddress['suite'] = substr(trim(get_option('woocommerce_store_address_2', '')),0,18);
-            $storeAddress['name'] = substr(trim(get_option('woocommerce_store_name', '')),0,30);
-            $storeAddress['attn'] = substr(trim(get_option('woocommerce_store_attn', '')),0,21);
+            $storeAddress['address'] = substr(trim(get_option('woocommerce_store_address', '')), 0, 30);
+            $storeAddress['suite'] = substr(trim(get_option('woocommerce_store_address_2', '')), 0, 18);
+            $storeAddress['name'] = substr(trim(get_option('woocommerce_store_name', '')), 0, 30);
+            $storeAddress['attn'] = substr(trim(get_option('woocommerce_store_attn', '')), 0, 21);
             $storeAddress['phone'] = trim(get_option('woocommerce_store_phone', ''));
         }
 
@@ -81,7 +81,7 @@ abstract class Abstract_Flagship_Api_Request {
             $storeAddress['email'] = trim(WC()->mailer()->get_emails()['WC_Email_New_Order']->recipient);
         }
 
-        return apply_filters( 'fwb_get_store_address', $storeAddress);
+        return apply_filters('fwb_get_store_address', $storeAddress);
     }
 
     protected function getCountryState()

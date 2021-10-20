@@ -1,4 +1,5 @@
 <?php
+
 namespace FlagshipWoocommerceBedrock\Requests;
 
 use Flagship\Shipping\Flagship;
@@ -6,8 +7,8 @@ use Flagship\Shipping\Collections\RatesCollection;
 use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 use FlagshipWoocommerceBedrock\Helpers\Package_Helper;
 
-class Rates_Request extends Abstract_Flagship_Api_Request {
-
+class Rates_Request extends Abstract_Flagship_Api_Request
+{
     protected $debugMode = false;
 
     public function __construct($token, $debugMode = false, $testEnv = 0)
@@ -21,34 +22,30 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
     {
         $this->functionCallFromAdmin = (bool) $admin;
 
-        if($admin==1)
-        {
+        if ($admin==1) {
             $orderItems = $this->getOrderItems($order);
-            $packages = $this->getPackages($orderItems,$options);
+            $packages = $this->getPackages($orderItems, $options);
             $sourceAddress = $this->getStoreAddress();
-
             $shippingAddress = $this->getOrderShippingAddressForRates($order);
-            $apiRequest = $this->getRequest($sourceAddress,$shippingAddress,$packages, $options, $order);
+            $apiRequest = $this->getRequest($sourceAddress, $shippingAddress, $packages, $options, $order);
         }
-        if($admin==0)
-        {
+        if ($admin==0) {
             $apiRequest = $this->makeApiRequest($package, $options, $order);
         }
 
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
 
-        try{
+        try {
             FlagshipWoocommerceBedrockShipping::add_log("Rates Request payload: ". json_encode($apiRequest));
-        
-            $rates = $apiClient->createQuoteRequest(apply_filters( 'fwb_get_rates_request', $apiRequest))->execute();
+
+            $rates = $apiClient->createQuoteRequest(apply_filters('fwb_get_rates_request', $apiRequest))->execute();
             FlagshipWoocommerceBedrockShipping::add_log("Rates Response : ". json_encode($rates));
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->debug($e->getMessage());
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
             $rates = new RatesCollection();
         }
-        return apply_filters( 'fwb_get_rates', $rates, $admin);
+        return apply_filters('fwb_get_rates', $rates, $admin);
     }
 
     public function getOrderItems($order)
@@ -62,7 +59,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
             $orderItems[] = $item;
         }
 
-        return apply_filters( 'fwb_get_order_items', $orderItems);
+        return apply_filters('fwb_get_order_items', $orderItems);
     }
 
     protected function makeApiRequest($package, $options = array(), $order)
@@ -70,9 +67,9 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         $storeAddress = $this->getStoreAddress();
         $destinationAddress = $this->getDestinationAddress($package['destination'], $this->requiredAddressFields, $options);
 
-        $packages = $this->getPackages($this->extractOrderItems($package),$options);
+        $packages = $this->getPackages($this->extractOrderItems($package), $options);
 
-        $request = $this->getRequest($storeAddress,$destinationAddress,$packages, $options, $order);
+        $request = $this->getRequest($storeAddress, $destinationAddress, $packages, $options, $order);
         return $request;
     }
 
@@ -101,22 +98,21 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
         }
 
         return $request;
-
     }
 
-    public function getPackages($orderItems,$options)
+    public function getPackages($orderItems, $options)
     {
-        $packageHelper = new Package_Helper($this->debugMode,$this->apiUrl);
-        $packages = $packageHelper->make_packages($orderItems,$options);
+        $packageHelper = new Package_Helper($this->debugMode, $this->apiUrl);
+        $packages = $packageHelper->make_packages($orderItems, $options);
 
-        return apply_filters( 'fwb_get_packages', $packages);
+        return apply_filters('fwb_get_packages', $packages);
     }
 
     protected function extractOrderItems($items)
     {
         $orderItems = array();
 
-        foreach ( $items['contents'] as $item_id => $values ) {
+        foreach ($items['contents'] as $item_id => $values) {
             $item = array();
             $item['product'] = $values['data'];
             $item['quantity'] = $values['quantity'];
@@ -136,10 +132,9 @@ class Rates_Request extends Abstract_Flagship_Api_Request {
     protected function getInsuranceDescription($items)
     {
         $insuranceDescription = '';
-        foreach ( $items as $item) {
+        foreach ($items as $item) {
             $insuranceDescription .= ($this->functionCallFromAdmin ? $item->get_name() : $item['data']->get_title()).',';
-
         }
-        return rtrim($insuranceDescription,',');
+        return rtrim($insuranceDescription, ',');
     }
 }

@@ -1,10 +1,12 @@
 <?php
+
 namespace FlagshipWoocommerceBedrock;
 
 use FlagshipWoocommerceBedrock\Requests\Rates_Request;
 use FlagshipWoocommerceBedrock\Requests\ECommerce_Request;
 
-class Cart_Rates_Processor {
+class Cart_Rates_Processor
+{
     private $methodId;
 
     private $token;
@@ -20,7 +22,8 @@ class Cart_Rates_Processor {
       'flagship_insurance'
     );
 
-    public function __construct($methodId, $token, $instanceSettings) {
+    public function __construct($methodId, $token, $instanceSettings)
+    {
         $this->methodId = $methodId;
         $this->token = $token;
         $this->instanceSettings = $instanceSettings;
@@ -29,12 +32,11 @@ class Cart_Rates_Processor {
 
     public function fetchRates($package)
     {
-
         $debugMode = get_array_value($this->instanceSettings, 'debug_mode', 'no') == 'yes';
-        $testEnv = get_array_value($this->instanceSettings,'test_env') == 'no' ? 0 : 1;
+        $testEnv = get_array_value($this->instanceSettings, 'test_env') == 'no' ? 0 : 1;
         $ratesRequest = new Rates_Request($this->token, $debugMode, $testEnv);
         $rates = $ratesRequest->getRates($package, $this->rateOptions);
-        if(!is_string($rates)){
+        if (!is_string($rates)) {
             $rates = $rates->all();
         }
         if (get_array_value($this->instanceSettings, 'offer_dhl_ecommerce_rates', null) == 'yes') {
@@ -66,7 +68,7 @@ class Cart_Rates_Processor {
 
     protected function getRateOptions($instanceSettings)
     {
-        $optionValues = array_map(function($val) use ($instanceSettings) {
+        $optionValues = array_map(function ($val) use ($instanceSettings) {
             if (get_array_value($instanceSettings, $val, 'no') == 'yes') {
                 return true;
             }
@@ -140,7 +142,7 @@ class Cart_Rates_Processor {
 
         $found_shipping_classes = $this->findShippingClasses($package);
 
-        foreach($found_shipping_classes as $shipping_class => $products) {
+        foreach ($found_shipping_classes as $shipping_class => $products) {
             $shipping_class_term = get_term_by('slug', $shipping_class, 'product_shipping_class');
             $class_cost_string = $shipping_class_term ? get_array_value($this->instanceSettings, 'class_cost_' . $shipping_class_term->term_id, '') : '';
 
@@ -154,14 +156,15 @@ class Cart_Rates_Processor {
         return $cost;
     }
 
-    protected function findShippingClasses($package) {
+    protected function findShippingClasses($package)
+    {
         $found_shipping_classes = array();
 
         foreach ($package['contents'] as $item_id => $values) {
             if ($values['data']->needs_shipping()) {
                 $found_class = $values['data']->get_shipping_class();
 
-                if ( !isset( $found_shipping_classes[ $found_class ] ) ) {
+                if (!isset($found_shipping_classes[ $found_class ])) {
                     $found_shipping_classes[ $found_class ] = array();
                 }
 
@@ -177,12 +180,12 @@ class Cart_Rates_Processor {
         $included = true;
 
         $settings = array(
-            'offer_standard_rates',
-            'offer_express_rates',
+            'allow_standard_rates',
+            'allow_express_rates',
         );
 
         while ($included && $setting = array_shift($settings)) {
-            preg_match('/offer_([a-zA-Z]+)_rates/', $setting, $matches);
+            preg_match('/allow_([a-zA-Z]+)_rates/', $setting, $matches);
 
             if ($matches[1] && $this->isSettingChecked($setting, 'no')) {
                 $included = !($this->removeRateByCodeType($rate->getFlagshipCode(), $matches[1]));
@@ -253,11 +256,11 @@ class Cart_Rates_Processor {
 
     protected function convertOptionsToMeta($options)
     {
-        $meta_data_fields = array_filter($options, function($key) {
-          return in_array($key, $this->rate_meta_data_extra_fields);
+        $meta_data_fields = array_filter($options, function ($key) {
+            return in_array($key, $this->rate_meta_data_extra_fields);
         }, ARRAY_FILTER_USE_KEY);
 
-        return array_map(function($val) {
+        return array_map(function ($val) {
             if (is_bool($val)) {
                 return $val ? 'yes' : 'no';
             }
