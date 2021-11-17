@@ -192,7 +192,10 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request
         $fullAddress['attn'] = substr(trim($fullAddress['first_name'].' '.$fullAddress['last_name']), 0, 21);
         unset($fullAddress['first_name']);
         unset($fullAddress['last_name']);
-        $fullAddress['name'] = substr($fullAddress['attn'], 0, 30);
+        $fullAddress['name'] = $shippingAddress['company'] == NULL ? 
+                                $billingAddress['company'] != NULL ? $billingAddress['company'] : substr($fullAddress['attn'],0,30) : 
+                                $shippingAddress['company'] ;
+        
         $fullAddress['phone'] = trim($billingAddress['phone']);
         $fullAddress['email'] = trim($billingAddress['email']);
 
