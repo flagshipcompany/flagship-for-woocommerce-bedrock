@@ -57,7 +57,7 @@ class Order_Action_Processor
         $boxes = get_post_meta($this->order->get_id(), 'boxes');
         if (count($boxes) == 0) {
             $boxesUsed = "Get a Quote from FlagShip to see which shipping boxes will be used";
-            echo sprintf("<p>%s</p>", esc_html(__($boxesUsed)));
+            echo sprintf("<p>%s</p>", $boxesUsed);
             return;
         }
 
@@ -69,7 +69,7 @@ class Order_Action_Processor
 
         $boxes = reset($boxes);
         $boxesUsed = implode("<br/>", $boxes);
-        echo sprintf('<p>%s</p>', esc_html(__($boxesUsed)));
+        echo sprintf('<p>%s</p>',$boxesUsed);
     }
 
     public function addFlagshipMetaBox($post, $box)
