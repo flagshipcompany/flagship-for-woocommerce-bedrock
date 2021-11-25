@@ -26,7 +26,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         
                 $packing_results = $apiClient->packingRequest($apiRequest)->execute();
                 FlagshipWoocommerceBedrockShipping::add_log("Packing Response : ". json_encode($packing_results));
-                $packageBoxes[] = $this->prepareBoxesFromPackages($packing_results);
+                $packageBoxes = $this->prepareBoxesFromPackages($packing_results,$packageBoxes);
             }
             return $packageBoxes;
         } catch (\Exception $e) {
@@ -35,11 +35,11 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         }
     }
 
-    protected function prepareBoxesFromPackages($packages)
+    protected function prepareBoxesFromPackages($packages,$packageBoxes)
     {
         foreach ($packages as $key => $package) {
             $weight = json_decode(json_encode($package), true)["packing"]["weight"];
-            $temp = [
+            $packageBoxes[] = [
                 "description" => $package->getBoxModel(),
                 "length" => $package->getLength(),
                 "width" => $package->getWidth(),
@@ -47,7 +47,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
                 "weight" =>  $weight < 1 ? 1 : $weight,
             ];
         }
-        return $temp;
+        return $packageBoxes;
     }
 
     protected function make_api_request($items, $boxes)
