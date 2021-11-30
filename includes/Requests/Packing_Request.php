@@ -71,7 +71,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
             
             foreach ($items as $item) {
                 
-                $packageItems[] = $item['ship_as_is'] != 'Yes' ? $this->getShippingClassItem($item) : [];
+                $packageItems[] = strcasecmp($item['ship_as_is'],'Yes') == 0 ? $this->getShippingClassItem($item) : [];
             }
 
             $packageItems = array_values(array_filter($packageItems, function($value) { return $value != NULL; } ));
@@ -85,7 +85,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
 
         $shipAsIsItems = [];
         foreach ($items as $item) {
-            if($item['ship_as_is'] == 'Yes') {
+            if(strcasecmp($item['ship_as_is'],'Yes') == 0) {
                 continue;
             }
             if ($item['shipping_class'] != null ) { 
@@ -168,7 +168,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
     {
         foreach ($items as $item) {
             unset($item['shipping_class']);
-            $shipAsIsItems[] = $item['ship_as_is'] == 'Yes' ? $item : [];   
+            $shipAsIsItems[] = strcasecmp($item['ship_as_is'],'Yes') == 0 ? $item : [];   
         }
         $shipAsIsItems = array_filter($shipAsIsItems, function($value) { return $value != NULL; } );
         return $shipAsIsItems;
