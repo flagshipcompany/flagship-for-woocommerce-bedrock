@@ -58,7 +58,13 @@
                         <td><input v-model.number="box.max_weight" v-bind:name=" 'flagship_boxes' + index + '_max_weight' " v-bind:id=" 'flagship_boxes' + index + '_max_weight' " type="text" style="width:50px;"></td>
                         <td><input v-model.number="box.weight" v-bind:name=" 'flagship_boxes' + index + '_weight' " v-bind:id=" 'flagship_boxes' + index + '_weight' " type="text" style="width:50px;"></td>
                         <td colspan="2"><input v-model.number="box.extra_charge" v-bind:name=" 'flagship_boxes' + index + '_extra_charge' " v-bind:id=" 'flagship_boxes' + index + '_extra_charge' " type="text" style="width:100px;"></td>
-                        <td colspan="2"><input v-model.trim="box.shipping_class" v-bind:name=" 'flagship_boxes' + index + '_shipping_class'" v-bind:id=" 'flagship_boxes' + index + '_shipping_class' " type="text" style="width:100px;" disabled="disabled"></td>
+                        <td colspan="2">
+                            <select v-model="box.shipping_class" v-bind:name=" 'flagship_boxes' + index + '_shipping_class'" v-bind:id=" 'flagship_boxes' + index + '_shipping_class' " style="width:100px">
+                                <?php foreach ($shipping_classes as $shipping_class) { ?>
+                                <option value="<?php echo $shipping_class->name; ?>"><?php echo $shipping_class->name; ?></option>
+                            <?php } ?>
+                            </select>
+                        </td>
                         <td><button v-on:click="removeBox(box.id)" v-bind:name=" 'remove_' + box.id" class="button-link-delete button"><?php _e('Remove'); ?></button></td>
                     </tr>
                     <tr ref="box_new">
