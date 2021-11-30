@@ -4,7 +4,6 @@ namespace FlagshipWoocommerceBedrock\Helpers;
 
 use FlagshipWoocommerceBedrock\Requests\Packing_Request;
 use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
-use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Package_Helper
 {

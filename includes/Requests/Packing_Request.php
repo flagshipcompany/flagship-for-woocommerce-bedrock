@@ -37,7 +37,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         }
     }
 
-    protected function prepareBoxesFromPackages($packages,$packageBoxes, $shipAsIsItems = [] )
+    protected function prepareBoxesFromPackages($packages,$packageBoxes)
     {
         foreach ($packages as $key => $package) {
             $weight = json_decode(json_encode($package), true)["packing"]["weight"];
@@ -50,15 +50,6 @@ class Packing_Request extends Abstract_Flagship_Api_Request
             ];
         }
 
-        foreach ($shipAsIsItems as $item) {
-            $packageBoxes[] = [
-                "description" => $item["description"],
-                "length" => $item["length"],
-                "width" => $item["width"],
-                "height" => $item["height"],
-                "weight" =>  $item["weight"]
-            ];
-        }
         return $packageBoxes;
     }
 
@@ -83,7 +74,6 @@ class Packing_Request extends Abstract_Flagship_Api_Request
             ]];
         }
 
-        $shipAsIsItems = [];
         foreach ($items as $item) {
             if(strcasecmp($item['ship_as_is'],'Yes') == 0) {
                 continue;
@@ -93,7 +83,6 @@ class Packing_Request extends Abstract_Flagship_Api_Request
                 continue;
             }
             $packages['no_shipping_class']['items'][] = $this->getShippingClassItem($item);
-
         }
 
         foreach ($boxes as $box) {
