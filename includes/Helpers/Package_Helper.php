@@ -66,14 +66,16 @@ class Package_Helper
             $height = $product->get_height() ? wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit) : 1;
             $description = $product->get_sku() ? $product->get_sku() : $product->get_name();
             $shippingClass = $product->get_shipping_class();
+            $ship_as_is = $product->get_attribute('pa_ship_as_is');
 
             $item = array(
-                   'length' => $output_dimension_unit === 'in' ? round(max([$length, 1])) : $length,
-                   'width' => $output_dimension_unit === 'in' ? round(max([$width, 1])) : $width,
-                   'height' => $output_dimension_unit === 'in' ? round(max([$height, 1])) : $height,
+                   'length' => strcasecmp($ship_as_is,'Yes') == 0 ? round(max([$length, 1])) : $length,
+                   'width' => strcasecmp($ship_as_is,'Yes') == 0 ? round(max([$width, 1])) : $width,
+                   'height' => strcasecmp($ship_as_is,'Yes') == 0 ? round(max([$height, 1])) : $height,
                    'weight' => $weight,
                    'description' => $description,
-                'shipping_class' => $shippingClass,
+                   'shipping_class' => $shippingClass,
+                   'ship_as_is' => $ship_as_is
                );
             $items = array_merge($items, array_fill(0, $product_item['quantity'], $item));
         }
