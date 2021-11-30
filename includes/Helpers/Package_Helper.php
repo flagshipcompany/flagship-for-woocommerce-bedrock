@@ -4,6 +4,7 @@ namespace FlagshipWoocommerceBedrock\Helpers;
 
 use FlagshipWoocommerceBedrock\Requests\Packing_Request;
 use FlagshipWoocommerceBedrock\REST_Controllers\Package_Box_Controller;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Package_Helper
 {
@@ -73,7 +74,8 @@ class Package_Helper
                    'height' => $output_dimension_unit === 'in' ? round(max([$height, 1])) : $height,
                    'weight' => $weight,
                    'description' => $description,
-                'shipping_class' => $shippingClass,
+                   'shipping_class' => $shippingClass,
+                   'ship_as_is' => $product->get_attribute('pa_ship_as_is'), //check value
                );
             $items = array_merge($items, array_fill(0, $product_item['quantity'], $item));
         }

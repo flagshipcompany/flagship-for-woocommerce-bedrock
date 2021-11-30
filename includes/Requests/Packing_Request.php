@@ -18,6 +18,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
     public function pack_boxes($items, $boxes)
     {
         $packageBoxes = [];
+        $shipAsIsItems = $this->getShipAsIsItems($items, $shipAsIsItems);
         $apiRequests = $this->make_api_request($items, $boxes);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         try {
@@ -26,8 +27,9 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         
                 $packing_results = $apiClient->packingRequest($apiRequest)->execute();
                 FlagshipWoocommerceBedrockShipping::add_log("Packing Response : ". json_encode($packing_results));
-                $packageBoxes = $this->prepareBoxesFromPackages($packing_results,$packageBoxes);
+                $packageBoxes = $this->prepareBoxesFromPackages($packing_results,$packageBoxes); 
             }
+            $packageBoxes = $this->addShipAsIsItems($shipAsIsItems,$packageBoxes);
             return $packageBoxes;
         } catch (\Exception $e) {
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
@@ -35,7 +37,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         }
     }
 
-    protected function prepareBoxesFromPackages($packages,$packageBoxes)
+    protected function prepareBoxesFromPackages($packages,$packageBoxes, $shipAsIsItems = [] )
     {
         foreach ($packages as $key => $package) {
             $weight = json_decode(json_encode($package), true)["packing"]["weight"];
@@ -47,34 +49,53 @@ class Packing_Request extends Abstract_Flagship_Api_Request
                 "weight" =>  $weight < 1 ? 1 : $weight,
             ];
         }
+
+        foreach ($shipAsIsItems as $item) {
+            $packageBoxes[] = [
+                "description" => $item["description"],
+                "length" => $item["length"],
+                "width" => $item["width"],
+                "height" => $item["height"],
+                "weight" =>  $item["weight"]
+            ];
+        }
         return $packageBoxes;
     }
 
     protected function make_api_request($items, $boxes)
     {
-        $shipping_classes = get_terms(array('taxonomy' => 'product_shipping_class', 'hide_empty' => false ));
-
+        $shipping_classes = get_terms(array('taxonomy' => 'product_shipping_class', 'hide_empty' => false ));      
+        $packageItems = [];
         if (count($shipping_classes) == 0) {
             $boxes = $this->make_boxes_request($boxes);
-            $items = array_map(function ($item) {
-                unset($item['shipping_class']);
-                return $item;
-            }, $items);
+            
+            foreach ($items as $item) {
+                
+                $packageItems[] = $item['ship_as_is'] != 'Yes' ? $this->getShippingClassItem($item) : [];
+            }
+
+            $packageItems = array_values(array_filter($packageItems, function($value) { return $value != NULL; } ));
 
             return [[
-                'items' => $items,
+                'items' => $packageItems,
                 'boxes' => $boxes,
                 'units' => 'imperial',
             ]];
         }
 
+        $shipAsIsItems = [];
         foreach ($items as $item) {
-            if ($item['shipping_class'] != null) {
+            if($item['ship_as_is'] == 'Yes') {
+                continue;
+            }
+            if ($item['shipping_class'] != null ) { 
                 $packages[$item['shipping_class']]['items'][] = $this->getShippingClassItem($item);
                 continue;
             }
             $packages['no_shipping_class']['items'][] = $this->getShippingClassItem($item);
+
         }
+
         foreach ($boxes as $box) {
             if (array_key_exists('shipping_class', $box) && $box['shipping_class'] != null) {
                 $packages[$box['shipping_class']]['boxes'][] = $this->getShippingClassBox($box);
@@ -85,7 +106,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
 
         $packages = $this->addUnits($packages, $boxes);
 
-        return $packages;
+        return $packages;        
     }
 
     protected function addUnits($packages, $boxes)
@@ -122,6 +143,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
     protected function getShippingClassItem($item)
     {
         unset($item['shipping_class']);
+        unset($item['ship_as_is']);
         return $item;
     }
 
@@ -136,5 +158,19 @@ class Packing_Request extends Abstract_Flagship_Api_Request
             unset($box['shipping_class']);
             return $box;
         }, $boxes);
+    }
+
+    protected function addShipAsIsItems($shipAsIsItems, $packageBoxes) {
+        return array_merge($packageBoxes,$shipAsIsItems);
+    }
+
+    protected function getShipAsIsItems($items, $shipAsIsItems)
+    {
+        foreach ($items as $item) {
+            unset($item['shipping_class']);
+            $shipAsIsItems[] = $item['ship_as_is'] == 'Yes' ? $item : [];   
+        }
+        $shipAsIsItems = array_filter($shipAsIsItems, function($value) { return $value != NULL; } );
+        return $shipAsIsItems;
     }
 }
