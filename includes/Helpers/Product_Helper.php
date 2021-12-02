@@ -62,4 +62,20 @@ class Product_Helper
             }
         }
     }
+
+    public function add_ship_as_is()
+    {
+            woocommerce_wp_checkbox([
+                'id' => '_ship_as_is',
+                'label' => __('Ship As Is', 'flagship-shipping-extension-for-woocommerce'),
+            ]);
+    }
+
+    public function save_ship_as_is($post_id)
+    {
+        $product = wc_get_product($post_id);
+        $ship_as_is = isset($_POST['_ship_as_is']) ? $_POST['_ship_as_is'] : '';
+        $product->update_meta_data('_ship_as_is', $ship_as_is);
+        $product->save();
+    }
 }

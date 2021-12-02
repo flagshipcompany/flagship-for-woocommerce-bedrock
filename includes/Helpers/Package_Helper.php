@@ -66,7 +66,7 @@ class Package_Helper
             $height = $product->get_height() ? wc_get_dimension($product->get_height(), $output_dimension_unit, $dimension_unit) : 1;
             $description = $product->get_sku() ? $product->get_sku() : $product->get_name();
             $shippingClass = $product->get_shipping_class();
-            $ship_as_is = $product->get_attribute('pa_ship_as_is');
+            $ship_as_is = $product->get_meta('_ship_as_is');
 
             $item = array(
                    'length' => strcasecmp($ship_as_is,'Yes') == 0 ? round(max([$length, 1])) : $length,

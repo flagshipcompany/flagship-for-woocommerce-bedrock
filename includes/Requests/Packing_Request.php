@@ -18,6 +18,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
     public function pack_boxes($items, $boxes)
     {
         $packageBoxes = [];
+        $shipAsIsItems = [];
         $shipAsIsItems = $this->getShipAsIsItems($items, $shipAsIsItems);
         $apiRequests = $this->make_api_request($items, $boxes);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
