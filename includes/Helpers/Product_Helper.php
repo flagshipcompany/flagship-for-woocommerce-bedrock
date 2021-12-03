@@ -65,10 +65,12 @@ class Product_Helper
 
     public function add_ship_as_is()
     {
-            woocommerce_wp_checkbox([
-                'id' => '_ship_as_is',
-                'label' => __('Ship As Is', 'flagship-shipping-extension-for-woocommerce'),
-            ]);
+        woocommerce_wp_checkbox([
+            'id' => '_ship_as_is',
+            'label' => __('Ship As Is', 'flagship-shipping-extension-for-woocommerce'),
+            'desc_tip' => true, // true or false, show description directly or as tooltip
+            'description' => __('If checked, the product will be shipped in it\'s original packing. It will not be packed in another box.' )
+        ]);
     }
 
     public function save_ship_as_is($post_id)
