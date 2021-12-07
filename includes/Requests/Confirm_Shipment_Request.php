@@ -20,6 +20,7 @@ class Confirm_Shipment_Request extends Abstract_Flagship_Api_Request
             $shipment = $apiClient->confirmShipmentByIdRequest($id)->execute();
             return $shipment;
         } catch (\Exception $e) {
+            FlagshipWoocommerceBedrockShipping::add_log("Confirm shipment response: ".$e->getMessage());
             return $e->getMessage();
         }
     }

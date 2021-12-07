@@ -95,13 +95,12 @@ class Package_Helper
         $total_weight = array_sum(array_column($items, 'weight'));
 
         $item = array(
-            'length' => max(array_column($items, 'length')),
-            'width' => max(array_column($items, 'width')),
-            'height' => max(array_column($items, 'height')),
+            'length' => round(max(array_column($items, 'length')),0,PHP_ROUND_HALF_UP),
+            'width' => round(max(array_column($items, 'width')),0,PHP_ROUND_HALF_UP),
+            'height' => round(max(array_column($items, 'height')),0,PHP_ROUND_HALF_UP),
             'weight' => $total_weight,
             'description' => $description,
         );
-
         return $return_list ? array($item) : $item;
     }
 

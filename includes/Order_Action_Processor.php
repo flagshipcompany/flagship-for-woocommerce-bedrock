@@ -194,11 +194,12 @@ class Order_Action_Processor
 
     protected function prepareFlagshipShipment()
     {
-        try {
+        try { 
             $exportedShipment = $this->exportOrder();
             do_action('fwb_shipment_is_exported', $exportedShipment);
         } catch (\Exception $e) {
-            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$e->getMessage());
+            FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
+            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip: Something is wrong with the items in your order. Please check the order items, flagship logs and try again or contact Flagship')));
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
         }
     }
@@ -387,7 +388,7 @@ class Order_Action_Processor
     protected function getPackages()
     {
         $token = get_array_value($this->pluginSettings, 'token');
-        $testEnv = get_array_value($this->pluginSettings, 'test_env') == 'no'?0:1;
+        $testEnv = get_array_value($this->pluginSettings, 'test_env') == 'no'? 0 : 1;
         $ratesRequest = new Rates_Request($token, false, $testEnv);
         $orderItems = $ratesRequest->getOrderItems($this->order);
         $packages = $ratesRequest->getPackages($orderItems, $this->pluginSettings);
@@ -439,8 +440,8 @@ class Order_Action_Processor
 
         if ($instance_id) {
             $instance_option_key = 'woocommerce_'.FlagshipWoocommerceBedrockShipping::$methodId.'_'.$instance_id.'_settings';
-            $instance_settings = get_option($instance_option_key);
-            $settings = array_merge($settings, $instance_settings);
+            $instance_settings = get_option($instance_option_key);                        
+            $settings = is_bool($instance_settings) ? $settings : array_merge($settings, $instance_settings);
         }
 
         return $settings;
@@ -505,7 +506,8 @@ class Order_Action_Processor
         $exportedShipment = $apiRequest->exportOrder($this->order, $this->pluginSettings);
 
         if (is_string($exportedShipment)) {
-            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip')).': '.$exportedShipment);
+            FlagshipWoocommerceBedrockShipping::add_log($exportedShipment);
+            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip: Something is wrong with the items in your order. Please check the order items, flagship logs and try again or contact Flagship')));
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }
