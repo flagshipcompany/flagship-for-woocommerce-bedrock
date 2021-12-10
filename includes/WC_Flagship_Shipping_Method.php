@@ -241,11 +241,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
                 'type' => 'checkbox',
                 'default' => 'no'
             ),
-            'dropshipping_address' => array(
-                'title' => esc_html(__('DropShip Address', 'flagship-shipping-extension-for-woocommerce')),
-                'type' => 'title',
-                'description' => esc_html(__('Store owner may ship from a warehouse')),
-            ),
+            
             'shipping_markup' => array(
                 'title' => esc_html(__('Markup', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'title',
@@ -366,6 +362,11 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
     protected function makeDropShippingAddressFields()
     {
         $addressFieldsOptions = [];
+        $addressFieldsOptions['dropshipping_address'] = array(
+                'title' => esc_html(__('Dropship Address', 'flagship-shipping-extension-for-woocommerce')),
+                'type' => 'title',
+                'description' => esc_html(__('Store owner may ship from a warehouse')),
+            );
         $addressFields = FlagshipWoocommerceBedrockShipping::$dropShippingAddressFields;
         foreach ($addressFields as $key => $addressField) {
             $label = sprintf(__('Shipper %s', 'flagship-shipping-extension-for-woocommerce'), $addressField);
