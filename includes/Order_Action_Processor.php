@@ -199,7 +199,7 @@ class Order_Action_Processor
             do_action('fwb_shipment_is_exported', $exportedShipment);
         } catch (\Exception $e) {
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
-            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip: Something is wrong with the items in your order. Please check the order items, flagship logs and try again or contact Flagship')));
+            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip: '.$e->getMessage())));
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
         }
     }
@@ -507,7 +507,7 @@ class Order_Action_Processor
 
         if (is_string($exportedShipment)) {
             FlagshipWoocommerceBedrockShipping::add_log($exportedShipment);
-            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip: Something is wrong with the items in your order. Please check the order items, flagship logs and try again or contact Flagship')));
+            $this->setErrorMessages(esc_html(__('Order not exported to FlagShip: '.$exportedShipment)));
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }

@@ -34,6 +34,10 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request
         $storeAddress = $this->getStoreAddress(true, false, $options);
         $prepareRequest = $this->makePrepareRequest($order, $options);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
+        
+        if(is_string($prepareRequest["packages"]["items"])){
+            return $prepareRequest["packages"]["items"];
+        }
 
         try {
             FlagshipWoocommerceBedrockShipping::add_log("Prepare Shipment Request payload:". json_encode($prepareRequest));
