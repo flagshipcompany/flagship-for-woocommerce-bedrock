@@ -338,6 +338,7 @@ class Order_Action_Processor
 
     protected function updateShipmentWithCourierDetails($exportOrder, $flagshipShipment, $courierDetails)
     {
+        $storeName = ! is_bool(get_option('woocommerce_store_name')) ? get_option('woocommerce_store_name') : 'FWB';
         $prepareRequest = $exportOrder->makePrepareRequest($this->order, $this->pluginSettings);
         $courierCode = substr($courierDetails, 0, strpos($courierDetails, "-"));
         $courierName = substr($courierDetails, strpos($courierDetails, "-")+1);
@@ -349,7 +350,7 @@ class Order_Action_Processor
         
         //making sure we adapt the date in case it was quoted/exported the day before.
         $updateRequest["options"]['shipping_date'] = date('Y-m-d');
-        
+        $updateRequest["options"]['reference'] = $storeName.' #'.$this->order->get_id();
         $updateRequest["service"] = $service;
         $updatedShipment = $exportOrder->editShipment($this->order, $flagshipShipment, $prepareRequest, $updateRequest, $this->pluginSettings);
 
