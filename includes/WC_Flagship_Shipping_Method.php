@@ -167,6 +167,11 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
                 'type' => 'checkbox',
                 'default' => 'no',
             ),
+            'estimated_delivery_date' => array(
+                'title' => esc_html(__('Show estimated delivery date', 'flagship-shipping-extension-for-woocommerce')),
+                'type' => 'checkbox',
+                'default' => 'no',
+            ),
             'flagship_insurance' => array(
                 'title' => esc_html(__('Insurance', 'flagship-shipping-extension-for-woocommerce')),
                 'label' => esc_html(__('Add Insurance', 'flagship-shipping-extension-for-woocommerce')),

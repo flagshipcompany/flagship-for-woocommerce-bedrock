@@ -425,10 +425,14 @@ class Order_Action_Processor
         foreach ($rates as $rate) {
             $courierName = strcasecmp($rate->getCourierName(), 'FedEx') === 0 ? 'FedEx '.$rate->getCourierDescription() : $rate->getCourierDescription();
             $price = $rate->getTotal();
+            $estimatedDelivery = $rate->getDeliveryDate() ==  '' ? 'No delivery date' : $rate->getDeliveryDate();
 
             $ratesDropDown[] = [
                 "option_value" => $rate->getServiceCode().'-'.$rate->getCourierName(),
-                "option_name" => $price. ' - '.$courierName
+                "option_name" => !is_bool(get_array_value($this->pluginSettings, 'estimated_delivery_date')) 
+                && strcasecmp(get_array_value($this->pluginSettings, 'estimated_delivery_date'),'yes') == 0 ? 
+                $price. ' - '.$courierName.' ('.$estimatedDelivery.')' : 
+                $price. ' - '.$courierName
             ];
         }
         update_post_meta($this->order->get_id(), 'rates', apply_filters('fwb_get_rates_admin_dropdown', $ratesDropDown));
