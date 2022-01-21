@@ -42,8 +42,10 @@ class Packing_Request extends Abstract_Flagship_Api_Request
     {
         foreach ($packages as $key => $package) {
             $weight = json_decode(json_encode($package), true)["packing"]["weight"];
+            $packageItemsFormatted = $this->getPackageItemsFormattedAsList($package);
+            
             $packageBoxes[] = [
-                "description" => $package->getBoxModel(),
+                "description" => '<b>'.$package->getBoxModel().'</b>'.$packageItemsFormatted,
                 "length" => $package->getLength(),
                 "width" => $package->getWidth(),
                 "height" => $package->getHeight(),
@@ -162,5 +164,15 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         }
         $shipAsIsItems = array_filter($shipAsIsItems, function($value) { return $value != NULL; } );
         return $shipAsIsItems;
+    }
+
+    protected function getPackageItemsFormattedAsList($package) {
+        $items = array_count_values($package->getItems());
+        $formattedList = '<ul style="list-style:disc;margin:-10px 0 -10px 15px">';
+        foreach ($items as $item => $count) {
+            $formattedList .= '<li><i>'.$item.' x '.$count.'</i></li>';
+        }
+        $formattedList .= '</ul>';
+        return $formattedList;
     }
 }
