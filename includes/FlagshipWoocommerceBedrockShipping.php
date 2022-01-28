@@ -13,7 +13,7 @@ class FlagshipWoocommerceBedrockShipping
 {
     public static $methodId = 'flagship_shipping_method';
 
-    public static $version = '1.0.14';
+    public static $version = '1.0.17';
 
     public static $couriers = array(
         'UPS' => 'ups',
@@ -85,27 +85,76 @@ class FlagshipWoocommerceBedrockShipping
 
     public function hooks()
     {
-        add_filter('woocommerce_shipping_methods', array($this, 'add_flagship_shipping_method'));
-        add_filter('plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, array( $this, 'plugin_action_links' ));
-        add_action('add_meta_boxes', array($this, 'add_custom_meta_box'));
-        add_action('woocommerce_process_shop_order_meta', array($this, 'save_meta_box'), 100, 2);
-        add_action('admin_notices', array((new Notification_Helper()), 'flagship_warning_in_notice'));
-        add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
-        add_filter('woocommerce_general_settings', array((new Store_Address_Helper()), 'add_extra_address_fields'));
+        add_filter(
+            'woocommerce_shipping_methods',
+            array($this, 'add_flagship_shipping_method')
+        );
+        add_filter(
+            'plugin_action_links_' . FLAGSHIP_PLUGIN_NAME, 
+            array( $this, 'plugin_action_links' )
+        );
+        add_action(
+            'add_meta_boxes', 
+            array($this, 'add_custom_meta_box')
+        );
+        add_action(
+            'woocommerce_process_shop_order_meta', 
+            array($this, 'save_meta_box'), 
+            100, 
+            2
+        );
+        add_action(
+            'admin_notices',
+            array((new Notification_Helper()),
+                'flagship_warning_in_notice')
+        );
+        if(WHITELABEL_PLUGIN == 0){
+            add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
+        }
+
+        add_filter(
+            'woocommerce_general_settings', 
+            array((new Store_Address_Helper()), 'add_extra_address_fields')
+        );
 
         $productHelper = (new Product_Helper());
-        add_filter('woocommerce_product_data_tabs', array($productHelper, 'add_export_to_product_tabs'));
-        add_action('woocommerce_product_data_panels', array($productHelper, 'display_product_export_tab'));
-        add_action('woocommerce_process_product_meta', array($productHelper, 'save_product_export_data'));
-        add_action('woocommerce_product_options_dimensions', array($productHelper, 'add_ship_as_is'));
-        add_action('woocommerce_process_product_meta',array($productHelper,'save_ship_as_is'));
-        add_action('rest_api_init', array((new Package_Box_Controller()), 'register_routes'));
-        add_action('admin_enqueue_scripts', array((new Script_Helper()), 'load_scripts'));
+        
+        add_filter(
+            'woocommerce_product_data_tabs', 
+            array($productHelper, 'add_export_to_product_tabs')
+        );
+        add_action(
+            'woocommerce_product_data_panels',
+            array($productHelper, 'display_product_export_tab')
+        );
+        add_action(
+            'woocommerce_process_product_meta',
+            array($productHelper, 'save_product_export_data')
+        );
+        add_action(
+            'woocommerce_product_options_dimensions',
+            array($productHelper, 'add_ship_as_is')
+        );
+        add_action(
+            'woocommerce_process_product_meta',
+            array($productHelper,'save_ship_as_is')
+        );
+        add_action(
+            'rest_api_init', 
+            array((new Package_Box_Controller()), 'register_routes')
+        );
+        add_action(
+            'admin_enqueue_scripts',
+            array((new Script_Helper()), 'load_scripts')
+        );
     }
 
     public function showSdkNotice()
     {
-        add_action('admin_notices', array((new Notification_Helper()), 'add_flagship_sdk_missing_notice'));
+        add_action(
+            'admin_notices', 
+            array((new Notification_Helper()), 'add_flagship_sdk_missing_notice')
+        );
     }
 
     public function plugin_action_links($links)

@@ -186,8 +186,8 @@ msgid "Split by weight"
 msgstr "Divisé en poids"
 
 #: includes/WC_Flagship_Shipping_Method.php
-msgid "Use FlagShip Packing API to pack items into"
-msgstr "Utiliser l'API FlagShip pour empaqueter les objets dans les"
+msgid "Use automated Packing API to pack items into"
+msgstr "Utiliser l'API d'emballage automatisée pour empaqueter les objets dans les"
 
 #: includes/WC_Flagship_Shipping_Method.php
 msgid "Set up the boxes under "FlagShip/Package boxes" in the menu"

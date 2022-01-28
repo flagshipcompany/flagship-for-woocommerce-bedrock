@@ -18,9 +18,11 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
     {
         parent::__construct($instance_id);
 
+        $this->white_label_title = WHITELABEL_PLUGIN == 1 ? WHITELABEL_TEXT : 'FlagShip';//get title based on whitelabel settings
+
         $this->id = FlagshipWoocommerceBedrockShipping::$methodId;
-        $this->method_title = __('FlagShip Shipping', 'flagship-shipping-extension-for-woocommerce');
-        $this->method_description = __('Obtain FlagShip shipping rates for orders and export order to FlagShip to dispatch shipment', 'flagship-shipping-extension-for-woocommerce');
+        $this->method_title = __($this->white_label_title.' Shipping', 'flagship-shipping-extension-for-woocommerce');
+        $this->method_description = __('Obtain '.$this->white_label_title.' shipping rates for orders and export order to '.$this->white_label_title.' to dispatch shipment', 'flagship-shipping-extension-for-woocommerce');
         $this->supports = array(
             'shipping-zones',
             'instance-settings',
@@ -42,9 +44,18 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
         $this->init_form_fields();
         $this->init_settings();
 
-        add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
-        add_filter('woocommerce_settings_api_sanitized_fields_' . $this->id, array($this, 'validate_admin_options'));
-        add_filter('woocommerce_shipping_' . $this->id . '_instance_settings_values', array($this, 'validate_shipping_zone_options'));
+        add_action(
+            'woocommerce_update_options_shipping_' . $this->id, 
+            array($this, 'process_admin_options')
+        );
+        add_filter(
+            'woocommerce_settings_api_sanitized_fields_' . $this->id, 
+            array($this, 'validate_admin_options')
+        );
+        add_filter(
+            'woocommerce_shipping_' . $this->id . '_instance_settings_values', 
+            array($this, 'validate_shipping_zone_options')
+        );
     }
     /**
      * @return void
@@ -106,7 +117,10 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
 
         if (isset($settings['token']) && !empty(trim($settings['token'])) && !$validationHelper->validateToken($settings['token'])) {
             $settings['token'] = '';
-            add_action('admin_notices', array((new Notification_Helper()),'add_token_invalid_notice'));
+            add_action(
+                'admin_notices', 
+                array((new Notification_Helper()),'add_token_invalid_notice')
+            );
         }
 
 
@@ -114,7 +128,10 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
             $settings = get_option($this->get_option_key(), array());
             $settings['tracking_emails'] = get_array_value($settings, 'tracking_emails', '');
 
-            add_action('admin_notices', array((new Notification_Helper()), 'add_tracking_email_invalid_notice'));
+            add_action(
+                'admin_notices', 
+                array((new Notification_Helper()), 'add_tracking_email_invalid_notice')
+            );
         }
 
         return $settings;
@@ -131,7 +148,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
     protected function init_method_settings()
     {
         $this->enabled = $this->get_option('enabled', 'no');
-        $this->title = $this->get_option('title', __('FlagShip Shipping', 'flagship-shipping-extension-for-woocommerce'));
+        $this->title = $this->get_option('title', __($this->white_label_title.' Shipping', 'flagship-shipping-extension-for-woocommerce'));
         $this->token = $this->get_option('token', '');
         $this->debugMode = $this->get_option('debug_mode', 'no');
     }
@@ -148,11 +165,11 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
             'test_env' => array(
                 'title' => esc_html(__('Enable Test Environment', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
-                'description' => esc_html(__('Use FlagShip\'s test environment. Any shipments made in the test environment will not be shipped', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('Use '.$this->white_label_title.'\'s test environment. Any shipments made in the test environment will not be shipped', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
             'token' => array(
-                'title' => esc_html(__('FlagShip access token', 'flagship-shipping-extension-for-woocommerce')),
+                'title' => esc_html(__(''.$this->white_label_title.' access token', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'password',
                 'description' => sprintf(__('After <a href="%s" target="_blank">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-shipping-extension-for-woocommerce'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
             ),
@@ -187,7 +204,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
                     'one_box' => 'Everything in one box',
                     'box_per_item' => 'One box per item',
                     'by_weight' => 'Split by weight',
-                    'packing_api' => 'Use FlagShip Packing API to pack items into',
+                    'packing_api' => esc_html(__('Use automated Packing API to pack items into','flagship-shipping-extension-for-woocommerce')),
                 ),
                 'extra_note' =>  array(
                     'packing_api' => sprintf('<a href="%s" target="_blank">%s</a>', admin_url('admin.php?page=flagship/boxes'), __('Boxes', 'flagship-shipping-extension-for-woocommerce')),
@@ -208,9 +225,9 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
             ),
             'autocomplete_order' => array(
                 'title' => esc_html(__('Auto Complete "Processing" Orders', 'flagship-shipping-extension-for-woocommerce')),
-                'label' => esc_html(__('Auto complete "Processing" orders when Flagship shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
+                'label' => esc_html(__('Auto complete "Processing" orders when '.$this->white_label_title.' shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
-                'description' => esc_html(__('If enabled, "Processing" order will be automatically set to "Completed" when Flagship Shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('If enabled, "Processing" order will be automatically set to "Completed" when '.$this->white_label_title.' Shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
         );
@@ -287,7 +304,6 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
                 'default' => 'no',
             ),
         );
-
 
         $disableCourierOptions = $this->makeDisableCourierOptions(FlagshipWoocommerceBedrockShipping::$couriers, $ecommerceApplicable);
         $fields = array_slice($fields, 0, 5, true) +
