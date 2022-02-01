@@ -18,11 +18,9 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
     {
         parent::__construct($instance_id);
 
-        $this->white_label_title = WHITELABEL_PLUGIN == 1 ? WHITELABEL_TEXT : 'FlagShip';//get title based on whitelabel settings
-
         $this->id = FlagshipWoocommerceBedrockShipping::$methodId;
-        $this->method_title = __($this->white_label_title.' Shipping', 'flagship-shipping-extension-for-woocommerce');
-        $this->method_description = __('Obtain '.$this->white_label_title.' shipping rates for orders and export order to '.$this->white_label_title.' to dispatch shipment', 'flagship-shipping-extension-for-woocommerce');
+        $this->method_title = __(FS_WHITELABEL_TEXT.' Shipping', 'flagship-shipping-extension-for-woocommerce');
+        $this->method_description = __('Obtain '.FS_WHITELABEL_TEXT.' shipping rates for orders and export order to '.FS_WHITELABEL_TEXT.' to dispatch shipment', 'flagship-shipping-extension-for-woocommerce');
         $this->supports = array(
             'shipping-zones',
             'instance-settings',
@@ -148,7 +146,7 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
     protected function init_method_settings()
     {
         $this->enabled = $this->get_option('enabled', 'no');
-        $this->title = $this->get_option('title', __($this->white_label_title.' Shipping', 'flagship-shipping-extension-for-woocommerce'));
+        $this->title = $this->get_option('title', __(FS_WHITELABEL_TEXT.' Shipping', 'flagship-shipping-extension-for-woocommerce'));
         $this->token = $this->get_option('token', '');
         $this->debugMode = $this->get_option('debug_mode', 'no');
     }
@@ -165,11 +163,11 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
             'test_env' => array(
                 'title' => esc_html(__('Enable Test Environment', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
-                'description' => esc_html(__('Use '.$this->white_label_title.'\'s test environment. Any shipments made in the test environment will not be shipped', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('Use '.FS_WHITELABEL_TEXT.'\'s test environment. Any shipments made in the test environment will not be shipped', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
             'token' => array(
-                'title' => esc_html(__(''.$this->white_label_title.' access token', 'flagship-shipping-extension-for-woocommerce')),
+                'title' => esc_html(__(''.FS_WHITELABEL_TEXT.' access token', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'password',
                 'description' => sprintf(__('After <a href="%s" target="_blank">signup </a>, <a target="_blank" href="%s">get an access token here </a>.', 'flagship-shipping-extension-for-woocommerce'), 'https://www.flagshipcompany.com/sign-up/', 'https://auth.smartship.io/tokens/'),
             ),
@@ -225,9 +223,9 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
             ),
             'autocomplete_order' => array(
                 'title' => esc_html(__('Auto Complete "Processing" Orders', 'flagship-shipping-extension-for-woocommerce')),
-                'label' => esc_html(__('Auto complete "Processing" orders when '.$this->white_label_title.' shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
+                'label' => esc_html(__('Auto complete "Processing" orders when '.FS_WHITELABEL_TEXT.' shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',
-                'description' => esc_html(__('If enabled, "Processing" order will be automatically set to "Completed" when '.$this->white_label_title.' Shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('If enabled, "Processing" order will be automatically set to "Completed" when '.FS_WHITELABEL_TEXT.' Shipment is confirmed', 'flagship-shipping-extension-for-woocommerce')),
                 'default' => 'no'
             ),
         );

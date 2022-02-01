@@ -108,7 +108,7 @@ class FlagshipWoocommerceBedrockShipping
             array((new Notification_Helper()),
                 'flagship_warning_in_notice')
         );
-        if(WHITELABEL_PLUGIN == 0){
+        if(FS_IS_WHITELABEL == true){
             add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
         }
 

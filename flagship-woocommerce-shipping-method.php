@@ -10,7 +10,7 @@ if (file_exists(dirname(__FILE__) . '/env.php')) {
     include_once dirname(__FILE__) . '/env.php';
 }
 
-if(WHITELABEL_PLUGIN == 1){
+if(FS_IS_WHITELABEL == 1){
 /**
  * Plugin Name: Shipping Extension For WooCommerce
  * Plugin Uri:
@@ -77,4 +77,12 @@ if (dirname(dirname(__FILE__)) == WPMU_PLUGIN_DIR) {
 
 if (defined('WP_CLI') && WP_CLI) {
     (new FlagshipWoocommerceBedrock\Commands\Console())->add_commands();
+}
+
+if(defined(FS_IS_WHITELABEL) === false) {
+    define(FS_IS_WHITELABEL, false);
+}
+
+if(defined(FS_WHITELABEL_TEXT) === false) {
+    define(FS_WHITELABEL_TEXT, 'FlagShip');
 }

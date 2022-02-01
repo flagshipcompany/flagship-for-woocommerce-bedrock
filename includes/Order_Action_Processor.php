@@ -31,7 +31,6 @@ class Order_Action_Processor
         $this->order = $order;
         $this->pluginSettings = $this->set_settings($pluginSettings);
         $this->debug_mode = $debug_mode;
-        $this->white_label_title = WHITELABEL_PLUGIN == 1 ? WHITELABEL_TEXT : 'FlagShip'; //get title based on whitelabel settings
     }
 
     public function addMetaBoxes()
@@ -41,7 +40,7 @@ class Order_Action_Processor
         if (!$shipmentId && $this->eCommerceShippingChosen($this->order->get_shipping_methods())) {
             add_meta_box(
                 'flagship_ecommerce_shipping',
-                esc_html(__($this->white_label_title.' eCommerce Shipping', 'flagship-shipping-extension-for-woocommerce')),
+                esc_html(__(FS_WHITELABEL_TEXT.' eCommerce Shipping', 'flagship-shipping-extension-for-woocommerce')),
                  array($this, 'addECommerceBox'),
                 'shop_order',
                 'side',
@@ -51,7 +50,7 @@ class Order_Action_Processor
 
         add_meta_box(
             'flagship_shipping',
-            esc_html(__($this->white_label_title.' Shipping', 'flagship-shipping-extension-for-woocommerce')),
+            esc_html(__(FS_WHITELABEL_TEXT.' Shipping', 'flagship-shipping-extension-for-woocommerce')),
             array($this, 'addFlagshipMetaBox'),
             'shop_order',
             'side',
@@ -61,7 +60,7 @@ class Order_Action_Processor
 
         add_meta_box(
             'flagship_shipping_boxes_used',
-            esc_html(__($this->white_label_title.' Shipping Boxes Used', 'flagship-shipping-extension-for-woocommerce')),
+            esc_html(__(FS_WHITELABEL_TEXT.' Shipping Boxes Used', 'flagship-shipping-extension-for-woocommerce')),
             array($this, 'addFlagshipBoxesMetaBox'),
             'shop_order',
             'side',
@@ -83,7 +82,7 @@ class Order_Action_Processor
     {
         $boxes = get_post_meta($this->order->get_id(), 'boxes');
         if (count($boxes) == 0) {
-            $boxesUsed = "Get a Quote from $this->white_label_title to see which shipping boxes will be used";
+            $boxesUsed = "Get a Quote from FS_WHITELABEL_TEXT to see which shipping boxes will be used";
             echo sprintf("<p>%s</p>", $boxesUsed);
             return;
         }
@@ -113,7 +112,7 @@ class Order_Action_Processor
 
         if (!empty($shipmentUrl)) {
             echo sprintf('<p>%s: <a href="%s" target="_blank">%d</a> <strong>[%s]</strong></p>',
-                esc_html(__($this->white_label_title.' Shipment', 'flagship-shipping-extension-for-woocommerce')),
+                esc_html(__(FS_WHITELABEL_TEXT.' Shipment', 'flagship-shipping-extension-for-woocommerce')),
                 $shipmentUrl,
                 $shipmentId,
                 $statusDescription
@@ -126,7 +125,7 @@ class Order_Action_Processor
 
         if ($shipmentId && empty($shipmentUrl)) {
             echo sprintf('<p>%s.</p>',
-                    esc_html(__('Please check the '.$this->white_label_title.' token', 'flagship-shipping-extension-for-woocommerce')));
+                    esc_html(__('Please check the '.FS_WHITELABEL_TEXT.' token', 'flagship-shipping-extension-for-woocommerce')));
             return;
         }
 
@@ -137,12 +136,12 @@ class Order_Action_Processor
 
             if (!$is_address_valid) {
                 echo sprintf("<p><em>%s</em></p>",
-                    esc_html(__('To send to '.$this->white_label_title.', ensure the address is complete, including the phone number of the receiver.','flagship-shipping-extension-for-woocommerce')));
+                    esc_html(__('To send to '.FS_WHITELABEL_TEXT.', ensure the address is complete, including the phone number of the receiver.','flagship-shipping-extension-for-woocommerce')));
             }
 
             echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export" '.$buttonDisabled.'>%s </button>',
                 self::$exportOrderActionName,
-                esc_html(__('Send to '.$this->white_label_title.'', 'flagship-shipping-extension-for-woocommerce')));
+                esc_html(__('Send to '.FS_WHITELABEL_TEXT.'', 'flagship-shipping-extension-for-woocommerce')));
         }
     }
 
@@ -256,7 +255,7 @@ class Order_Action_Processor
             do_action('fwb_shipment_is_exported', $exportedShipment);
         } catch (\Exception $e) {
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
-            $this->setErrorMessages(esc_html(__('Order not exported to '.$this->white_label_title.': '.$e->getMessage())));
+            $this->setErrorMessages(esc_html(__('Order not exported to '.FS_WHITELABEL_TEXT.': '.$e->getMessage())));
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
         }
     }
@@ -284,7 +283,7 @@ class Order_Action_Processor
         }
 
         if ($statusDescription == 'Dispatched') {
-            echo sprintf('<a href="'.$flagshipUrl.'/shipping/'.$shipment->getId().'/overview" class="button button-primary" target="_blank"> View Shipment on '.$this->white_label_title.'</a>');
+            echo sprintf('<a href="'.$flagshipUrl.'/shipping/'.$shipment->getId().'/overview" class="button button-primary" target="_blank"> View Shipment on '.FS_WHITELABEL_TEXT.'</a>');
             echo sprintf('<br/><br/><a href="'.$shipment->getThermalLabel().'" class="button button-primary" target="_blank"> Get Shipment Label</a>');
             if (!is_bool(get_post_meta($orderId, 'flagship_shipping_pickup_confirmation'))) {
                 echo sprintf('<p>Pickup Confirmation: %s<br></p>',
@@ -495,7 +494,7 @@ class Order_Action_Processor
         $rates = $ratesRequest->getRates([], $this->pluginSettings, 1, $this->order);
 
         if (is_string($rates)) {
-            $this->setErrorMessages(esc_html(__('Unable to get rates from '.$this->white_label_title)).$rates);
+            $this->setErrorMessages(esc_html(__('Unable to get rates from '.FS_WHITELABEL_TEXT)).$rates);
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }
@@ -586,13 +585,13 @@ class Order_Action_Processor
     protected function exportOrder()
     {
         if ($this->getShipmentIdFromOrder($this->order->get_id())) {
-            throw new \Exception(esc_html(__('This order has already been exported to '.$this->white_label_title.'', 'flagship-shipping-extension-for-woocommerce')), $this->errorCodes['shipment_exists']);
+            throw new \Exception(esc_html(__('This order has already been exported to '.FS_WHITELABEL_TEXT.'', 'flagship-shipping-extension-for-woocommerce')), $this->errorCodes['shipment_exists']);
         }
 
         $token = get_array_value($this->pluginSettings, 'token');
 
         if (!$token) {
-            throw new \Exception(esc_html(__($this->white_label_title.' API token is missing', 'flagship-shipping-extension-for-woocommerce')), $this->errorCodes['token_missing']);
+            throw new \Exception(esc_html(__(FS_WHITELABEL_TEXT.' API token is missing', 'flagship-shipping-extension-for-woocommerce')), $this->errorCodes['token_missing']);
         }
         $testEnv = get_array_value($this->pluginSettings, 'test_env') == 'no' ? 0 : 1;
         $apiRequest = new Export_Order_Request($token, $testEnv);
@@ -600,7 +599,7 @@ class Order_Action_Processor
 
         if (is_string($exportedShipment)) {
             FlagshipWoocommerceBedrockShipping::add_log($exportedShipment);
-            $this->setErrorMessages(esc_html(__('Order not exported to '.$this->white_label_title.': '.$exportedShipment)));
+            $this->setErrorMessages(esc_html(__('Order not exported to '.FS_WHITELABEL_TEXT.': '.$exportedShipment)));
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }
