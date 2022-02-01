@@ -1,4 +1,34 @@
 <?php
+
+defined('ABSPATH') || exit;
+
+if (!defined('FLAGSHIP_PLUGIN_FILE')) {
+    define('FLAGSHIP_PLUGIN_FILE', __FILE__);
+}
+
+if (file_exists(dirname(__FILE__) . '/env.php')) {
+    include_once dirname(__FILE__) . '/env.php';
+}
+
+if(FS_IS_WHITELABEL == 1){
+/**
+ * Plugin Name: Shipping Extension For WooCommerce
+ * Plugin Uri:
+ * Description: Obtain shipping rates for orders and ship them instantly.
+ * Version: 1.0.17
+ * Author: Community developed
+ * Author URI:
+ * Text Domain: flagship-shipping-extension-for-woocommerce
+ * Domain Path: /languages/
+ * Requires PHP: 7.1
+ * Requires at least: 4.6
+ * Tested up to: 5.8.3
+ * WC requires at least: 3.0.0
+ * WC tested up to: 5.9.0
+ */
+}
+
+else{
 /**
  * Plugin Name: FlagShip Shipping Extension For WooCommerce
  * Plugin URI: https://github.com/flagshipcompany/flagship-for-woocommerce-bedrock.git
@@ -10,20 +40,12 @@
  * Domain Path: /languages/
  * Requires PHP: 7.1
  * Requires at least: 4.6
- * Tested up to: 5.8.2
+ * Tested up to: 5.8.3
  * WC requires at least: 3.0.0
  * WC tested up to: 5.9.0
  */
-
-defined('ABSPATH') || exit;
-
-if (!defined('FLAGSHIP_PLUGIN_FILE')) {
-    define('FLAGSHIP_PLUGIN_FILE', __FILE__);
 }
 
-if (file_exists(dirname(__FILE__) . '/env.php')) {
-    include_once dirname(__FILE__) . '/env.php';
-}
 
 include_once dirname(__FILE__) . '/includes/UserFunctions.php';
 
@@ -55,4 +77,12 @@ if (dirname(dirname(__FILE__)) == WPMU_PLUGIN_DIR) {
 
 if (defined('WP_CLI') && WP_CLI) {
     (new FlagshipWoocommerceBedrock\Commands\Console())->add_commands();
+}
+
+if(defined(FS_IS_WHITELABEL) === false) {
+    define(FS_IS_WHITELABEL, false);
+}
+
+if(defined(FS_WHITELABEL_TEXT) === false) {
+    define(FS_WHITELABEL_TEXT, 'FlagShip');
 }
