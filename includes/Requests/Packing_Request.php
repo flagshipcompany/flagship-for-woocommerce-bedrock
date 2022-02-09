@@ -45,7 +45,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
             $packageItemsFormatted = $this->getPackageItemsFormattedAsList($package);
             
             $packageBoxes[] = [
-                "description" => $package->getBoxModel().' ; '.$packageItemsFormatted,
+                "description" => $package->getBoxModel().' : '.$packageItemsFormatted,
                 "length" => $package->getLength(),
                 "width" => $package->getWidth(),
                 "height" => $package->getHeight(),
@@ -170,7 +170,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         $items = array_count_values($package->getItems());
         $formattedList = '';
         foreach ($items as $item => $count) {
-            $formattedList .= '{'.$item.' x '.$count.'}';
+            $formattedList .= $item.' x '.$count.',';
         }
         return $formattedList;
     }

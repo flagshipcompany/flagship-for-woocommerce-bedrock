@@ -35,7 +35,8 @@ class ECommerce_Request extends Rates_Request
         $options['dimension_unit'] = 'cm';
         $options['weight_unit'] = 'g';
         $options['units'] = 'metric';
-        $request = parent::makeApiRequest($package, $options);
+        $testEnv = get_array_value($this->pluginSettings, 'test_env') == 'no'? 0 : 1;
+        $request = parent::makeApiRequest($package, $options, $testEnv);
 
         return $request;
     }
