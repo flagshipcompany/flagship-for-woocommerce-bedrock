@@ -63,7 +63,7 @@ class Product_Helper
         }
     }
 
-    public function add_ship_as_is()
+    public function add_custom_attributes()
     {
         woocommerce_wp_checkbox([
             'id' => '_ship_as_is',
@@ -71,13 +71,22 @@ class Product_Helper
             'desc_tip' => true, // true or false, show description directly or as tooltip
             'description' => __('If checked, the product will be shipped in it\'s original packing. It will not be packed in another box.' )
         ]);
+
+        woocommerce_wp_checkbox([
+            'id' => '_dangerous_goods',
+            'label' => __('Dangerous Goods', 'flagship-shipping-extension-for-woocommerce'),
+            'desc_tip' => true, // true or false, show description directly or as tooltip
+            'description' => __('We do not support shipping dangerous goods. This item will not be shipped with the rest of the order.' )
+        ]);
     }
 
-    public function save_ship_as_is($post_id)
+    public function save_custom_attributes($post_id)
     {
         $product = wc_get_product($post_id);
         $ship_as_is = isset($_POST['_ship_as_is']) ? $_POST['_ship_as_is'] : '';
+        $dangerous_goods = isset($_POST['_dangerous_goods']) ? $_POST['_dangerous_goods'] : '';
         $product->update_meta_data('_ship_as_is', $ship_as_is);
+        $product->update_meta_data('_dangerous_goods', $dangerous_goods);
         $product->save();
     }
 }

@@ -59,6 +59,11 @@ class Package_Helper
                 $this->show_notice("Product not available", 'error');
                 continue;
             }
+            $dangerous_goods = $product->get_meta('_dangerous_goods');
+
+            if(strcasecmp($dangerous_goods, 'Yes') == 0) {
+                continue;
+            }
 
             $weight = $product->get_weight() ? wc_get_weight($product->get_weight(), $output_weight_unit, $weight_unit) : 1;
             $length = $product->get_length() ? wc_get_dimension($product->get_length(), $output_dimension_unit, $dimension_unit) : 1;

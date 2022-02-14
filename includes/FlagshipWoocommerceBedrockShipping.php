@@ -97,8 +97,8 @@ class FlagshipWoocommerceBedrockShipping
         add_filter('woocommerce_product_data_tabs', array($productHelper, 'add_export_to_product_tabs'));
         add_action('woocommerce_product_data_panels', array($productHelper, 'display_product_export_tab'));
         add_action('woocommerce_process_product_meta', array($productHelper, 'save_product_export_data'));
-        add_action('woocommerce_product_options_dimensions', array($productHelper, 'add_ship_as_is'));
-        add_action('woocommerce_process_product_meta',array($productHelper,'save_ship_as_is'));
+        add_action('woocommerce_product_options_dimensions', array($productHelper, 'add_custom_attributes'));
+        add_action('woocommerce_process_product_meta',array($productHelper,'save_custom_attributes'));
         add_action('rest_api_init', array((new Package_Box_Controller()), 'register_routes'));
         add_action('admin_enqueue_scripts', array((new Script_Helper()), 'load_scripts'));
     }

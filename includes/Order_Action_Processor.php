@@ -99,14 +99,16 @@ class Order_Action_Processor
 
         if ($rates == null) {
             $is_address_valid = (new Export_Order_Request(null))->isOrderShippingAddressValid($this->order);
+            $all_dangerous_goods = $this->areAllItemsDangerousGoods();
+            $buttonDisabled = ($is_address_valid ? '' : 'disabled');
+            $buttonDisabled = $all_dangerous_goods ? 'disabled' : $buttonDisabled;
+            $buttonTitle = $buttonDisabled ? 'This order contains only dangerous goods and cannot be fulfilled by FlagShip' : 'Send to FlagShip';
 
-            $buttonDisabled = ($is_address_valid  ? '' : 'disabled');
-            
             if (!$is_address_valid) {
                 echo sprintf("<p><em>%s</em></p>", esc_html(__("To send to FlagShip, ensure the address is complete, including the phone number of the receiver.")));
             }
             
-            echo sprintf('<button type="submit" class="button save_order button-primary" name="%s" value="export" '.$buttonDisabled.'>%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
+            echo sprintf('<button type="submit" title="'.$buttonTitle.'" class="button save_order button-primary" name="%s" value="export" '.$buttonDisabled.'>%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
         }
     }
 
@@ -580,5 +582,18 @@ class Order_Action_Processor
         }
 
         return esc_html(__($status, 'flagship-shipping-extension-for-woocommerce'));
+    }
+
+    protected function areAllItemsDangerousGoods()
+    {
+        $order = $this->order;
+        $items = $order->get_items();
+        $dangerousGoodsFlag = 0;
+        foreach ($items as $item_id => $item) {
+            $product = $item->get_product();
+            $dangerousGoodsFlag = strcasecmp($product->get_meta('_dangerous_goods'),'Yes') == 0 ?
+                                    1 : 0;
+        }
+        return $dangerousGoodsFlag;
     }
 }
