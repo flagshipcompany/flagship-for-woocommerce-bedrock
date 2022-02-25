@@ -98,8 +98,11 @@ class Order_Action_Processor
         }
 
         if ($rates == null) {
+            
             $is_address_valid = (new Export_Order_Request(null))->isOrderShippingAddressValid($this->order);
             $all_dangerous_goods = $this->areAllItemsDangerousGoods();
+            
+
             $buttonDisabled = ($is_address_valid ? '' : 'disabled');
             $buttonDisabled = $all_dangerous_goods ? 'disabled' : $buttonDisabled;
             $buttonTitle = $buttonDisabled ? 'This order contains only dangerous goods and cannot be fulfilled by FlagShip' : 'Send to FlagShip';
@@ -107,6 +110,8 @@ class Order_Action_Processor
             if (!$is_address_valid) {
                 echo sprintf("<p><em>%s</em></p>", esc_html(__("To send to FlagShip, ensure the address is complete, including the phone number of the receiver.")));
             }
+
+            $this->showDangerousGoodsList();
             
             echo sprintf('<button type="submit" title="'.$buttonTitle.'" class="button save_order button-primary" name="%s" value="export" '.$buttonDisabled.'>%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
         }
@@ -588,12 +593,41 @@ class Order_Action_Processor
     {
         $order = $this->order;
         $items = $order->get_items();
-        $dangerousGoodsFlag = 0;
+        $dangerousGoodsFlag = [];
         foreach ($items as $item_id => $item) {
             $product = $item->get_product();
-            $dangerousGoodsFlag = strcasecmp($product->get_meta('_dangerous_goods'),'Yes') == 0 ?
+            $dangerousGoodsFlag[] = strcasecmp($product->get_meta('_dangerous_goods'),'Yes') == 0 ?
                                     1 : 0;
         }
-        return $dangerousGoodsFlag;
+        return in_array(0, $dangerousGoodsFlag) ? 0 : 1;
+    }
+
+    protected function getDangerousGoods()
+    {
+        $order = $this->order;
+        $items = $order->get_items();
+        $dangerousGoodsFlag = 0;
+        $dangerousGoods = [];
+        foreach ($items as $item_id => $item) {
+            $product = $item->get_product();
+            $dangerousGoods[] = strcasecmp($product->get_meta('_dangerous_goods'),'Yes') == 0 ? $product->get_name() : NULL ;
+        }
+
+        $dangerousGoods = array_filter($dangerousGoods,function($value){ return $value != NULL; });
+        return $dangerousGoods;
+
+    }
+
+    protected function showDangerousGoodsList() {
+        $dangerousGoods = $this->getDangerousGoods();
+
+        if (count($dangerousGoods) > 0 ) {
+            echo sprintf(
+                "<div style='color:#2b506e'><p><b><em>%s</em></b></p><ul><li>%s</li></ul></div>",
+                esc_html(__("The following products in this order are classified as dangerous goods and will not be shipped with FlagShip")),
+                implode('</li><li>',$dangerousGoods)
+            );
+        }
+
     }
 }
