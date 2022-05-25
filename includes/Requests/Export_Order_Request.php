@@ -125,10 +125,14 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request
         $trackingEmails = $this->makeTrackingEmails($destinationAddress, $options, $orderOptions);
         unset($destinationAddress['email']);
         $orderSubtotal = $order->get_subtotal();
+        $driverInstructions = $order->get_customer_note();
         $shippingOptions = ['reference' => $storeAddress['name'].'# '.$order->get_id()];
 
         if ($trackingEmails) {
             $shippingOptions['shipment_tracking_emails'] = $trackingEmails;
+        }
+        if ($driverInstructions) {
+            $shippingOptions['driver_instructions'] = $driverInstructions;
         }
 
         $request = array(
