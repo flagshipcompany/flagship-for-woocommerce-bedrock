@@ -167,6 +167,12 @@ class WC_Flagship_Shipping_Method extends \WC_Shipping_Method
                 'type' => 'checkbox',
                 'default' => 'no',
             ),
+            'driver_instructions' => array(
+                'title' => esc_html(__('Driver Instructions', 'flagship-shipping-extension-for-woocommerce')),
+                'description' => esc_html(__('Use customer order notes as driver instructions', 'flagship-shipping-extension-for-woocommerce')),
+                'type' => 'checkbox',
+                'default' => 'no',
+            ),
             'estimated_delivery_date' => array(
                 'title' => esc_html(__('Show estimated delivery date', 'flagship-shipping-extension-for-woocommerce')),
                 'type' => 'checkbox',

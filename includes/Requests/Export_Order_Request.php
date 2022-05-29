@@ -131,7 +131,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request
         if ($trackingEmails) {
             $shippingOptions['shipment_tracking_emails'] = $trackingEmails;
         }
-        if ($driverInstructions) {
+        if (get_array_value($options, 'driver_instructions', false) === 'yes' && $driverInstructions) {
             $shippingOptions['driver_instructions'] = $driverInstructions;
         }
 
