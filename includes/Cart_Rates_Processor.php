@@ -4,6 +4,7 @@ namespace FlagshipWoocommerceBedrock;
 
 use FlagshipWoocommerceBedrock\Requests\Rates_Request;
 use FlagshipWoocommerceBedrock\Requests\ECommerce_Request;
+use FlagshipWoocommerceBedrock\FlagshipWoocommerceBedrockShipping;
 
 class Cart_Rates_Processor
 {
@@ -34,6 +35,14 @@ class Cart_Rates_Processor
     {
         $debugMode = get_array_value($this->instanceSettings, 'debug_mode', 'no') == 'yes';
         $testEnv = get_array_value($this->instanceSettings, 'test_env') == 'no' ? 0 : 1;
+        FlagshipWoocommerceBedrockShipping::add_log($this->checkForLtl($package));
+        $ltlFlag = $this->checkForLtl($package);
+        if($ltlFlag){
+            FlagshipWoocommerceBedrockShipping::add_log(__LINE__);
+            return $this->makeLtlRate($ltlFlag);
+            FlagshipWoocommerceBedrockShipping::add_log(__LINE__);
+        }
+        FlagshipWoocommerceBedrockShipping::add_log(__LINE__);
         $ratesRequest = new Rates_Request($this->token, $debugMode, $testEnv);
         $rates = $ratesRequest->getRates($package, $this->rateOptions);
         if (!is_string($rates)) {
@@ -50,8 +59,8 @@ class Cart_Rates_Processor
 
     public function processRates($package, $rates)
     {
-        if (count($rates) == 0) {
-            return array();
+        if (count($rates) == 1 && array_key_exists("ltl", $rates) ) {
+            return $this->makeLtlRate(1);
         }
 
         $filteredRates = $this->filterRates($rates);
@@ -278,5 +287,39 @@ class Cart_Rates_Processor
         $transitTime = ceil((strtotime($deliveryDate) - strtotime(date('Y-m-d')))/(24*60*60));
 
         return sprintf(' - (%s: %s %s)', esc_html(__('Time in transit', 'flagship-shipping-extension-for-woocommerce')), $transitTime, _n("day", __("days", 'flagship-shipping-extension-for-woocommerce'), $transitTime, 'flagship-shipping-extension-for-woocommerce'));
+    }
+
+    protected function checkForLtl($package) {
+        $ltlFlag = 0;
+        $package = reset($package);
+        foreach( $package as $key => $cart_item ){
+            $productId = $cart_item['product_id'];
+            $product = wc_get_product($productId);
+            $ltlFlag = $product->get_weight() >= 150 ? 1 : $ltlFlag;
+            $products[] = $product;
+        }
+        $ltlFlag = $this->getTotalOrderVol($products) > 39*47*47 ? 1 : $ltlFlag;
+        return $ltlFlag;
+    }
+
+    protected function getTotalOrderVol($products){
+        $totalOrderVol = 0;
+        foreach ($products as $product) {
+            $prodVol = (float)$product->get_length() * (float)$product->get_width() * (float)$product->get_height();
+            $totalOrderVol += $prodVol;
+        }
+        return $totalOrderVol;
+    }
+
+    protected function makeLtlRate($ltlFlag){
+        if($ltlFlag){
+           $cartRates['ltl'] = array(
+                'id' => $this->methodId.'| LTL | Rates',
+                'label' => 'Ltl rates',
+                'cost' => 0,            
+            );
+            return apply_filters('flagship_shipping_rates', $cartRates);   
+        }
+        return array();
     }
 }
