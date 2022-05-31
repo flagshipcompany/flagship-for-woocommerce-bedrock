@@ -295,9 +295,11 @@ class Cart_Rates_Processor
         foreach( $package as $key => $cart_item ){
             $productId = $cart_item['product_id'];
             $product = wc_get_product($productId);
-            $ltlFlag = $product->get_weight() >= 150 ? 1 : $ltlFlag;
+            $productWeights[] = $product->get_weight();
             $products[] = $product;
         }
+        $totalWeight = array_sum($productWeights);
+        $ltlFlag = $totalWeight >= 150 ? 1 : $ltlFlag;
         $ltlFlag = $this->getTotalOrderVol($products) > 39*47*47 ? 1 : $ltlFlag;
         return $ltlFlag;
     }
@@ -315,7 +317,7 @@ class Cart_Rates_Processor
         if($ltlFlag){
            $cartRates['ltl'] = array(
                 'id' => $this->methodId.'| LTL | Rates',
-                'label' => 'Ltl rates',
+                'label' => 'Ltl - shipping rates will be calculated later',
                 'cost' => 0,            
             );
             return apply_filters('flagship_shipping_rates', $cartRates);   

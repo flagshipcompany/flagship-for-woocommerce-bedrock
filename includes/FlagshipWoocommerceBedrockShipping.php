@@ -101,6 +101,7 @@ class FlagshipWoocommerceBedrockShipping
         add_action('woocommerce_process_product_meta',array($productHelper,'save_custom_attributes'));
         add_action('rest_api_init', array((new Package_Box_Controller()), 'register_routes'));
         add_action('admin_enqueue_scripts', array((new Script_Helper()), 'load_scripts'));
+        add_action('woocommerce_thankyou_order_received_text', array($this, 'add_ltl_shipping_message'), 100, 2);
     }
 
     public function showSdkNotice()
@@ -147,5 +148,18 @@ class FlagshipWoocommerceBedrockShipping
     {
         $settings = get_option(self::getSettingsOptionKey());
         return new Order_Action_Processor($order, $settings);
+    }
+
+    public function add_ltl_shipping_message($str, $order)
+    {
+        $shippingMethod = $order->get_shipping_method();
+
+        if(stripos($shippingMethod, 'ltl') === 0) {
+            $msg = $str.'<p class="woocommerce-notice woocommerce-notice–success woocommerce-thankyou-order-received thankyou-note"><b>*Due to the size of your order, we could not fetch real-time shipping rates. When your order is shipped, shipping rates could be different.*</b></p>';
+            echo $msg;
+            return;
+        }
+        echo $str;
+        return;
     }
 }
