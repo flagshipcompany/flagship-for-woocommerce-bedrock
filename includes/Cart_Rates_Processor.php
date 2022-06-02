@@ -35,14 +35,11 @@ class Cart_Rates_Processor
     {
         $debugMode = get_array_value($this->instanceSettings, 'debug_mode', 'no') == 'yes';
         $testEnv = get_array_value($this->instanceSettings, 'test_env') == 'no' ? 0 : 1;
-        FlagshipWoocommerceBedrockShipping::add_log($this->checkForLtl($package));
+        
         $ltlFlag = $this->checkForLtl($package);
         if($ltlFlag){
-            FlagshipWoocommerceBedrockShipping::add_log(__LINE__);
             return $this->makeLtlRate($ltlFlag);
-            FlagshipWoocommerceBedrockShipping::add_log(__LINE__);
         }
-        FlagshipWoocommerceBedrockShipping::add_log(__LINE__);
         $ratesRequest = new Rates_Request($this->token, $debugMode, $testEnv);
         $rates = $ratesRequest->getRates($package, $this->rateOptions);
         if (!is_string($rates)) {
@@ -291,13 +288,17 @@ class Cart_Rates_Processor
 
     protected function checkForLtl($package) {
         $ltlFlag = 0;
+        $weight_unit = get_option('woocommerce_weight_unit');
+        $output_weight_unit = 'lbs';
         $package = reset($package);
         foreach( $package as $key => $cart_item ){
             $productId = $cart_item['product_id'];
             $product = wc_get_product($productId);
-            $productWeights[] = $product->get_weight();
+            $productWeight = $product->get_weight() ?? 1;
+            $productWeights[] = wc_get_weight($productWeight, $output_weight_unit, $weight_unit);
             $products[] = $product;
         }
+
         $totalWeight = array_sum($productWeights);
         $ltlFlag = $totalWeight >= 150 ? 1 : $ltlFlag;
         $ltlFlag = $this->getTotalOrderVol($products) > 39*47*47 ? 1 : $ltlFlag;
