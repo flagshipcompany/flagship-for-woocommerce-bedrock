@@ -43,7 +43,7 @@ class Rates_Request extends Abstract_Flagship_Api_Request
         } catch (\Exception $e) {
             $this->debug($e->getMessage());
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
-            $rates = new RatesCollection();
+            return $e->getMessage();
         }
         return apply_filters('fwb_get_rates', $rates, $admin);
     }

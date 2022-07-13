@@ -424,7 +424,7 @@ class Order_Action_Processor
         $rates = $ratesRequest->getRates([], $this->pluginSettings, 1, $this->order);
 
         if (is_string($rates)) {
-            $this->setErrorMessages(esc_html(__('Unable to get rates from FlagShip')).$rates);
+            $this->setErrorMessages(esc_html(__('Unable to get rates from FlagShip - ')). str_replace(".", ". ",$rates));
             add_filter('redirect_post_location', array($this, 'order_custom_warning_filter'));
             return;
         }
