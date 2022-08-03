@@ -240,7 +240,7 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request
         $courierAndService = array_map('trim', explode('-', $selectedService));
         $fields = array('courier_name', 'courier_code');
 
-        return array_combine($fields, $courierAndService);
+        return count($fields) == count($courierAndService) ? array_combine($fields, $courierAndService) : [];
     }
 
     protected function getOrderShippingMeta($order, $key)
