@@ -56,7 +56,7 @@ class Cart_Rates_Processor
 
     public function processRates($package, $rates)
     {
-        if (count($rates) == 1 && array_key_exists("ltl", $rates) ) {
+        if (is_string($rates) && array_key_exists("ltl", $rates) ) {
             return $this->makeLtlRate(1);
         }
 
