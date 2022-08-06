@@ -302,7 +302,7 @@ class Cart_Rates_Processor
         $totalWeight = array_sum($productWeights);
         $ltlFlag = $totalWeight >= 150 ? 1 : $ltlFlag;
         $ltlFlag = $this->getTotalOrderVol($products) > 39*47*47 ? 1 : $ltlFlag;
-        return $ltlFlag;
+        return apply_filters('flagship_ltl_checks',$ltlFlag);
     }
 
     protected function getTotalOrderVol($products){
