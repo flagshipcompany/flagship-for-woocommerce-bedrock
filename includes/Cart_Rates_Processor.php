@@ -56,7 +56,7 @@ class Cart_Rates_Processor
 
     public function processRates($package, $rates)
     {
-        if (is_string($rates) && array_key_exists("ltl", $rates) ) {
+        if (is_string($rates) && $this->checkForLtl($package) ) {
             return $this->makeLtlRate(1);
         }
 
@@ -297,6 +297,9 @@ class Cart_Rates_Processor
             $productWeight = $product->get_weight() ?? 1;
             $productWeights[] = wc_get_weight($productWeight, $output_weight_unit, $weight_unit);
             $products[] = $product;
+            $productLtlQuantity = $product->get_meta('_ltl_qty') == '' ? 999999 : $product->get_meta('_ltl_qty');
+            $ltlFlag = $productCartQuantity >= $productLtlQuantity ? 1 : $ltlFlag;
+            
         }
 
         $totalWeight = array_sum($productWeights);
