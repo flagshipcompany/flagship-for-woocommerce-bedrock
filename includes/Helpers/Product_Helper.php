@@ -78,13 +78,6 @@ class Product_Helper
             'desc_tip' => true, // true or false, show description directly or as tooltip
             'description' => __('We do not support shipping dangerous goods. This item will not be shipped with the rest of the order.' )
         ]);
-
-        woocommerce_wp_text_input([
-            'id' => '_ltl_qty',
-            'label' => __('LTL Quantity'),
-            'desc_tip' => true, // true or false, show description directly or as tooltip
-            'description' => __('Specify the minimum LTL quantity for product. If x or more of this product are added to the cart, it will be shipped as LTL.' )
-        ]);
     }
 
     public function save_custom_attributes($post_id)
@@ -92,8 +85,6 @@ class Product_Helper
         $product = wc_get_product($post_id);
         $ship_as_is = isset($_POST['_ship_as_is']) ? $_POST['_ship_as_is'] : '';
         $dangerous_goods = isset($_POST['_dangerous_goods']) ? $_POST['_dangerous_goods'] : '';
-        $ltl_qty = isset($_POST['_ltl_qty']) ? $_POST['_ltl_qty'] : '';
-        $product->update_meta_data('_ltl_qty', $ltl_qty);
         $product->update_meta_data('_ship_as_is', $ship_as_is);
         $product->update_meta_data('_dangerous_goods', $dangerous_goods);
         $product->save();
