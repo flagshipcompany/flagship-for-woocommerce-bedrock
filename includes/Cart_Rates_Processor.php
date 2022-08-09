@@ -59,8 +59,8 @@ class Cart_Rates_Processor
         if (is_string($rates) && $this->checkForLtl($package) ) {
             return $this->makeLtlRate(1);
         }
-
-        $filteredRates = $this->filterRates($rates);
+        
+        $filteredRates =  is_array($rates) ? $this->filterRates($rates) : [];
         $cartRates = array();
 
         foreach ($filteredRates as $key => $rate) {
