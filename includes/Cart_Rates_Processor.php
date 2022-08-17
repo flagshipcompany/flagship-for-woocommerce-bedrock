@@ -297,6 +297,7 @@ class Cart_Rates_Processor
             $productWeight = $product->get_weight() ?? 1;
             $productWeights[] = wc_get_weight($productWeight, $output_weight_unit, $weight_unit);
             $products[] = $product;
+            $productCartQuantity = $cart_item["quantity"];
             $productLtlQuantity = $product->get_meta('_ltl_qty') == '' ? 999999 : $product->get_meta('_ltl_qty');
             $ltlFlag = $productCartQuantity >= $productLtlQuantity ? 1 : $ltlFlag;
             
