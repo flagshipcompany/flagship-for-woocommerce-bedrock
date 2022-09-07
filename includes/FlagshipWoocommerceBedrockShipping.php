@@ -92,6 +92,7 @@ class FlagshipWoocommerceBedrockShipping
         add_action('admin_notices', array((new Notification_Helper()), 'flagship_warning_in_notice'));
         add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
         add_filter('woocommerce_general_settings', array((new Store_Address_Helper()), 'add_extra_address_fields'));
+        add_action('woocommerce_email_order_details', array($this, 'add_tracking_to_completed_email'),10,4);
 
         $productHelper = (new Product_Helper());
         add_filter('woocommerce_product_data_tabs', array($productHelper, 'add_export_to_product_tabs'));
@@ -161,5 +162,20 @@ class FlagshipWoocommerceBedrockShipping
         }
         echo $str;
         return;
+    }
+
+    public function add_tracking_to_completed_email($order, $sent_to_admin, $plain_text, $email){
+        if($order && $order->get_status() == 'completed') {
+ 
+            $tracking = get_post_meta($order->get_id(),'flagship_shipping_shipment_tracking_number',true);
+            $courier = get_post_meta($order->get_id(),'flagship_shipping_courier_name',true);
+ 
+            if($tracking && $courier){
+                echo "<p>The shipment will be sent by <b>$courier</b> on tracking number <b>$tracking</b></p>";
+            } else {
+                echo "<p>Tracking information is not available yet</p>";
+            }
+ 
+        }
     }
 }

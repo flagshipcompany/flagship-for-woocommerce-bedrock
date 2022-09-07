@@ -163,9 +163,7 @@ class Order_Action_Processor
 
             $flagshipShipment = $this->updateShipmentWithCourierDetails($exportOrder, $flagshipShipment, $courierDetails);
 
-            $confirmedShipment = $this->confirmFlagshipShipment($exportOrder, $shipmentId);
-            $this->update_post_meta_for_confirmed_shipment($orderId, $confirmedShipment);
-            
+            $confirmedShipment = $this->confirmFlagshipShipment($exportOrder, $shipmentId,$orderId);
             return;
         }
     }
@@ -326,19 +324,20 @@ class Order_Action_Processor
         return $url;
     }
 
-    protected function confirmFlagshipShipment($exportOrder, int $shipmentId)
+    protected function confirmFlagshipShipment($exportOrder, int $shipmentId, int $orderId)
     {
         $confirmedShipment = $exportOrder->confirmShipment($shipmentId);
+        
         if (is_string($confirmedShipment)) {
             $this->setErrorMessages(esc_html(__($confirmedShipment)));
             add_filter('redirect_post_location', array($this,'order_custom_warning_filter'));
+            return;
         }
-
-        if (!is_string($confirmedShipment)
-            && !is_null($confirmedShipment->getTrackingNumber())
-            && $this->order->get_status() == 'processing'
-            && get_array_value($this->pluginSettings, 'autocomplete_order') == 'yes') {
-            $this->order->update_status('completed');
+        
+        if ( !is_null($confirmedShipment->getTrackingNumber()) && $this->order->get_status() == 'processing'
+        && get_array_value($this->pluginSettings, 'autocomplete_order') == 'yes') {
+                $this->update_post_meta_for_confirmed_shipment($orderId, $confirmedShipment);
+                $this->order->update_status('completed');
         }
         return $confirmedShipment;
     }
