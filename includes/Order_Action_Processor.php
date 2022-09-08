@@ -76,7 +76,7 @@ class Order_Action_Processor
     {
         $shipmentId = $box['args'][0];
         $rates = null;
-        if ($shipmentId) {
+        if ($shipmentId && !is_string($this->getShipmentFromFlagship($shipmentId))) {
             $shipment = $this->getShipmentFromFlagship($shipmentId);
             $shipmentStatus = $shipment->getStatus();
             $shipmentUrl = $shipmentStatus ? $this->makeShipmentUrl($shipmentId, $shipmentStatus) : null;
@@ -92,8 +92,8 @@ class Order_Action_Processor
             return;
         }
 
-        if ($shipmentId && empty($shipmentUrl)) {
-            echo sprintf('<p>%s.</p>', esc_html(__('Please check the FlagShip token', 'flagship-shipping-extension-for-woocommerce')));
+        if ($shipmentId && (empty($shipmentUrl) || empty($shipmentStatus)) ) {
+            echo sprintf('<p>%s.</p>', esc_html(__('We cannot find this shipment. Please check your Flagship token', 'flagship-shipping-extension-for-woocommerce')));
             return;
         }
 
