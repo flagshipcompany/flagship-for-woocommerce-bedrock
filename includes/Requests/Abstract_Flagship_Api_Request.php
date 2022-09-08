@@ -136,7 +136,7 @@ abstract class Abstract_Flagship_Api_Request
     {
         $shippingOptions = array();
 
-        if (get_array_value($options, 'signature_required', false)) {
+        if (get_array_value($options, 'signature_required', false) == 'yes') {
             $shippingOptions['signature_required'] = true;
         }
 
