@@ -406,7 +406,7 @@ class Order_Action_Processor
                 $boxName = substr($package["description"], 0, stripos($package["description"], ":"));
                 $items = substr($package["description"], stripos($package["description"], " : "));
                 $items = str_replace([",",":"], ["</li><li>","<li>"], rtrim($items,","));
-
+                $items = $package["ship_as_is"] == 'yes' ? '<b>'.$items.'</b> - Ships in original packing' : $items;
                 $boxes[] = '<b>'.$boxName.'</b><ul style="margin:5px 0 -10px 15px">'.$items.'</ul>';
             }
             update_post_meta($this->order->get_id(), 'boxes', $boxes);

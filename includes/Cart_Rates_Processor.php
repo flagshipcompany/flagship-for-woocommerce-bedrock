@@ -56,7 +56,7 @@ class Cart_Rates_Processor
 
     public function processRates($package, $rates)
     {
-        if (is_string($rates) && $this->checkForLtl($package) ) {
+        if (is_array($rates) && $this->checkForLtl($package) ) {
             return $this->makeLtlRate(1);
         }
         
@@ -104,6 +104,7 @@ class Cart_Rates_Processor
 
     protected function makeCartRate($rate, $package)
     {
+        // FlagshipWoocommerceBedrockShipping::add_log(json_encode($rate));
         $label =  $rate->getCourierName().' - '.$rate->getCourierDescription();
 
         if (get_array_value($this->instanceSettings, 'show_transit_time', 'no') == 'yes') {
