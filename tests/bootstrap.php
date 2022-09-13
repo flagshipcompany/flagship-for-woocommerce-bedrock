@@ -57,8 +57,8 @@ class Flagship_Woocommerce_Shipping_Method_Tests_Bootstrap
      */
     public function loadWooCommerce()
     {
-        include_once $this->pluginDir . '/../woocommerce/plugins/woocommerce/woocommerce.php';
-        include_once $this->pluginDir . '/../woocommerce/plugins/woocommerce/includes/admin/wc-admin-functions.php';
+        include_once $this->pluginDir . '/woocommerce/plugins/woocommerce/woocommerce.php';
+        include_once $this->pluginDir . '/woocommerce/plugins/woocommerce/includes/admin/wc-admin-functions.php';
     }
 
     public function includes()
