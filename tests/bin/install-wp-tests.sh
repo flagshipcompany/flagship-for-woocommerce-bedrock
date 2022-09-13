@@ -70,6 +70,20 @@ install_wp() {
     download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
 }
 
+install_woocommerce() {
+    cd "$WP_CORE_DIR"
+    # Install WooCommerce
+	cd "wp-content/plugins/"
+	# As zip file does not include tests, we have to get it from git repo.
+	git clone --depth 1 https://github.com/woocommerce/woocommerce.git
+
+	# Bring in WooCommerce Core dependencies
+	cd "woocommerce"
+	composer install --no-dev
+
+	cd "$WP_CORE_DIR"
+}
+
 install_test_suite() {
     # portable in-place argument for both GNU sed and Mac OSX sed
     if [[ $(uname -s) == 'Darwin' ]]; then
@@ -119,5 +133,6 @@ install_db() {
 
 install_dependencies
 install_wp
+install_woocommerce
 install_test_suite
 install_db
