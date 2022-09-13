@@ -3,15 +3,15 @@ use FlagshipWoocommerceBedrock\Requests\Validate_Token_Request;
 
 class ValidateTokenTest extends FlagshipShippingUnitTestCase
 {
-    public function setUp()
+    public function setUp() : void 
     {
         parent::setUp();
     }
 
     public function testValidateToken()
     {
-        $request = new Validate_Token_Request('cQcoa5tK7F9HBmbx8cqlXBMFxEP3Tfb---mzKlBIM3Q', 1);
+        $request = new Validate_Token_Request('1234567890987654321', 'https://test-api.smartship.io');
         $return = $request->validateToken();
-        $this->assertEquals(200, $return);
+        $this->assertEquals("Invalid Token. Returned with code: 403", $return);
     }
 }

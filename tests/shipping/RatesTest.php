@@ -3,7 +3,7 @@ use FlagshipWoocommerceBedrock\Requests\Rates_Request;
 
 class RatesTest extends FlagshipShippingUnitTestCase
 {
-    public function setUp()
+    public function setUp() : void 
     {
         $this->package = require __DIR__.'/../fixture/Package.php';
         $this->zoneSettings = require __DIR__.'/../fixture/ZoneSettings.php';
@@ -13,9 +13,14 @@ class RatesTest extends FlagshipShippingUnitTestCase
     public function testGetRates()
     {
         $order = $this->getOrder();
-        $rateRequest = new Rates_Request($this->zoneSettings['token'], false, 1);
+        $rateRequest = new Rates_Request('cQcoa5tK7F9HBmbx8cqlXBMFxEP3Tfb---mzKlBIM3Q', false, 1);
         $rates = $rateRequest->getRates($this->package, $this->zoneSettings, 1, $order);
-
+        if(is_string($rates)){
+            $errors = explode(PHP_EOL,$rates);
+            $this->assertNotEmpty($errors);
+            $this->assertIsArray($errors);
+            return;
+        }
         $this->assertCount(0, $rates);
     }
 
