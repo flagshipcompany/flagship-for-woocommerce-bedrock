@@ -29,7 +29,7 @@ class Flagship_Woocommerce_Shipping_Method_Tests_Bootstrap
         include_once $this->wpTestsDir . '/includes/functions.php';
 
         // Load WooCommerce
-        // tests_add_filter('muplugins_loaded', array($this, 'loadWooCommerce'));
+        tests_add_filter('muplugins_loaded', array($this, 'loadWooCommerce'));
 
         // Load the plugin
         tests_add_filter('muplugins_loaded', array($this, 'loadPlugin'));

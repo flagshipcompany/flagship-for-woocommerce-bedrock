@@ -78,6 +78,8 @@ install_woocommerce() {
 	wget https://github.com/woocommerce/woocommerce/archive/refs/tags/6.8.2.zip && unzip 6.8.2.zip && mv woocommerce-6.8.2 woocommerce
 
 	cd "$WP_CORE_DIR"
+    cd "wp-content/plugins/"
+    ls
 }
 
 install_test_suite() {
