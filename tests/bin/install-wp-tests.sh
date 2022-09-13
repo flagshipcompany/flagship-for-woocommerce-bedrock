@@ -75,7 +75,7 @@ install_woocommerce() {
     # Install WooCommerce
 	cd "wp-content/plugins/"
 	# As zip file does not include tests, we have to get it from git repo.
-	wget https://github.com/woocommerce/woocommerce/archive/refs/tags/6.8.2.zip && unzip 6.8.2.zip && mv woocommerce-6.8.2 woocommerce
+	wget https://github.com/woocommerce/woocommerce/archive/refs/tags/6.8.2.zip && unzip 6.8.2.zip && mv woocommerce-6.8.2 woocommerce && rm 6.8.2.zip
 
 	cd "$WP_CORE_DIR"
     cd "wp-content/plugins/"
@@ -131,6 +131,6 @@ install_db() {
 
 install_dependencies
 install_wp
-install_woocommerce
+#install_woocommerce
 install_test_suite
 install_db
