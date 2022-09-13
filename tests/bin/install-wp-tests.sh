@@ -75,11 +75,7 @@ install_woocommerce() {
     # Install WooCommerce
 	cd "wp-content/plugins/"
 	# As zip file does not include tests, we have to get it from git repo.
-	git clone --depth 1 https://github.com/woocommerce/woocommerce.git
-
-	# Bring in WooCommerce Core dependencies
-	cd "woocommerce"
-	composer install --no-dev
+	wget https://github.com/woocommerce/woocommerce/archive/refs/tags/6.8.2.zip && unzip 6.8.2.zip && mv woocommerce-6.8.2 woocommerce
 
 	cd "$WP_CORE_DIR"
 }
