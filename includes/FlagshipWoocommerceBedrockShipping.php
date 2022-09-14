@@ -13,7 +13,7 @@ class FlagshipWoocommerceBedrockShipping
 {
     public static $methodId = 'flagship_shipping_method';
 
-    public static $version = '1.0.14';
+    public static $version = '1.0.20';
 
     public static $couriers = array(
         'UPS' => 'ups',
@@ -21,7 +21,7 @@ class FlagshipWoocommerceBedrockShipping
         'FedEx' => 'fedex',
         'Purolator' => 'purolator',
         'Canpar' => 'canpar',
-        'GLS' => 'gls',
+        'gls' => 'gls',
         'Nationex' => 'nationex',
     );
 
@@ -154,7 +154,7 @@ class FlagshipWoocommerceBedrockShipping
     public function add_ltl_shipping_message($str, $order)
     {
         $shippingMethod = $order->get_shipping_method();
-
+        
         if(stripos($shippingMethod, 'ltl') === 0) {
             $msg = $str.'<p class="woocommerce-notice woocommerce-notice–success woocommerce-thankyou-order-received thankyou-note"><b>*Due to the size of your order, we could not fetch real-time shipping rates. When your order is shipped, shipping rates could be different.*</b></p>';
             echo $msg;
