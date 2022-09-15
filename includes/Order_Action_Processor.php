@@ -112,6 +112,12 @@ class Order_Action_Processor
             }
 
             $this->showDangerousGoodsList();
+
+            $shippingMethod = $this->order->get_shipping_method();
+            if(stripos($shippingMethod, 'ltl') === 0) {
+                echo esc_html(__('The order is too big to be shipped via courier. Please contact dispatch@flagshipcompany.com', 'flagship-shipping-extension-for-woocommerce'));
+                return;
+            }
             
             echo sprintf('<button type="submit" title="'.$buttonTitle.'" class="button save_order button-primary" name="%s" value="export" '.$buttonDisabled.'>%s </button>', self::$exportOrderActionName, esc_html(__('Send to FlagShip', 'flagship-shipping-extension-for-woocommerce')));
         }
@@ -233,8 +239,8 @@ class Order_Action_Processor
             }
             
             $this->createPickupForm();
-            
-            echo sprintf('<p>Tracking number: %s<br>Courier: %s</p>', $shipment->getTrackingNumber(), $shipment->getCourierName() . ' ' . $shipment->getCourierDescription());
+            $courierName = $shipment->getCourierName() == 'fedex' ? $shipment->getCourierName() : '';
+            echo sprintf('<p>Tracking number: %s<br>Courier: %s</p>', $shipment->getTrackingNumber(), ucfirst($courierName) . ' ' . $shipment->getCourierDescription());
             return;
         }
     }

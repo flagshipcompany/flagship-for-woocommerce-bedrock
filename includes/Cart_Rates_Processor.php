@@ -56,10 +56,10 @@ class Cart_Rates_Processor
 
     public function processRates($package, $rates)
     {
-        if (is_array($rates) && $this->checkForLtl($package) ) {
+        if ($this->checkForLtl($package) ) {
             return $this->makeLtlRate(1);
         }
-        
+
         $filteredRates =  is_array($rates) ? $this->filterRates($rates) : [];
         $cartRates = array();
 
@@ -193,7 +193,6 @@ class Cart_Rates_Processor
 
         while ($included && $setting = array_shift($settings)) {
             preg_match('/allow_([a-zA-Z]+)_rates/', $setting, $matches);
-
             if ($matches[1] && $this->isSettingChecked($setting, 'no')) {
                 $included = !($this->removeRateByCodeType($rate->getFlagshipCode(), $matches[1]));
             }
