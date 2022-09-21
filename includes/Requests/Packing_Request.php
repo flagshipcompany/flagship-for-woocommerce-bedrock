@@ -23,19 +23,28 @@ class Packing_Request extends Abstract_Flagship_Api_Request
         $apiRequests = $this->make_api_request($items, $boxes);
         $apiClient = new Flagship($this->token, $this->apiUrl, 'woocommerce', FlagshipWoocommerceBedrockShipping::$version);
         try {
-            foreach ($apiRequests as $apiRequest) {
-                FlagshipWoocommerceBedrockShipping::add_log("Packing Request payload: ". json_encode($apiRequest));
-        
-                $packing_results = $apiClient->packingRequest($apiRequest)->execute();
-                FlagshipWoocommerceBedrockShipping::add_log("Packing Response : ". json_encode($packing_results));
-                $packageBoxes = $this->prepareBoxesFromPackages($packing_results,$packageBoxes); 
+            foreach ($apiRequests as $apiRequest) {                
+                $packageBoxes = $this->getPackageBoxes($apiClient,$apiRequest, $packageBoxes);
             }
+            
             $packageBoxes = $this->addShipAsIsItems($shipAsIsItems,$packageBoxes);
             return $packageBoxes;
         } catch (\Exception $e) {
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
             return $e->getMessage();
         }
+    }
+
+    protected function getPackageBoxes($apiClient,$apiRequest, $packageBoxes) {
+        
+        if(count($apiRequest['items']) > 0){
+            FlagshipWoocommerceBedrockShipping::add_log("Packing Request payload: ". json_encode($apiRequest));
+    
+            $packing_results = $apiClient->packingRequest($apiRequest)->execute();
+            FlagshipWoocommerceBedrockShipping::add_log("Packing Response : ". json_encode($packing_results));
+            $packageBoxes = $this->prepareBoxesFromPackages($packing_results,$packageBoxes); 
+        }
+        return $packageBoxes;
     }
 
     protected function prepareBoxesFromPackages($packages,$packageBoxes)
