@@ -21,8 +21,10 @@ env:
   - WP_VERSION=5.9.4
 
 before_script:
+  - cd ..
   - wget https://github.com/woocommerce/woocommerce/archive/refs/tags/6.8.2.zip && unzip 6.8.2.zip && mv woocommerce-6.8.2 woocommerce && rm 6.8.2.zip 
+  - cd flagship-for-woocommerce-bedrock
   - bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - ls -R
+  - ls -R ..
   - composer update
 script: vendor/bin/phpunit
