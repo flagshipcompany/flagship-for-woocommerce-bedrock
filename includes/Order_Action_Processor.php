@@ -175,7 +175,7 @@ class Order_Action_Processor
     }
 
     protected function update_post_meta_for_confirmed_shipment($orderId, $confirmedShipment)
-    {
+    {        
         if (!is_string($confirmedShipment)) {
             do_action('fwb_shipment_is_confirmed', $confirmedShipment);
             update_post_meta($orderId, 'flagship_shipping_shipment_tracking_number', $confirmedShipment->getTrackingNumber());
@@ -340,10 +340,14 @@ class Order_Action_Processor
             return;
         }
         
-        if ( !is_null($confirmedShipment->getTrackingNumber()) && $this->order->get_status() == 'processing'
-        && get_array_value($this->pluginSettings, 'autocomplete_order') == 'yes') {
-                $this->update_post_meta_for_confirmed_shipment($orderId, $confirmedShipment);
-                $this->order->update_status('completed');
+        if ( !is_string($confirmedShipment) && !is_null($confirmedShipment->getTrackingNumber()) ) {
+            
+                $this->update_post_meta_for_confirmed_shipment($orderId, $confirmedShipment);               
+        }
+
+        if ( !is_string($confirmedShipment) && $this->order->get_status() == 'processing'
+        && get_array_value($this->pluginSettings, 'autocomplete_order') == 'yes' ){
+            $this->order->update_status('completed');
         }
         return $confirmedShipment;
     }

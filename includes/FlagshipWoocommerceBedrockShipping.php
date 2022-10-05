@@ -171,7 +171,7 @@ class FlagshipWoocommerceBedrockShipping
             $courier = get_post_meta($order->get_id(),'flagship_shipping_courier_name',true);
  
             if($tracking && $courier){
-                echo "<p>The shipment will be sent by <b>$courier</b> on tracking number <b>$tracking</b></p>";
+                echo "<p>The shipment will be sent by <b>$courier</b> with tracking number <b>$tracking</b></p>";
             } else {
                 echo "<p>Tracking information is not available yet</p>";
             }
