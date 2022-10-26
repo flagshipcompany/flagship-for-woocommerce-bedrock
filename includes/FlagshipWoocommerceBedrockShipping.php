@@ -13,7 +13,7 @@ class FlagshipWoocommerceBedrockShipping
 {
     public static $methodId = 'flagship_shipping_method';
 
-    public static $version = '1.0.20';
+    public static $version = '1.0.21';
 
     public static $couriers = array(
         'UPS' => 'ups',
@@ -92,14 +92,14 @@ class FlagshipWoocommerceBedrockShipping
         add_action('admin_notices', array((new Notification_Helper()), 'flagship_warning_in_notice'));
         add_action('admin_menu', array((new Menu_Helper()), 'add_flagship_to_menu'));
         add_filter('woocommerce_general_settings', array((new Store_Address_Helper()), 'add_extra_address_fields'));
-        add_action('woocommerce_email_order_details', array($this, 'add_tracking_to_completed_email'),10,4);
+        add_action('woocommerce_email_order_details', array($this, 'add_tracking_to_completed_email'), 10, 4);
 
         $productHelper = (new Product_Helper());
         add_filter('woocommerce_product_data_tabs', array($productHelper, 'add_export_to_product_tabs'));
         add_action('woocommerce_product_data_panels', array($productHelper, 'display_product_export_tab'));
         add_action('woocommerce_process_product_meta', array($productHelper, 'save_product_export_data'));
         add_action('woocommerce_product_options_dimensions', array($productHelper, 'add_custom_attributes'));
-        add_action('woocommerce_process_product_meta',array($productHelper,'save_custom_attributes'));
+        add_action('woocommerce_process_product_meta', array($productHelper,'save_custom_attributes'));
         add_action('rest_api_init', array((new Package_Box_Controller()), 'register_routes'));
         add_action('admin_enqueue_scripts', array((new Script_Helper()), 'load_scripts'));
         add_action('woocommerce_thankyou_order_received_text', array($this, 'add_ltl_shipping_message'), 100, 2);
@@ -154,8 +154,8 @@ class FlagshipWoocommerceBedrockShipping
     public function add_ltl_shipping_message($str, $order)
     {
         $shippingMethod = $order->get_shipping_method();
-        
-        if(stripos($shippingMethod, 'ltl') === 0) {
+
+        if (stripos($shippingMethod, 'ltl') === 0) {
             $msg = $str.'<p class="woocommerce-notice woocommerce-notice–success woocommerce-thankyou-order-received thankyou-note"><b>*Due to the size of your order, we could not fetch real-time shipping rates. When your order is shipped, shipping rates could be different.*</b></p>';
             echo $msg;
             return;
@@ -164,18 +164,17 @@ class FlagshipWoocommerceBedrockShipping
         return;
     }
 
-    public function add_tracking_to_completed_email($order, $sent_to_admin, $plain_text, $email){
-        if($order && $order->get_status() == 'completed') {
- 
-            $tracking = get_post_meta($order->get_id(),'flagship_shipping_shipment_tracking_number',true);
-            $courier = get_post_meta($order->get_id(),'flagship_shipping_courier_name',true);
- 
-            if($tracking && $courier){
+    public function add_tracking_to_completed_email($order, $sent_to_admin, $plain_text, $email)
+    {
+        if ($order && $order->get_status() == 'completed') {
+            $tracking = get_post_meta($order->get_id(), 'flagship_shipping_shipment_tracking_number', true);
+            $courier = get_post_meta($order->get_id(), 'flagship_shipping_courier_name', true);
+
+            if ($tracking && $courier) {
                 echo "<p>The shipment will be sent by <b>$courier</b> with tracking number <b>$tracking</b></p>";
             } else {
                 echo "<p>Tracking information is not available yet</p>";
             }
- 
         }
     }
 }
