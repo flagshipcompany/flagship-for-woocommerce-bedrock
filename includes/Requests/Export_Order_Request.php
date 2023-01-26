@@ -208,7 +208,8 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request
         $fullAddress['email'] = trim($billingAddress['email']);
 
         $fullAddress['address'] = substr($fullAddress['address'], 0, 30);
-
+        $fullAddress['suite'] = substr($fullAddress['suite'],0,18);
+        
         if ($this->getOrderShippingMeta($order, 'residential_receiver_address') == 'yes') {
             $fullAddress['is_commercial'] = false;
         }
