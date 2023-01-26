@@ -103,7 +103,7 @@ class Package_Helper
             'length' => round(max(array_column($items, 'length')),0,PHP_ROUND_HALF_UP),
             'width' => round(max(array_column($items, 'width')),0,PHP_ROUND_HALF_UP),
             'height' => round(max(array_column($items, 'height')),0,PHP_ROUND_HALF_UP),
-            'weight' => $total_weight,
+            'weight' => max($total_weight,1),
             'description' => $description,
         );
         return $return_list ? array($item) : $item;

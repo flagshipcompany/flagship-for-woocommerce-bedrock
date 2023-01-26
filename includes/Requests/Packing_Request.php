@@ -58,7 +58,7 @@ class Packing_Request extends Abstract_Flagship_Api_Request
                 "length" => $package->getLength(),
                 "width" => $package->getWidth(),
                 "height" => $package->getHeight(),
-                "weight" =>  $weight < 1 ? 1 : $weight,
+                "weight" =>  max($weight,1),
             ];
         }
 
