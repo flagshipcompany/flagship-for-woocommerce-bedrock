@@ -26,7 +26,7 @@ class Package_Helper
                 $package_items = $this->pack_into_boxes($items, $options['token']);
                 break;
             case 'box_per_item':
-                $package_items = $items;
+                $package_items = $this->roundUpWeight($items);
                 break;
             case 'by_weight':
                 $split_weight = $options['box_split_weight'];
@@ -172,5 +172,14 @@ class Package_Helper
         if ($this->debug_mode) {
             wc_add_notice($message, $type);
         }
+    }
+
+    protected function roundUpWeight(array $items) {
+        $boxItems = [];
+        foreach ($items as $item) {
+            $item['weight'] = max($item['weight'],1);
+            $boxItems[] = $item;
+        }
+        return $boxItems;
     }
 }
