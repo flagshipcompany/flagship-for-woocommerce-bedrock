@@ -45,11 +45,11 @@ class Export_Order_Request extends Abstract_Flagship_Api_Request
             $prepareRequestObj = $this->addHeaders($prepareRequestObj, $storeAddress['name'], $order->get_id());
             $exportedShipment = $prepareRequestObj->execute();
             FlagshipWoocommerceBedrockShipping::add_log("Prepare Shipment Response : ". json_encode($exportedShipment));
-            $editShipmentData = $this->makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options);
-
-            if ($editShipmentData) {
-                $exportedShipment = $this->editShipment($order, $exportedShipment, $prepareRequest, $editShipmentData, $options);
+            if(!is_string($exportedShipment)){
+                $editShipmentData = $this->makeExtraFieldsForEdit($order, $exportedShipment, $prepareRequest, $options);
+                $exportedShipment = $editShipmentData ? $this->editShipment($order, $exportedShipment, $prepareRequest, $editShipmentData, $options) : $exportedShipment;
             }
+            
             return $exportedShipment;
         } catch (\Exception $e) {
             FlagshipWoocommerceBedrockShipping::add_log($e->getMessage());
